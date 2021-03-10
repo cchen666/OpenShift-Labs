@@ -1,0 +1,3 @@
+CN=gcg-shift,OU=openshift,OU=support,DC=titamu,DC=com
+CN=group1,OU=openshift,OU=support,DC=titamu,DC=com
+CN=group2,OU=openshift,OU=support,DC=titamu,DC=com

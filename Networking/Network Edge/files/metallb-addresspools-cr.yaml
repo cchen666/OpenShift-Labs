@@ -1,0 +1,9 @@
+apiVersion: metallb.io/v1beta1
+kind: AddressPool
+metadata:
+  name: example
+  namespace: metallb-system
+spec:
+  addresses:
+    - 10.72.36.222-10.72.36.225 # These addresses are not occupied by any servers
+  protocol: layer2

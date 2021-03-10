@@ -1,0 +1,8 @@
+# $ oc get net-attach-def my-dummy-network -o yaml
+apiVersion: k8s.cni.cncf.io/v1
+kind: NetworkAttachmentDefinition
+metadata:
+  name: my-dummy-network
+  namespace: test-noop-cni
+spec:
+  config: ""

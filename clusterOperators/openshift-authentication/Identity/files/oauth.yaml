@@ -1,0 +1,24 @@
+apiVersion: config.openshift.io/v1
+kind: OAuth
+metadata:
+  name: cluster
+spec:
+  identityProviders:
+  - name: ldapidp
+    mappingMethod: claim
+    type: LDAP
+    ldap:
+      attributes:
+        id:
+        - displayName   # <------- This id attribute can't be set to sAMAccountName maybe a bug?
+        email:
+        - mail
+        name:
+        - cn
+        preferredUsername:
+        - givenName
+      bindDN: "CN=BindUser,OU=openshift,OU=cloud, DC=titamu, DC=com"
+      bindPassword:
+        name: ldap-secret
+      insecure: true
+      url: "ldap://10.0.95.91/ou=openshift,ou=cloud,dc=titamu,dc=com?sAMAccountName"

@@ -1,0 +1,51 @@
+apiVersion: machine.openshift.io/v1beta1
+kind: MachineSet
+metadata:
+  creationTimestamp: null
+  labels:
+    machine.openshift.io/cluster-api-cluster: mycluster-qhlnt
+  name: mycluster-qhlnt-worker
+  namespace: openshift-machine-api
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      machine.openshift.io/cluster-api-cluster: mycluster-qhlnt
+      machine.openshift.io/cluster-api-machineset: mycluster-qhlnt-worker
+  template:
+    metadata:
+      creationTimestamp: null
+      labels:
+        machine.openshift.io/cluster-api-cluster: mycluster-qhlnt
+        machine.openshift.io/cluster-api-machine-role: worker
+        machine.openshift.io/cluster-api-machine-type: worker
+        machine.openshift.io/cluster-api-machineset: mycluster-qhlnt-worker
+    spec:
+      metadata:
+        creationTimestamp: null
+        labels:
+          node-role.kubernetes.io/worker: ""
+      providerSpec:
+        value:
+          apiVersion: vsphereprovider.openshift.io/v1beta1
+          credentialsSecret:
+            name: vsphere-cloud-credentials
+          diskGiB: 120
+          kind: VSphereMachineProviderSpec
+          memoryMiB: 8192
+          metadata:
+            creationTimestamp: null
+          network:
+            devices:
+            - networkName: "VM Network"
+          numCPUs: 4
+          numCoresPerSocket: 1
+          snapshot: ""
+          template: worker-0
+          userDataSecret:
+            name: worker-user-data
+          workspace:
+            datacenter: OpenShift
+            datastore: datastore1
+            folder: /OpenShift/vm/4.7.33
+            server: vmware.rhts.gsslab.pek2.redhat.com

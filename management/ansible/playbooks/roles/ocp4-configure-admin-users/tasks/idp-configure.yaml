@@ -1,0 +1,69 @@
+---
+-  set_fact:
+    auth_htpasswd: "{{ lookup('file', playbook_dir + '/ocp4-htpasswd') }}"
+
+- block:
+  - name: Handle auth_htpasswd
+    block:
+      - name: Create htpasswd secret
+        kubernetes.core.k8s:
+          state: present
+          definition:
+            apiVersion: v1
+            data:
+              htpasswd: "{{ auth_htpasswd | b64encode }}"
+            kind: Secret
+            metadata:
+              name: htpasswd
+              namespace: openshift-config
+            type: Opaque
+
+      - name: Create htpasswd identity provider template
+        set_fact:
+          htpasswd_idp:
+            htpasswd:
+              fileData:
+                name: htpasswd
+            mappingMethod: claim
+            name: Local
+            type: HTPasswd
+
+      - name: Push htpasswd_idp to identity_providers
+        set_fact:
+          identity_providers:
+          - "{{ htpasswd_idp }}"
+    when: auth_htpasswd is defined
+    tags:
+      - post-install
+      - idp
+
+  - name: Configure identity providers
+    kubernetes.core.k8s:
+      state: present
+      definition:
+          apiVersion: config.openshift.io/v1
+          kind: OAuth
+          metadata:
+            name: cluster
+          spec:
+            tokenConfig:
+              accessTokenMaxAgeSeconds: 31104000
+            identityProviders: "{{ identity_providers }}"
+
+  - name: Setup cluster role bindings
+    kubernetes.core.k8s:
+      state: present
+      definition:
+        kind: ClusterRoleBinding
+        apiVersion: rbac.authorization.k8s.io/v1
+        metadata:
+          name: "{{ item.username }}-{{ item.cluster_role }}"
+        subjects:
+        - apiGroup: rbac.authorization.k8s.io
+          kind: User
+          name: "{{ item.username }}"
+        roleRef:
+          kind: ClusterRole
+          name: "{{ item.cluster_role }}"
+    with_items: "{{ cluster_role_bindings }}"
+    when: cluster_role_bindings is defined

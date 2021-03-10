@@ -1,0 +1,12 @@
+clouds:
+  openstack:
+    auth:
+      auth_url: https://api.rhos-01.prod.psi.rdu2.redhat.com:13000
+      project_id: dff3e14e697a44ec94b0f151752aae47
+      project_name: sbr-shift-psi-lab
+      user_domain_name: redhat.com
+      username: psi-gcg-jp
+      password: XXXXXX
+    endpoint_type: public
+    identity_api_version: "3"
+    region_name: regionOne

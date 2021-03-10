@@ -1,0 +1,58 @@
+apiVersion: v1
+kind: Service
+metadata:
+  annotations:
+    kubectl.kubernetes.io/last-applied-configuration: |
+      {"apiVersion":"v1","kind":"Service","metadata":{"annotations":{},"name":"nginx-service","namespace":"test-external-ip"},"spec":{"clusterIP":"172.30.163.110","externalIPs":["10.72.36.156"],"externalTrafficPolicy":"Cluster","ports":[{"nodePort":31903,"port":8080,"protocol":"TCP","targetPort":8080}],"selector":{"app":"nginx"},"sessionAffinity":"None","type":"LoadBalancer"}}
+  creationTimestamp: "2022-09-06T06:23:25Z"
+  name: nginx-service
+  namespace: test-external-ip
+  resourceVersion: "10382098"
+  uid: 47c95812-a0f1-46c3-913a-8416d6a88161
+spec:
+  allocateLoadBalancerNodePorts: true
+  clusterIP: 172.30.163.110
+  clusterIPs:
+  - 172.30.163.110
+  externalTrafficPolicy: Cluster
+  internalTrafficPolicy: Cluster
+  ipFamilies:
+  - IPv4
+  ipFamilyPolicy: SingleStack
+  ports:
+  - nodePort: 31903
+    port: 8080
+    protocol: TCP
+    targetPort: 8080
+  selector:
+    app: nginx
+  sessionAffinity: None
+  type: LoadBalancer
+
+
+
+
+apiVersion: v1
+kind: Service
+metadata:
+  name: nginx-service
+  namespace: test-external-ip
+spec:
+  allocateLoadBalancerNodePorts: true
+  clusterIP: 172.30.163.110
+  clusterIPs:
+  - 172.30.163.110
+  externalTrafficPolicy: Cluster
+  internalTrafficPolicy: Cluster
+  ipFamilies:
+  - IPv4
+  ipFamilyPolicy: SingleStack
+  ports:
+  - nodePort: 31903
+    port: 8080
+    protocol: TCP
+    targetPort: 8080
+  selector:
+    app: nginx
+  sessionAffinity: None
+  type: LoadBalancer

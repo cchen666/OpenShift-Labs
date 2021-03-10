@@ -1,0 +1,11 @@
+#10.72.48.25/23
+apiVersion: performance.openshift.io/v2
+kind: PerformanceProfile
+metadata:
+  name: performance
+spec:
+  cpu:
+    isolated: "3-15,18-31"
+    reserved: "0,1,16,17"
+  nodeSelector:
+    node-role.kubernetes.io/master: ""

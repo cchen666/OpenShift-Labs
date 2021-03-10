@@ -1,0 +1,108 @@
+apiVersion: v1
+data:
+  nginx.conf: |
+    worker_processes auto;
+    pid /run/nginx.pid;
+
+    events {
+        worker_connections 768;
+    }
+
+    http {
+
+            sendfile on;
+            tcp_nopush on;
+            tcp_nodelay on;
+            keepalive_timeout 65;
+            types_hash_max_size 2048;
+
+            include /etc/nginx/mime.types;
+            default_type application/octet-stream;
+
+            ssl_protocols TLSv1 TLSv1.1 TLSv1.2;
+            ssl_prefer_server_ciphers on;
+
+            server {
+              listen 8081;
+              root /usr/share/nginx/html;
+              location / {
+                return 200 'This is api-1\n';
+                add_header Content-Type text/plain;
+              }
+            }
+
+            log_format upstreamlog '[$time_local] $remote_addr - $remote_user - $server_name to: $upstream_addr: $request request_time $request_time' status $status upstream-status $upstream_status;
+
+            access_log /var/log/nginx/access.log upstreamlog;
+            error_log /var/log/nginx/error.log;
+
+            gzip on;
+            gzip_disable "msie6";
+    }
+kind: ConfigMap
+metadata:
+  name: backend-config-1
+
+---
+
+kind: Deployment
+apiVersion: apps/v1
+metadata:
+  name: aio-api-1
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: aio-api-1
+  template:
+    metadata:
+      labels:
+        app: aio-api-1
+      annotations:
+        sidecar.istio.io/inject: "true"
+    spec:
+      containers:
+        - name: aio-api-1
+          image: quay.io/rhn_support_cchen/nginx:latest
+          imagePullPolicy: IfNotPresent
+          ports:
+            - containerPort: 8081
+              protocol: TCP
+          resources: {}
+          terminationMessagePath: /dev/termination-log
+          volumeMounts:
+            - name: nginx-conf-volume
+              mountPath: /etc/nginx/nginx.conf
+              subPath: nginx.conf
+      volumes:
+        - name: nginx-conf-volume
+          configMap:
+            name: backend-config-1
+      dnsPolicy: ClusterFirst
+      restartPolicy: Always
+      securityContext: {}
+      terminationGracePeriodSeconds: 30
+
+
+---
+
+apiVersion: v1
+kind: Service
+metadata:
+  labels:
+    app: aio-api-1
+  name: aio-api-1
+spec:
+  ipFamilies:
+  - IPv4
+  ipFamilyPolicy: SingleStack
+  ports:
+  - name: http
+    port: 80
+    protocol: TCP
+    targetPort: 8081
+    nodePort: 30331
+  selector:
+    app: aio-api-1
+  sessionAffinity: None
+  type: NodePort

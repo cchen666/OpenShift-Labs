@@ -1,0 +1,36 @@
+apiVersion: tekton.dev/v1beta1
+kind: Task
+metadata:
+  name: update-deployment
+spec:
+  params:
+    - name: deployment
+      description: The name of the deployment patch the image
+      type: string
+    - name: IMAGE
+      description: Location of image to be patched with
+      type: string
+  steps:
+    - name: patch
+      image: image-registry.openshift-image-registry.svc:5000/openshift/cli:latest
+      command: ["/bin/bash", "-c"]
+      args:
+        - |-
+          oc patch deployment $(inputs.params.deployment) --patch='{"spec":{"template":{"spec":{
+            "containers":[{
+              "name": "$(inputs.params.deployment)",
+              "image":"$(inputs.params.IMAGE)"
+            }]
+          }}}}'
+
+          # issue: https://issues.redhat.com/browse/SRVKP-2387
+          # images are deployed with tag. on rebuild of the image tags are not updated, hence redeploy is not happening
+          # as a workaround update a label in template, which triggers redeploy pods
+          # target label: "spec.template.metadata.labels.patched_at"
+          # NOTE: this workaround works only if the pod spec has imagePullPolicy: Always
+          patched_at_timestamp=`date +%s`
+          oc patch deployment $(inputs.params.deployment) --patch='{"spec":{"template":{"metadata":{
+            "labels":{
+              "patched_at": '\"$patched_at_timestamp\"'
+            }
+          }}}}'

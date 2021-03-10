@@ -1,0 +1,22 @@
+apiVersion: nmstate.io/v1
+kind: NodeNetworkConfigurationPolicy
+metadata:
+  name: <CHANGE_ME>
+spec:
+  nodeSelector:
+    external-network: "true"
+  desiredState:
+    interfaces:
+      - name: <CHANGE_ME>
+        description: Linux bridge with ens4 as a port
+        type: <CHANGE_ME>
+        state: up
+        ipv4:
+          dhcp: true
+          enabled: true
+        bridge:
+          options:
+            stp:
+              enabled: false
+          port:
+            - name: <CHANGE_ME>

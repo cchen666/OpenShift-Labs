@@ -1,0 +1,16 @@
+#!/usr/bin/env ansible-playbook
+---
+- name: Configure OpenShift container platform
+  hosts: localhost
+  connection: local
+  gather_facts: true
+  environment:
+    PATH: "/usr/bin/:/usr/local/bin/:{{ ansible_env.PATH }}"
+  vars_files:
+    - ./cluster.yaml
+  vars:
+    kubeconfig: "{{ ansible_env.KUBECONFIG }}"
+    k8s_validate_certs: false
+  roles:
+    - role: ocp4-configure-admin-users
+      tags: apply-01

@@ -1,0 +1,23 @@
+apiVersion: v1
+baseDomain: cchen.work
+compute:
+- hyperthreading: Enabled
+  name: worker
+  replicas: 2
+controlPlane:
+  hyperthreading: Enabled
+  name: master
+  replicas: 3
+metadata:
+  name: mycluster
+platform:
+  vsphere:
+    vcenter: vmware.rhts.gsslab.pek2.redhat.com
+    username: administrator@vsphere.local
+    password: <password>
+    datacenter: Datacenter
+    defaultDatastore: datastore1
+    folder: "/OpenShift/vm/4.10.5/"
+fips: false
+pullSecret: '{"auths": ...}'
+sshKey: 'ssh-rsa AAAAB3NzaC1yc2EAAAADAQABAAABgQC0dpv4RVAcXRinsvRNxIUQoX28Ex0WPL/Ca+t8Mwrb4Fk/5z+rP9hXeYI2tAU9LqpAvUNjcCMgQ/b4pmSjNdLZuqUU9yngvhzvr9JX6gebu0Q1HKiAD2yIJcrrjUqnIKaOCtR2pgLRJOfKiKnc+jEECmHC7r0UcrS+RWC1hIfe0XUPKWxpkG8Ek0fyWsq8tZhxTFTElIP8DRqQhmpAEkfYp6rHW5PM2u+wJWWLsJkVUNVgnkfIdhMHJHLgk1doFU6mCCO2zJT9C6SSUlm2aptrt2SMb4NMQa5oo1S8BT6ECs9stgl74B9D31zxO/FhHS1lAY2XyNYKoSfmPpERnAhGxs1FDI6wcL5xy2MhejXM6dKXOctCi8LmyhntBEA7ogyrbkTcxheovmfyqRZ/AH8DMLmgYbM17UCeRPA55gP3XMPFgGwtEiZFDAgXjF3cHQO4yUOyHrjiTlzN43t9wmWkA/v4Uf1wgJ/OIcQOyzhxZrDBxm+6+VHOdqbwmiCQcOs= cchen@ChendeMacBook-Pro.local'

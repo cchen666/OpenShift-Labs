@@ -1,0 +1,124 @@
+# Need to use with backend.yaml
+# https://www.cnblogs.com/bigberg/p/7651197.html
+kind: Deployment
+apiVersion: apps/v1
+metadata:
+  name: nginx
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: nginx
+  template:
+    metadata:
+      labels:
+        app: nginx
+    spec:
+      containers:
+        - name: nginx
+          image: quay.io/rhn_support_cchen/nginx:latest
+          imagePullPolicy: IfNotPresent
+          ports:
+            - containerPort: 8081
+              protocol: TCP
+          resources: {}
+          terminationMessagePath: /dev/termination-log
+          volumeMounts:
+            - name: nginx-conf-volume
+              mountPath: /etc/nginx/nginx.conf
+              subPath: nginx.conf
+      volumes:
+        - name: nginx-conf-volume
+          configMap:
+            name: nginx-config
+      dnsPolicy: ClusterFirst
+      restartPolicy: Always
+      securityContext: {}
+      terminationGracePeriodSeconds: 30
+
+---
+
+apiVersion: v1
+data:
+  nginx.conf: |
+    worker_processes auto;
+    pid /run/nginx.pid;
+
+    events {
+        worker_connections 768;
+    }
+
+    http {
+            sendfile on;
+            tcp_nopush on;
+            tcp_nodelay on;
+            keepalive_timeout 65;
+            types_hash_max_size 2048;
+
+            include /etc/nginx/mime.types;
+            default_type application/octet-stream;
+
+            ssl_protocols TLSv1 TLSv1.1 TLSv1.2;
+            ssl_prefer_server_ciphers on;
+
+            server {
+              listen 8081;
+
+              location /proxy/ {
+                add_header Content-Type text/plain;
+                proxy_pass http://backend:8081/;
+              }
+            }
+
+            log_format upstreamlog '[$time_local] $remote_addr - $remote_user - $server_name to: $upstream_addr: $request request_time $request_time' status $status upstream-status $upstream_status;
+
+            access_log /var/log/nginx/access.log upstreamlog;
+            error_log /var/log/nginx/error.log;
+
+            gzip on;
+            gzip_disable "msie6";
+    }
+kind: ConfigMap
+metadata:
+  name: nginx-config
+
+---
+
+apiVersion: v1
+kind: Service
+metadata:
+  labels:
+    app: nginx
+  name: nginx
+spec:
+  ipFamilies:
+  - IPv4
+  ipFamilyPolicy: SingleStack
+  ports:
+  - name: http
+    port: 8081
+    protocol: TCP
+    targetPort: 8081
+  selector:
+    app: nginx
+  sessionAffinity: None
+  type: ClusterIP
+
+---
+
+apiVersion: route.openshift.io/v1
+kind: Route
+metadata:
+  labels:
+    app: nginx
+  name: nginx
+spec:
+  port:
+    targetPort: 8081
+  tls:
+    termination: edge
+  to:
+    kind: Service
+    name: nginx
+    weight: 100
+  wildcardPolicy: None

@@ -1,0 +1,10 @@
+---
+# tasks file for ocp4-setup-admin-users
+
+- name: Create htpasswd
+  include: htpasswd-create.yaml
+  tags: htpasswd
+
+- name: Configure idp
+  include: idp-configure.yaml
+  tags: idp

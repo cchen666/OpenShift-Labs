@@ -1,0 +1,33 @@
+apiVersion: v1alpha1
+kind: AgentConfig
+metadata:
+  name: sno-cluster
+rendezvousIP: fd7d:844d:3e17:f3ae::cccc
+hosts:
+  - hostname: master-0
+    interfaces:
+      - name: eno1
+        macAddress: 02:01:00:00:00:66
+    rootDeviceHints:
+      deviceName: /dev/vda
+    networkConfig:
+      interfaces:
+        - name: eno1
+          type: ethernet
+          state: up
+          mac-address: 02:01:00:00:00:66
+          ipv6:
+            enabled: true
+            address:
+              - ip: fd7d:844d:3e17:f3ae::cccc
+                prefix-length: 64
+            dhcp: false
+      dns-resolver:
+        config:
+          server:
+            - fd7d:844d:3e17:f3ae::1
+      routes:
+        config:
+          - destination: ::/0
+            next-hop-address: fd7d:844d:3e17:f3ae::1
+            next-hop-interface: eno1

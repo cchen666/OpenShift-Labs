@@ -1,0 +1,20 @@
+apiVersion: tuned.openshift.io/v1
+kind: Tuned
+metadata:
+  name: configuration-hotfixes
+  namespace: openshift-cluster-node-tuning-operator
+spec:
+  profile:
+  - data: |
+      [main]
+      summary=Custom tuned profile to adjust performance
+      # override performance addons generated tuned profile
+      include=openshift-node-performance-performance
+      [bootloader]
+      cmdline_removeKernelArgs=-nohz=on nohz_full=${isolated_cores}
+    name: openshift-configuration-hotfixes
+  recommend:
+  - machineConfigLabels:
+      machineconfiguration.openshift.io/role: master
+    priority: 19
+    profile: openshift-configuration-hotfixes

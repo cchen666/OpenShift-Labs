@@ -1,0 +1,10 @@
+apiVersion: k8s.cni.cncf.io/v1
+kind: NetworkAttachmentDefinition
+metadata:
+  annotations:
+    k8s.v1.cni.cncf.io/resourceName: openshift.io/sriov_netdevice_enp130s0f0
+  name: sriov-intel
+  namespace: test-mul-sriov
+spec:
+  config: '{ "cniVersion":"0.3.0", "name":"sriov-intel","type":"sriov","spoofchk":"on","trust":"on","ipam":{}
+    }'

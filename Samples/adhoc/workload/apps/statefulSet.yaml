@@ -1,0 +1,78 @@
+apiVersion: apps/v1
+kind: StatefulSet
+metadata:
+  name: mysql
+spec:
+  selector:
+    matchLabels:
+      app: mysql
+  serviceName: mysql
+  replicas: 3
+  template:
+    metadata:
+      labels:
+        app: mysql
+    spec:
+      containers:
+      - name: mysql
+        image: quay.io/rhn_support_cchen/mariadb-103:1-202
+        env:
+        - name: MYSQL_ROOT_PASSWORD
+          value: mysecretpassword
+        ports:
+        - containerPort: 3306
+        volumeMounts:
+        - name: data
+          mountPath: /var/lib/mysql
+  volumeClaimTemplates:
+  - metadata:
+      name: data
+    spec:
+      accessModes: [ "ReadWriteOnce" ]
+      resources:
+        requests:
+          storage: 1Gi
+
+---
+
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: mysql-0
+spec:
+  clusterIP: None
+  selector:
+    statefulset.kubernetes.io/pod-name: mysql-0
+  ports:
+  - name: tcp
+    port: 3306
+    targetPort: 3306
+
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: mysql-2
+spec:
+  clusterIP: None
+  selector:
+    statefulset.kubernetes.io/pod-name: mysql-2
+  ports:
+  - name: tcp
+    port: 3306
+    targetPort: 3306
+
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: mysql-1
+spec:
+  clusterIP: None
+    selector:
+      statefulset.kubernetes.io/pod-name: mysql-1
+  ports:
+  - name: tcp
+    port: 3306
+    targetPort: 3306

@@ -1,0 +1,30 @@
+apiVersion: v1
+baseDomain: cchen.work
+metadata:
+  name: ipv6
+compute:
+- architecture: amd64
+  hyperthreading: Enabled
+  name: worker
+  replicas: 0
+controlPlane:
+  architecture: amd64
+  hyperthreading: Enabled
+  name: master
+  replicas: 1
+networking:
+  clusterNetwork:
+  - cidr: fd7d:844d:3e17:100::/56
+    hostPrefix: 64
+  machineNetwork:
+  - cidr: fd7d:844d:3e17:f3ae::/64
+  serviceNetwork:
+  - fd7d:844d:3e17:200::/112
+  networkType: OVNKubernetes
+platform:
+  baremetal:
+    apiVIP: fd7d:844d:3e17:f3ae::201
+    ingressVIP: fd7d:844d:3e17:f3ae::202
+fips: false
+pullSecret:
+sshKey: 'ssh-rsa AAAAB3NzaC1yc2EAAAADAQABAAABAQDR0QhalcoPkVpEKJ6y5NwWHoPzn/qvVg4gIyK2y0GS2+s2Dt7JbMK3gZBVT4QBsKti4ztQf/xh4zVr7g8oba09gLQJbJZKeSCpjYVHlNEBMhchli+mT8KS1TZ/EX7sFRPfa5JCIW3BxJ96vCrLi/x9WZs93yjwTxv322zd7HpJSFTfrx1q0ORTesP2h8g17EkpF/s9gcZYa2vVi6YB61D236kBjMXnHI+NIs+puS1rEClcXPr0QtXJPjlG6kddDWEchYh4XI8zf78E3YUE8Dx0z2jc+KlORNxaqVftW/e2zILzdIiV7O0txbR7WbWT+0Rokr6Fbob1mHKgDuM7+HF7 root@dell-per320-05.gsslab.pek2.redhat.com'

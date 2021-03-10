@@ -1,0 +1,42 @@
+# Inside the dpdk Pod, start the dpdk-testpmd with --vdev, a tap0 device will be created for Exception Path.
+# https://doc.dpdk.org/guides/howto/virtio_user_as_exception_path.html
+# Pay attention to the mac address and it must be the same as VF's mac!!
+# dpdk-testpmd -n 4 -l `cat /sys/fs/cgroup/cpuset/cpuset.cpus` -a $PCIDEVICE_OPENSHIFT_IO_SRIOV_DPDK_ENS4F0
+# --socket-mem 1024 --vdev=virtio_user0,path=/dev/vhost-net,mac="1a:27:87:e3:6f:84"
+
+apiVersion: v1
+kind: Pod
+metadata:
+  name: dpdk
+  annotations:
+    k8s.v1.cni.cncf.io/networks: dpdk-network-1
+spec:
+  containers:
+    - image: quay.io/rhn_support_cchen/dpdk:v1.29
+      command: ["/bin/bash", "-c", "/entrypoint.sh"]
+      name: dpdk
+      resources:
+        limits:
+          cpu: "4"
+          hugepages-1Gi: 8Gi
+          memory: 2Gi
+        requests:
+          cpu: "4"
+          hugepages-1Gi: 8Gi
+          memory: 2Gi
+      securityContext:
+        capabilities:
+          add:
+            - IPC_LOCK
+            - SYS_RESOURCE
+            - NET_RAW
+            - NET_ADMIN
+        runAsUser: 0
+      volumeMounts:
+        - mountPath: /mnt/huge
+          name: hugepages
+  terminationGracePeriodSeconds: 5
+  volumes:
+    - emptyDir:
+        medium: HugePages
+      name: hugepages

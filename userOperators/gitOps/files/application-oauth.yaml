@@ -1,0 +1,19 @@
+apiVersion: argoproj.io/v1alpha1
+kind: Application
+metadata:
+  name: test-oauth
+  namespace: openshift-gitops
+spec:
+  destination:
+    namespace: openshift-config
+    server: https://kubernetes.default.svc
+  project: default
+  source:
+    path: app/postInstall
+    repoURL: git@gitlab.cee.redhat.com:cchen/gitops.git
+  syncPolicy:
+    automated:
+      prune: false
+      selfHeal: true
+    syncOptions:
+    - PrunePropagationPolicy=background

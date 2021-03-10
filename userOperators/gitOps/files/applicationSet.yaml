@@ -1,0 +1,24 @@
+apiVersion: argoproj.io/v1alpha1
+kind: ApplicationSet
+metadata:
+  name: guestbook
+spec:
+  generators:
+  - list:
+      elements:
+      - cluster: sriov
+        url: https://api.sno-pek.cchen.work:6443
+  template:
+    metadata:
+      name: '{{cluster}}-guestbook'
+    spec:
+      project: default
+      source:
+        repoURL: https://github.com/redhat-developer/openshift-gitops-getting-started.git
+        targetRevision: HEAD
+        path: app
+      destination:
+        server: '{{url}}'
+        namespace: spring-petclinic
+      syncOptions:
+        - CreateNamespace=true

@@ -1,0 +1,62 @@
+---
+apiVersion: sriovnetwork.openshift.io/v1
+kind: SriovNetworkNodePolicy
+metadata:
+  name: sriov-config-netdevice-ens4f0
+  namespace: openshift-sriov-network-operator
+spec:
+  deviceType: netdevice
+  isRdma: false
+  linkType: eth
+  mtu: 1500
+  nicSelector:
+    pfNames:
+    - ens4f0#0-31
+  nodeSelector:
+    feature.node.kubernetes.io/network-sriov.capable: "true"
+  numVfs: 64
+  priority: 50
+  resourceName: sriov_netdevice_ens4f0
+
+---
+
+apiVersion: sriovnetwork.openshift.io/v1
+kind: SriovNetworkNodePolicy
+metadata:
+  name: sriov-config-dpdk-ens4f0
+  namespace: openshift-sriov-network-operator
+spec:
+  deviceType: vfio-pci
+  isRdma: false
+  linkType: eth
+  mtu: 1500
+  needVhostNet: true
+  nicSelector:
+    pfNames:
+    - ens4f0#32-63
+  nodeSelector:
+    feature.node.kubernetes.io/network-sriov.capable: "true"
+  numVfs: 64
+  priority: 50
+  resourceName: sriov_dpdk_ens4f0
+
+---
+#10.72.48.25/23
+apiVersion: sriovnetwork.openshift.io/v1
+kind: SriovNetworkNodePolicy
+metadata:
+  name: sriov-config-netdevice-enp130s0f0
+  namespace: openshift-sriov-network-operator
+spec:
+  deviceType: vfio-pci
+  isRdma: false
+  linkType: eth
+  mtu: 1500
+  nicSelector:
+    pfNames:
+    - enp130s0f0#0-7
+  nodeSelector:
+    feature.node.kubernetes.io/network-sriov.capable: "true"
+  numVfs: 8
+  priority: 50
+  resourceName: sriov_netdevice_enp130s0f0

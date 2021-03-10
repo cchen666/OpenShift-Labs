@@ -1,0 +1,24 @@
+apiVersion: v1
+baseDomain: ocp.com
+compute:
+- name: worker
+  replicas: 0
+controlPlane:
+  name: master
+  replicas: 1
+metadata:
+  name: sno
+networking:
+  networkType: OVNKubernetes
+  clusterNetwork:
+  - cidr: 10.128.0.0/14
+    hostPrefix: 23
+  serviceNetwork:
+  - 172.30.0.0/16
+platform:
+  none: {}
+bootstrapInPlace:
+  installationDisk: /dev/vda
+pullSecret:
+sshKey: |
+  ssh-rsa AAAAB3NzaC1yc2EAAAADAQABAAABgQCoNbttkeEXFBsefTatpOCkgv0nuhlQR2jvXZkF89HHSu8nbTLNswoE2lXNbwKiJhrGePezGRwPP2RAWuJvsqECNh5YUubORR7hZ9g6Nq9DTEsM0m3dSVpqIISNJVPfOX/rQLPP0Mml6mDuYLRuBkjmtR9iqPjDmDMs/WLAnU/ZVqLHNU84+cjGbdAnSynbWptHeXDhGYH179s5UwY50d6kPiVQMr0yXKSUS4hom1GN1iNh3NlaLjsVYVXAYns5Empe7rPmy107JVKWKCyO2cQ9oxlXaDpPSx7MOxdoC7e9piXTqwHKcDhkuCj5g2KT2z3woSa0Ks5tCE8KkEXXCY2VUzeppQlVy6p4hgGEJNPNvLB2Hrk1dDLBqzsw8R9N1jMBwDrDs3gNQ5RYJOzwWumAIod3bUCuz7bWZLyykfHS9hbTEUSIdi221srQvPs1BtgYVlYhfwVHW1jnbTF3v8+vwH7POOz3Vd68PPyQXuikhMt76ApvURs69KeoH49Qlus= root@dell-per430-35.gsslab.pek2.redhat.com

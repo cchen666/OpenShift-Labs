@@ -1,0 +1,24 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: noop-first
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: noop-first
+  template:
+    metadata:
+      annotations:
+        k8s.v1.cni.cncf.io/networks: '[{"name": "noop-cni-plugin"}]'
+        sidecar.istio.io/inject: "false"
+      labels:
+        app: noop-first
+    spec:
+      containers:
+      - command:
+        - /sbin/init
+        image: centos:latest
+        imagePullPolicy: IfNotPresent
+        name: container-1
+      restartPolicy: Always

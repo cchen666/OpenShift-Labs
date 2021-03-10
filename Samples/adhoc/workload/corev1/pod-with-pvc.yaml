@@ -1,0 +1,43 @@
+apiVersion: v1
+kind: Pod
+metadata:
+  name: rhel7
+  labels:
+    app: rhel7
+spec:
+  containers:
+  - name: myapp-container
+    image: registry.access.redhat.com/ubi7/ubi
+    command: ['sh', '-c', 'mkdir /etc/healing-controller.d -p && echo The app is running! && sleep 3600']
+    volumeMounts:
+    - mountPath: /etc/healing-controller.d/record
+      name: local-disks
+      subPath: record
+    - mountPath: /etc/healing-controller.d/critical-containers-logs
+      name: local-disks
+      subPath: critical-containers-logs
+  volumes:
+    - name: local-disks
+      persistentVolumeClaim:
+        claimName: local-pvc-name
+  terminationGracePeriodSeconds: 5
+  securityContext:
+    fsGroup: 9999
+    runAsGroup: 9999
+    runAsUser: 9999
+
+---
+
+apiVersion: v1
+kind: PersistentVolumeClaim
+metadata:
+  name: local-pvc-name
+  namespace: test-pv
+spec:
+  accessModes:
+  - ReadWriteOnce
+  resources:
+    requests:
+      storage: 1Gi
+  storageClassName: standard-csi
+  volumeMode: Filesystem

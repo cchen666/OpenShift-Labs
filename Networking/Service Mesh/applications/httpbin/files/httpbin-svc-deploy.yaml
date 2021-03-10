@@ -1,0 +1,57 @@
+apiVersion: v1
+kind: Service
+metadata:
+  name: httpbin
+  annotations:
+    "service.beta.kubernetes.io/aws-load-balancer-proxy-protocol": "*"
+  labels:
+    app: httpbin
+    service: httpbin
+spec:
+  type: LoadBalancer
+  ports:
+  - name: http
+    port: 8000
+    targetPort: 80
+  selector:
+    app: httpbin
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: httpbin
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: httpbin
+      version: v1
+  template:
+    metadata:
+      annotations:
+        sidecar.istio.io/inject: "true"
+      labels:
+        app: httpbin
+        version: v1
+    spec:
+      serviceAccountName: default
+      securityContext:
+        runAsUser: 0
+      containers:
+      - image: docker.io/kennethreitz/httpbin
+        imagePullPolicy: IfNotPresent
+#        command: ['sh', '-c', '/usr/bin/python3 usr/local/bin/gunicorn -b 0.0.0.0:8000 httpbin:app -k gevent']
+        name: httpbin
+        ports:
+        - containerPort: 80
+
+existing_netns=(`ip netns | awk '{print $1}'`)
+
+for i in $(seq 1 1000);
+do
+current_netns=`ip netns | awk '{print $1}'`
+for netns in $current_netns;
+do
+if [[ " ${existing_netns[*]} " != *" $netns "* ]]; then
+do ip netns exec $netns ip a | egrep -e "net1|net2|net3";done
+done

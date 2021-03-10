@@ -1,0 +1,36 @@
+apiVersion: networking.istio.io/v1beta1
+kind: VirtualService
+metadata:
+  name: aio-test-internal
+  namespace: uat-aio-istio
+spec:
+  hosts:
+  - aio-api-1.uat-aio-istio.svc.cluster.local
+  - aio-api-2.uat-aio-istio.svc.cluster.local
+  http:
+  - name: "api-1"
+    match:
+    - headers:
+        domaincode:
+          exact: v1
+    route:
+    - destination:
+        host: aio-api-1.uat-aio-istio.svc.cluster.local
+        port:
+          number: 80
+  - name: "api-2"
+    match:
+    - headers:
+        domaincode:
+          exact: v2
+    route:
+    - destination:
+        host: aio-api-2.uat-aio-istio.svc.cluster.local
+        port:
+          number: 80
+  - name: "default"
+    route:
+      - destination:
+          host: aio-api-3.uat-aio-istio.svc.cluster.local
+          port:
+            number: 80

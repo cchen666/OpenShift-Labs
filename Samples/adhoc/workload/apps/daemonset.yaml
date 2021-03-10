@@ -1,0 +1,26 @@
+apiVersion: apps/v1
+kind: DaemonSet
+metadata:
+  name: cchen-test
+  labels:
+    app: cchen-test
+spec:
+  selector:
+    matchLabels:
+      app: cchen-test
+  template:
+    metadata:
+      labels:
+        app: cchen-test
+    spec:
+      tolerations:
+      - key: node-role.kubernetes.io/master
+        operator: Exists
+      containers:
+      - name: cchen-test
+        image: quay.io/rhn_support_cchen/toolbox
+        command: ['sh', '-c', 'echo The app is running! && sleep 3600']
+        terminationMessagePath: /dev/termination-log
+        terminationMessagePolicy: FallbackToLogsOnError
+      restartPolicy: Always
+      terminationGracePeriodSeconds: 10

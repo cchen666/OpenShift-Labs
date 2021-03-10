@@ -1,0 +1,61 @@
+apiVersion: apps/v1
+kind: DaemonSet
+metadata:
+  name: fluentd-elasticsearch
+  namespace: test-login
+  labels:
+    app: fluentd-logging
+spec:
+  selector:
+    matchLabels:
+      name: fluentd-elasticsearch
+  template:
+    metadata:
+      labels:
+        name: fluentd-elasticsearch
+    spec:
+      nodeSelector:
+        node-role.kubernetes.io/master:
+      tolerations:
+      # this toleration is to have the daemonset runnable on master nodes
+      # remove it if your masters can't run pods
+      - key: node-role.kubernetes.io/master
+        operator: Exists
+        effect: NoSchedule
+      containers:
+      - env:
+        - name: FLUENT_UID
+          value: "0"
+        - name: FLUENTD_DAEMON_USER
+          value: root
+        - name: FLUENTD_DAEMON_GROUP
+          value: root
+        name: fluentd-elasticsearch
+        image: fluent/fluentd
+        securityContext:
+          fsGroup: 0
+          runAsUser: 0
+          privileged: true
+          seLinuxOptions:
+            type: spc_t
+        resources:
+          limits:
+            memory: 200Mi
+          requests:
+            cpu: 100m
+            memory: 200Mi
+        terminationMessagePath: /dev/termination-log
+        terminationMessagePolicy: File
+        volumeMounts:
+        - name: varlog
+          mountPath: /var/log/pods
+        - name: fluent-config
+          mountPath: /fluentd/etc/
+      terminationGracePeriodSeconds: 30
+      volumes:
+      - name: varlog
+        hostPath:
+          path: /var/log/pods
+      - name: fluent-config
+        configMap:
+          name: fluent-config

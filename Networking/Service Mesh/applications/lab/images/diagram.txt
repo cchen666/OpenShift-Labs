@@ -1,0 +1,51 @@
+URL: https://mermaid-js.github.io/mermaid-live-editor
+
+
+
+graph TD;
+    Client--> OpenShift_Route
+    OpenShift_Route-->Frontend_v1
+    Frontend_v1-->Backend_v1;
+    Frontend_v1-->Backend_v2;
+    Backend_v1-->|External App|https://httpbin.org/status/200
+    Backend_v2-->|External App|https://httpbin.org/delay/5
+
+graph TD;
+    Client--> OpenShift_Route
+    OpenShift_Route-->Frontend_v1
+    Frontend_v1-->|Weight 80%|Backend_v1;
+    Frontend_v1-->|Weight 20%|Backend_v2;
+    Backend_v1-->|External App|https://httpbin.org/status/200
+    Backend_v2-->|External App|https://httpbin.org/delay/5
+
+graph TD;
+    Client--> OpenShift_Route
+    OpenShift_Route-->Frontend_v1
+    Frontend_v1-->|Weight 50%|Backend_v1;
+    Frontend_v1-->|Weight 50%|Backend_v2;
+    Frontend_v1-->|Mirror Traffic|Backend_v3;
+    Backend_v1-->|External App|https://httpbin.org/status/200
+    Backend_v2-->|External App|https://httpbin.org/delay/5
+    Backend_v3-->http://localhost:8080/version
+
+graph TD;
+    Client--> OpenShift_Route
+    OpenShift_Route-->Frontend_v1
+    Frontend_v1-->|Weight 50% with timeout 3s|Backend_v1;
+    Frontend_v1-->|Weight 50% with timeout 3s|Backend_v2;
+    Backend_v1-->|External App|https://httpbin.org/status/200
+    Backend_v2-->|External App|https://httpbin.org/delay/5
+
+graph TD;
+    Client--> Istio_Ingress
+    Istio_Ingress-->|If header foo=bar|Frontend_v1
+    Istio_Ingress-->|If header foo!=bar|Frontend_v2
+    Frontend_v1-->Backend_v1;
+    Frontend_v2-->Backend_v1;
+    Backend_v1-->|External App|https://httpbin.org/status/200
+
+graph TD;
+    Client--> OpenShift_Route
+    OpenShift_Route-->Frontend_v1
+    Frontend_v1-->|Circuit Breaker and Pool Ejection|Backend_v1;
+    Backend_v1-->|External App|https://httpbin.org/status/200

@@ -1,0 +1,20 @@
+kind: SriovNetwork
+metadata:
+  name: sriov-intel
+  namespace: openshift-sriov-network-operator
+spec:
+  ipam: |
+    {
+      "type": "host-local",
+      "subnet": "10.72.51.0/27",
+      "rangeStart": "10.72.51.25",
+      "rangeEnd": "10.72.51.29",
+      "routes": [{
+        "dst": "0.0.0.0/0"
+      }],
+      "gateway": "10.72.51.30"
+    }
+  networkNamespace: test-sriov
+  resourceName: sriov_netdevice_enp130s0f0
+  spoofChk: "off"
+  vlan: 183

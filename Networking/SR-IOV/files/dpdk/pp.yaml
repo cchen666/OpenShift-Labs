@@ -1,0 +1,32 @@
+apiVersion: performance.openshift.io/v2
+kind: PerformanceProfile
+metadata:
+  name: cnf-performanceprofile
+spec:
+  additionalKernelArgs:
+    - nmi_watchdog=0
+    - audit=0
+    - mce=off
+    - processor.max_cstate=1
+    - idle=poll
+    - intel_idle.max_cstate=0
+    - default_hugepagesz=1GB
+    - hugepagesz=1G
+    - intel_iommu=on
+  cpu:
+    isolated: 4-31,36-63
+    reserved: 0-3,32-35
+  hugepages:
+    defaultHugepagesSize: 1G
+    pages:
+      - count: 16
+        node: 0
+        size: 1G
+      - count: 16
+        node: 1
+        size: 1G
+  nodeSelector:
+    node-role.kubernetes.io/master: ''
+  realTimeKernel:
+    enabled: false
+    globallyDisableIrqLoadBalancing: true

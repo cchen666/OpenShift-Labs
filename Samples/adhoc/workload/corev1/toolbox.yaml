@@ -1,0 +1,56 @@
+apiVersion: v1
+kind: Pod
+metadata:
+  name: toolbox
+  labels:
+    app: toolbox
+spec:
+  containers:
+  - name: toolbox
+    image: registry.redhat.io/rhel8/support-tools:latest
+    command: ['sh', '-c', 'echo The app is running! && sleep 3600000']
+    resources:
+      requests:
+        memory: "64Mi"
+        cpu: "250m"
+      limits:
+        memory: "64Mi"
+        cpu: "250m"
+
+---
+
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: toolbox
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: toolbox
+      version: v1
+  template:
+    metadata:
+      annotations:
+        sidecar.istio.io/inject: "true"
+        sidecar.istio.io/proxyCPU: 200m
+        sidecar.istio.io/proxyCPULimit: 1000m
+        sidecar.istio.io/proxyMemory: 512Mi
+        sidecar.istio.io/proxyMemoryLimit: 1200Mi
+      labels:
+        app: toolbox
+        version: v1
+    spec:
+      serviceAccountName: default
+      containers:
+      - image: registry.redhat.io/rhel8/support-tools:latest
+        imagePullPolicy: IfNotPresent
+        command: ['sh', '-c', 'echo The app is running! && sleep 3600000']
+        name: toolbox
+        resources:
+          requests:
+            memory: "64Mi"
+            cpu: "250m"
+          limits:
+            memory: "64Mi"
+            cpu: "250m"

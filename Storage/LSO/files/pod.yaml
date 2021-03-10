@@ -1,0 +1,18 @@
+apiVersion: v1
+kind: Pod
+metadata:
+  name: rhel7
+  labels:
+    app: rhel7
+spec:
+  containers:
+  - name: myapp-container
+    image: registry.access.redhat.com/ubi7/ubi
+    command: ['sh', '-c', 'echo The app is running! && sleep 3600']
+    volumeMounts:
+    - name: local-disks
+      mountPath: /data
+  volumes:
+    - name: local-disks
+      persistentVolumeClaim:
+        claimName: local-pvc-name

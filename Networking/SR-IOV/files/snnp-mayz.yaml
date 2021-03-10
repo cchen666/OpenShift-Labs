@@ -1,0 +1,18 @@
+apiVersion: sriovnetwork.openshift.io/v1
+kind: SriovNetworkNodePolicy
+metadata:
+  name: sriov-config-netdevice-enp130s0f0
+  namespace: openshift-sriov-network-operator
+spec:
+  deviceType: netdevice
+  isRdma: false
+  linkType: eth
+  mtu: 1500
+  nicSelector:
+    pfNames:
+    - enp130s0f0#0-7
+  nodeSelector:
+    feature.node.kubernetes.io/network-sriov.capable: "true"
+  numVfs: 8
+  priority: 50
+  resourceName: sriov_netdevice_enp130s0f0

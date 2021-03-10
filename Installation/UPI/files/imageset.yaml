@@ -1,0 +1,26 @@
+apiVersion: mirror.openshift.io/v1alpha2
+kind: ImageSetConfiguration
+storageConfig:
+  registry:
+    imageURL: bastion.ocp4.example.com:5000/oc-mirror
+    skipTLS: true
+mirror:
+  operators:
+    - catalog: registry.redhat.io/redhat/redhat-operator-index:v4.10
+      packages:
+        - name: ocs-operator
+          channels:
+            - name: stable-4.10
+          minVersion: '4.10.2'
+        - name: odf-operator
+          channels:
+            - name: stable-4.10
+          minVersion: '4.10.2'
+        - name: mcg-operator
+          channels:
+            - name: stable-4.10
+          minVersion: '4.10.2'
+        - name: odf-csi-addons-operator
+          channels:
+            - name: stable-4.10
+          minVersion: '4.10.2'

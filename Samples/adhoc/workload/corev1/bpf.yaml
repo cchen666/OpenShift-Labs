@@ -1,0 +1,29 @@
+apiVersion: v1
+kind: Pod
+metadata:
+  name: rhel8
+  labels:
+    app: rhel8
+spec:
+  containers:
+  - name: myapp-container
+    image: quay.io/cchenlp/bpf:v1.1
+    #command: ['sh', '-c', 'echo The app is running! && sleep 3600000']
+    securityContext:
+      capabilities:
+        add: ["NET_ADMIN", "NET_RAW", "NET_BIND_SERVICE","SYS_ADMIN","BPF","SYS_RESOURCE","PERFMON"]
+    volumeMounts:
+    - name: bpf-maps
+      mountPath: /sys/fs/bpf
+    - name: lib-modules
+      mountPath: /lib/modules
+  terminationGracePeriodSeconds: 5
+  volumes:
+  - name: bpf-maps
+    hostPath:
+      path: /sys/fs/bpf
+      type: DirectoryOrCreate
+  - name: lib-modules
+    hostPath:
+      path: /lib/modules
+      type: DirectoryOrCreate

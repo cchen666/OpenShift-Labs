@@ -1,0 +1,20 @@
+# OCP 4.11 and newer. Using this Pod no warning will get output and Pod will be using
+# restricted-v2 scc otherwise privileged will be used
+---
+apiVersion: v1
+kind: Pod
+metadata:
+  name: rhel7
+  labels:
+    app: rhel7
+spec:
+  containers:
+  - name: myapp-container
+    image: registry.access.redhat.com/ubi7/ubi
+    command: ['sh', '-c', 'echo The app is running! && sleep 3600']
+    securityContext:
+      allowPrivilegeEscalation: false
+      capabilities.drop: ["ALL"]
+      runAsNonRoot: true
+      seccompProfile:
+        type: RuntimeDefault

@@ -1,0 +1,23 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: toolbox
+spec:
+  replicas: 5
+  selector:
+    matchLabels:
+      app: toolbox
+      version: v1
+  template:
+    metadata:
+      labels:
+        app: toolbox
+        version: v1
+    spec:
+      serviceAccountName: default
+      containers:
+      - image: registry.redhat.io/rhel8/support-tools:latest
+        imagePullPolicy: IfNotPresent
+        command: ['sh', '-c', 'echo The app is running! && sleep 3600000']
+        name: toolbox
+      terminationGracePeriodSeconds: 5

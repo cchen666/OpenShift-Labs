@@ -1,0 +1,10 @@
+apiVersion: k8s.cni.cncf.io/v1
+kind: NetworkAttachmentDefinition
+metadata:
+  annotations:
+    k8s.v1.cni.cncf.io/resourceName: openshift.io/sriov_dpdk_ens4f0
+  name: dpdk-network-1
+  namespace: dpdk-test
+spec:
+  config: '{ "cniVersion":"0.3.1", "name":"dpdk-network-1","type":"sriov","vlan":0,"spoofchk":"on","trust":"on","vlanQoS":0,"ipam":{}
+    }'

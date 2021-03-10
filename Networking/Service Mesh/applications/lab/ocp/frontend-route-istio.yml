@@ -1,0 +1,15 @@
+apiVersion: v1
+kind: Route
+metadata:
+  name: frontend
+spec:
+  host: frontend.apps.SUBDOMAIN
+  port:
+    targetPort: http2
+  # tls:
+  #   termination: passthrough
+  to:
+    kind: Service
+    name: istio-ingressgateway
+    weight: 100
+  wildcardPolicy: None

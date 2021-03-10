@@ -1,0 +1,33 @@
+apiVersion: v1
+kind: PersistentVolume
+metadata:
+  name: iscsi-pv
+spec:
+  capacity:
+    storage: 1Gi
+  accessModes:
+    - ReadWriteOnce
+  volumeMode: Block
+  claimRef:
+    name: mariadb-binlog
+    namespace: storage-external
+  iscsi:
+     targetPortal: 192.168.51.40:3260
+     iqn: iqn.2021-10.com.example:server.disk1
+     lun: 0
+     initiatorName: iqn.2021-10.com.example:client-server.disk1
+
+---
+
+apiVersion: v1
+kind: PersistentVolumeClaim
+metadata:
+  name: mariadb-binlog
+  namespace: storage-external
+spec:
+  resources:
+    requests:
+      storage: 1Gi
+  accessModes:
+    - ReadWriteOnce
+  volumeMode: Block

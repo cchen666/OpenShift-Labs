@@ -1,0 +1,12 @@
+apiVersion: v1
+kind: Pod
+metadata:
+  name: test-quay
+  namespace: test-quay-image
+spec:
+  containers:
+    - name: web
+      image: example-registry-quay-quay-enterprise.apps.mycluster.nancyge.com/gcg-shift/pub/test-ping:1.0
+      command: ['sh', '-c', 'echo The app is running! && sleep 3600']
+  imagePullSecrets:
+    - name: quayadmin-pull-secret

@@ -1,0 +1,11 @@
+apiVersion: sriovnetwork.openshift.io/v1
+kind: SriovNetwork
+metadata:
+  name: dpdk-network-1
+  namespace: openshift-sriov-network-operator
+spec:
+  ipam: '{}'
+  networkNamespace: dpdk-test
+  resourceName: sriov_dpdk_ens4f0
+  spoofChk: "on"
+  trust: "on"

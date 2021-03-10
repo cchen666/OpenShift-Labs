@@ -1,0 +1,22 @@
+kind: BuildConfig
+apiVersion: build.openshift.io/v1
+metadata:
+  name: example-app
+spec:
+  source:
+    type: Git
+    git:
+      uri: 'https://github.com/sclorg/nodejs-ex.git'
+  strategy:
+    type: Source
+    sourceStrategy:
+      from:
+        kind: ImageStreamTag
+        name: 'nodejs-8-centos7:latest'
+  output:
+    to:
+      kind: ImageStreamTag
+      name: 'example-app:latest'
+  triggers:
+    - type: ConfigChange
+    - type: ImageChange

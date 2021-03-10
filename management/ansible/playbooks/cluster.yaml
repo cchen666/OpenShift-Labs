@@ -1,0 +1,10 @@
+###########################################################
+# Admin user configuration                                #
+###########################################################
+users:
+- username: cchen
+  password: redhat
+
+cluster_role_bindings:
+- username: cchen
+  cluster_role: cluster-admin

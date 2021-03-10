@@ -1,0 +1,48 @@
+apiVersion: maistra.io/v2
+kind: ServiceMeshControlPlane
+metadata:
+  name: basic
+spec:
+  version: v2.0
+  proxy:
+    accessLogging:
+      file:
+        encoding: TEXT
+        name: /dev/stdout
+  tracing:
+    type: Jaeger
+    sampling: 10000
+  policy:
+    type: Istiod
+  telemetry:
+    type: Istiod
+  addons:
+    jaeger:
+      install:
+        storage:
+          type: Memory
+    prometheus:
+      enabled: true
+    kiali:
+      enabled: true
+    grafana:
+      enabled: true
+    3scale:
+      enabled: false
+  security:
+    controlPlane:
+      mtls: false
+    dataPlane:
+      mtls: false
+  runtime:
+    defaults:
+      container:
+        resources:
+          requests:
+            cpu: 500m
+            memory: 50Mi
+            ephemeral-storage: 50Mi
+          limits:
+            cpu: 1000m
+            memory: 100Mi
+            ephemeral-storage: 50Mi

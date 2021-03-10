@@ -1,0 +1,46 @@
+apiVersion: v1
+kind: Pod
+metadata:
+  generateName: hugepages-volume-
+  labels:
+    app: hugepages-example
+spec:
+  containers:
+  - securityContext:
+      capabilities:
+        add: [ "IPC_LOCK" ]
+    image: rhel7:latest
+    command:
+    - sleep
+    - inf
+    name: example
+    volumeMounts:
+    - mountPath: /dev/hugepages
+      name: hugepage
+    - mountPath: /etc/podinfo
+      name: podinfo
+    resources:
+      limits:
+        cpu: 100m
+        hugepages-2Mi: 300Mi
+        memory: "400Mi"
+      requests:
+        hugepages-2Mi: 300Mi
+    env:
+    - name: REQUESTS_HUGEPAGES_2MI
+      valueFrom:
+        resourceFieldRef:
+          containerName: example
+          resource: requests.hugepages-2Mi
+            volumes:
+  - name: hugepage
+    emptyDir:
+      medium: HugePages
+  - name: podinfo
+    downwardAPI:
+      items:
+        - path: "hugepages_2M_request"
+          resourceFieldRef:
+            containerName: example
+            resource: requests.hugepages-2Mi
+            divisor: 1024Mi

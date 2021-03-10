@@ -1,0 +1,19 @@
+apiVersion: argoproj.io/v1alpha1
+kind: Application
+metadata:
+  name: test-network-policy
+  namespace: openshift-gitops
+spec:
+  destination:
+    namespace: test-ping
+    server: https://kubernetes.default.svc
+  project: default
+  source:
+    path: app
+    repoURL: https://github.com/cchen666/gitops/
+  syncPolicy:
+    automated:
+      prune: true
+      selfHeal: true
+    syncOptions:
+    - PrunePropagationPolicy=background

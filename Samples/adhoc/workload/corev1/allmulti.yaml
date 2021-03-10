@@ -1,0 +1,30 @@
+apiVersion: v1
+kind: Pod
+metadata:
+  name: rhel8
+  labels:
+    app: rhel8
+spec:
+  containers:
+  - name: myapp-container
+    image: quay.io/rhn_support_cchen/toolbox:v1.2
+    command: ['sh', '-c', 'echo The app is running! && sleep 36000000']
+    securityContext:
+      allowPrivilegeEscalation: false
+      capabilities:
+        drop: ["ALL"]
+      runAsNonRoot: true
+      seccompProfile:
+        type: RuntimeDefault
+  initContainers:
+  - name: init-allmulti
+    image: quay.io/rhn_support_cchen/toolbox:v1.2
+    command: ['sh', '-c', 'ifconfig eth0 allmulti']
+    securityContext:
+      capabilities:
+        add:
+          - IPC_LOCK
+          - SYS_RESOURCE
+          - NET_RAW
+          - NET_ADMIN
+      runAsUser: 0

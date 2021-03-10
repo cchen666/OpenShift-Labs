@@ -1,0 +1,17 @@
+apiVersion: networking.istio.io/v1alpha3
+kind: VirtualService
+metadata:
+  name: backend
+spec:
+  hosts:
+  - backend.USERID.svc.cluster.local
+  http:
+  - route:
+    - destination:
+        host: backend.USERID.svc.cluster.local
+        subset: v1
+      weight: 50
+    - destination:
+        host: backend.USERID.svc.cluster.local
+        subset: v2
+      weight: 50

@@ -1,0 +1,12 @@
+- name: Ansible k8s module example
+# Creating the namespace in the kubernete cluster
+  hosts: localhost
+# Defining the remote server where the k8 module will manage the objects
+  tasks:
+    - name: Create a k8s namespace
+      k8s:
+        name: ata-namespace # defining the namespace
+        api_version: v1
+        kind: Namespace
+        state: present    # State=present when you need to create new object
+

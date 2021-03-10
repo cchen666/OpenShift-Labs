@@ -1,0 +1,17 @@
+apiVersion: local.storage.openshift.io/v1
+kind: LocalVolume
+metadata:
+  name: local-pv
+  namespace: openshift-local-storage
+spec:
+  logLevel: Normal
+  managementState: Managed
+  storageClassDevices:
+  - devicePaths:
+    - /dev/dm-0
+    - /dev/dm-1
+    - /dev/dm-2
+    - /dev/dm-3
+    fsType: xfs
+    storageClassName: mysc
+    volumeMode: Filesystem

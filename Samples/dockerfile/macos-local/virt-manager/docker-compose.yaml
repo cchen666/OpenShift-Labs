@@ -1,0 +1,14 @@
+services:
+  virt-manager:
+    image: mber5/virt-manager:latest
+    restart: always
+    ports:
+      - 8185:80
+    environment:
+    # Set DARK_MODE to true to enable dark mode
+      # Substitute comma separated qemu connect strings, e.g.:
+      # HOSTS: "['qemu+ssh://user@host1/system', 'qemu+ssh://user@host2/system']"
+      HOSTS: "['qemu+ssh://root@dell-per430-35.gsslab.pek2.redhat.com/system']"
+    volumes:
+      # If not using password auth, substitute location of ssh private key, e.g.:
+      - /Users/cchen/.ssh/id_rsa:/root/.ssh/id_rsa:ro

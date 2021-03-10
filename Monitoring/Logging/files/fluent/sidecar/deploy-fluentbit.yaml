@@ -1,0 +1,60 @@
+kind: "DeploymentConfig"
+apiVersion: apps.openshift.io/v1
+metadata:
+  labels:
+    app: basic-app
+  name: basic-app
+spec:
+  replicas: 1
+  selector:
+    deploymentconfig: basic-app
+  strategy:
+    activeDeadlineSeconds: 21600
+    resources: {}
+    rollingParams:
+      intervalSeconds: 1
+      maxSurge: 25%
+      maxUnavailable: 25%
+      timeoutSeconds: 600
+      updatePeriodSeconds: 1
+    type: Rolling
+  template:
+    metadata:
+      labels:
+        name: basic-app
+        deploymentconfig: basic-app
+    spec:
+      containers:
+        - name: mainappcontainer
+          image: "python:3.6"
+          args:
+            - /bin/sh
+            - -c
+            - >
+              i=0;
+              while true;
+              do
+                echo "$i: $(date)"
+                i=$((i+1));
+                sleep 1;
+              done >> /var/applog/basic-app.log
+          volumeMounts:
+          - name: varlog
+            mountPath: /var/applog/
+        - name: shinysidecar
+          image: fluent/fluent-bit
+          args:
+            - /fluent-bit/bin/fluent-bit
+            - -c
+            - /fluentbit/etc/fluentbit.conf
+          volumeMounts:
+          - name: varlog
+            mountPath: /var/applog/
+          - name: config-volume
+            mountPath: /fluentbit/etc/
+      volumes:
+      - name: varlog
+        emptyDir: {}
+      - name: config-volume
+        configMap:
+          name: fluentbit-config

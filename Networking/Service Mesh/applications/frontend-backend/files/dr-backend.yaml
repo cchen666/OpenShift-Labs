@@ -1,0 +1,18 @@
+apiVersion: networking.istio.io/v1beta1
+kind: DestinationRule
+metadata:
+  name: backend
+spec:
+  host: backend.test-frontend-backend.svc.cluster.local
+  subsets:
+  - name: v1
+    trafficPolicy:
+      loadBalancer:
+        simple: ROUND_ROBIN
+    labels:
+      app: backend
+      version: v1
+  - name: v2
+    labels:
+      app: backend
+      version: v2

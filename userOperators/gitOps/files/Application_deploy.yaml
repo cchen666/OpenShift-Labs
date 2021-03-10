@@ -1,0 +1,19 @@
+apiVersion: argoproj.io/v1alpha1
+kind: Application
+metadata:
+  name: test-vpa-gitops
+  namespace: openshift-gitops
+spec:
+  destination:
+    namespace: test-vpa-gitops
+    server: https://kubernetes.default.svc
+  project: default
+  source:
+    path: deployment
+    repoURL: https://github.com/cchen666/gitops/
+  syncPolicy:
+    automated:
+      prune: true
+      selfHeal: true
+    syncOptions:
+    - PrunePropagationPolicy=background

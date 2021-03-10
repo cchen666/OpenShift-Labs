@@ -1,0 +1,25 @@
+apiVersion: v1
+kind: Pod
+metadata:
+  name: java
+  labels:
+    app: toolbox
+spec:
+  containers:
+  - name: toolbox
+    image: quay.io/chenchen/jdk-helloworld:v1.0
+    command: ["java","-Dserver.port=3333","-jar","/helloWorld.jar"]
+
+# apiVersion: v1
+# kind: Pod
+# metadata:
+#   name: java
+#   labels:
+#     app: toolbox
+# spec:
+#   containers:
+#   - name: toolbox
+#     image: quay.io/chenchen/jdk-helloworld:v1.0
+#     env:
+#     - name: JAVA_APP_JAR
+#       value: "/helloWorld.jar"

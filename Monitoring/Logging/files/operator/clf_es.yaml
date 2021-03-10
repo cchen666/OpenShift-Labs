@@ -1,0 +1,59 @@
+apiVersion: logging.openshift.io/v1
+kind: ClusterLogForwarder
+metadata:
+  name: instance
+  namespace: openshift-logging
+spec:
+  inputs:
+    - application:
+        namespaces:
+          - test-fluentdbit
+      name: myapp
+  outputs:
+    - name: remote-elasticsearch
+      type: elasticsearch
+      url: http://10.0.8.230:9200
+  pipelines:
+  - inputRefs:
+    - application
+    name: enable-default-log-store
+    outputRefs:
+    - default
+  - inputRefs:
+    - myapp
+    labels:
+      myLabel: myValue
+    name: forward-to-remote
+    outputRefs:
+    - remote-elasticsearch
+
+---
+apiVersion: logging.openshift.io/v1
+kind: ClusterLogForwarder
+metadata:
+  name: instance
+  namespace: openshift-logging
+spec:
+  inputs:
+    - application:
+        namespaces:
+          - test-fluentdbit
+      name: myapp
+  outputs:
+    - name: remote-elasticsearch
+      type: elasticsearch
+      url: http://10.0.8.230:9200
+  pipelines:
+  - inputRefs:
+    - application
+    name: enable-default-log-store
+    outputRefs:
+    - default
+  - inputRefs:
+    - myapp
+    labels:
+      myLabel: myValue
+    name: forward-to-remote
+    outputRefs:
+    - remote-elasticsearch
+~~~

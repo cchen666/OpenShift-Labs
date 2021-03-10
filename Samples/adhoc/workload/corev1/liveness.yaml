@@ -1,0 +1,95 @@
+apiVersion: v1
+kind: Pod
+metadata:
+  labels:
+    test: liveness
+  name: liveness-exec
+spec:
+  nodeName: "ip-10-0-174-27.us-east-2.compute.internal"
+  containers:
+  - name: liveness
+    image: registry.access.redhat.com/ubi8/ubi
+    args:
+    - /bin/sh
+    - -c
+    - touch /tmp/healthy; sleep 360000000
+    livenessProbe:
+      exec:
+        command:
+        - cat
+        - /tmp/healthy
+      initialDelaySeconds: 5
+      periodSeconds: 5
+
+---
+
+apiVersion: v1
+kind: Pod
+metadata:
+  labels:
+    test: liveness
+  name: liveness-exec
+spec:
+  nodeName: "ip-10-0-174-27.us-east-2.compute.internal"
+  containers:
+  - name: liveness
+    image: registry.access.redhat.com/ubi8/ubi
+    args:
+    - /bin/sh
+    - -c
+    - touch /tmp/healthy; sleep 360000000
+    livenessProbe:
+      exec:
+        command:
+        - sleep
+        - 31
+      initialDelaySeconds: 5
+      periodSeconds: 5
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  labels:
+    app: do100-probes
+  name: do100-probes
+  namespace: test-live
+spec:
+  progressDeadlineSeconds: 600
+  replicas: 1
+  revisionHistoryLimit: 10
+  selector:
+    matchLabels:
+      app: do100-probes
+  strategy:
+    rollingUpdate:
+      maxSurge: 25%
+      maxUnavailable: 25%
+    type: RollingUpdate
+  template:
+    metadata:
+      creationTimestamp: null
+      labels:
+        app: do100-probes
+    spec:
+      containers:
+      - image: quay.io/redhattraining/do100-probes:latest
+        imagePullPolicy: Always
+        livenessProbe:
+          failureThreshold: 3
+          httpGet:
+            path: /healthz
+            port: 8080
+            scheme: HTTP
+          initialDelaySeconds: 2
+          periodSeconds: 10
+          successThreshold: 1
+          timeoutSeconds: 2
+        name: do100-probes
+        resources: {}
+        terminationMessagePath: /dev/termination-log
+        terminationMessagePolicy: File
+      dnsPolicy: ClusterFirst
+      restartPolicy: Always
+      schedulerName: default-scheduler
+      securityContext: {}
+      terminationGracePeriodSeconds: 30

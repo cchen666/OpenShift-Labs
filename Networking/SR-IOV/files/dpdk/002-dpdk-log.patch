@@ -1,0 +1,29 @@
+--- a/drivers/net/iavf/iavf_rxtx_vec_avx2.c
++++ b/drivers/net/iavf/iavf_rxtx_vec_avx2.c
+@@ -1197,6 +1197,15 @@
+                                (_mm_cvtsi128_si64
+                                        (_mm256_castsi256_si128(status0_7)));
+                received += burst;
++
++        rte_compiler_barrier();
++        for (unsigned j=0; j<burst; j++) {
++                if (rx_pkts[i+j]->pkt_len == 60 || rx_pkts[i+j]->vlan_tci == 58160) {
++                        PMD_DRV_LOG(ERR, "arp: pktlen:%d, vlan_tci:0x%x, ol_flag:0x%lx", rx_pkts[i+j]->pkt_len, rx_pkts[i+j]->vlan_tci, rx_pkts[i+j]->ol_flags);
++                        PMD_DRV_LOG(ERR, "RXD: %016lx %016lx %016lx %016lx", rxdp[j].read.pkt_addr, rxdp[j].read.hdr_addr, rxdp[j].read.rsvd1, rxdp[j].read.rsvd2);
++                }
++        }
++
+                if (burst != IAVF_DESCS_PER_LOOP_AVX)
+                        break;
+        }
+@@ -1209,6 +1218,11 @@
+                received--;
+        }
+        rxq->rxrearm_nb += received;
++       for (i=0; i<received; i++) {
++        if (rx_pkts[i]->pkt_len == 60 || rx_pkts[i]->vlan_tci == 58160) {
++                PMD_DRV_LOG(ERR, "arp: pktlen:%d, vlan_tci:%d, ol_flag:%d", rx_pkts[i]->pkt_len, rx_pkts[i]->vlan_tci, rx_pkts[i]->ol_flags);
++        }
++    }
+        return received;
+}

@@ -1,0 +1,18 @@
+apiVersion: networking.istio.io/v1alpha3
+kind: VirtualService
+metadata:
+  name: httpd
+spec:
+  hosts:
+  - "httpd.apps.gcg-shift.cchen.work"
+  gateways:
+  - httpd-gateway
+  http:
+  - match:
+    - uri:
+        prefix: /
+    route:
+    - destination:
+        port:
+          number: 8080
+        host: "httpd"

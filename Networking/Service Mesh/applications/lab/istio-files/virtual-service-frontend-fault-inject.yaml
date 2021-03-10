@@ -1,0 +1,65 @@
+apiVersion: networking.istio.io/v1alpha3
+kind: VirtualService
+metadata:
+  name: frontend
+spec:
+  hosts:
+    - frontend-istio-USERID.apps.DOMAIN
+  gateways:
+    - USERID/frontend-gateway
+  http:
+    - match:
+        - headers:
+            User-Agent:
+              prefix: curl
+      route:
+        - destination:
+            host: frontend.USERID.svc.cluster.local
+            subset: v1
+          weight: 100
+        - destination:
+            host: frontend.USERID.svc.cluster.local
+            subset: v2
+          weight: 0
+    - fault:
+        abort:
+          httpStatus: 500
+          percentage:
+            value: 100
+        delay:
+          fixedDelay: 10s
+          percentage:
+            value: 100
+      match:
+        - headers:
+            User-Agent:
+              exact: foo-bar
+      route:
+        - destination:
+            host: frontend.USERID.svc.cluster.local
+            subset: v1
+          weight: 100
+        - destination:
+            host: frontend.USERID.svc.cluster.local
+            subset: v2
+          weight: 0
+    - route:
+        - destination:
+            host: frontend.USERID.svc.cluster.local
+            subset: v1
+          weight: 0
+        - destination:
+            host: frontend.USERID.svc.cluster.local
+            subset: v2
+          weight: 100
+
+
+
+  # http:
+  # - fault:
+  #     abort:
+  #       # Return HTTP 500 for every request
+  #       httpStatus: 500
+  #       percentage:
+  #         value: 100
+

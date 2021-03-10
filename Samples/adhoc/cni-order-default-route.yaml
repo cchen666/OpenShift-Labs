@@ -1,0 +1,37 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: ipvlan-pod
+  namespace: test-project
+  annotations:
+    k8s.v1.cni.cncf.io/networks: '[
+            {
+              "name": "ipvlan-test-project",
+              "ips": ["192.168.2.11/24"],
+              "default-route": ["192.168.2.10"]
+            }
+          ]'
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: app
+  template:
+    metadata:
+      labels:
+        app: app
+      annotations:
+        k8s.v1.cni.cncf.io/networks: '[
+                {
+                  "name": "ipvlan-test-project",
+                  "ips": ["192.168.2.11/24"],
+                  "default-route": ["192.168.2.10"]
+                }
+              ]'
+        sidecar.istio.io/inject: "true"
+    spec:
+      containers:
+      - name: ipvlan-pod-1
+        image: centos:latest
+        command: ["/sbin/init"]
+        imagePullPolicy: IfNotPresent

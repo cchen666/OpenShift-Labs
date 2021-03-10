@@ -1,0 +1,14 @@
+apiVersion: hco.kubevirt.io/v1beta1
+kind: HyperConverged
+metadata:
+  name: kubevirt-hyperconverged
+  namespace: openshift-cnv
+spec:
+  infra:
+    nodePlacement:
+      nodeSelector:
+        node-role.kubernetes.io/infra: ''
+  workloads:
+    nodePlacement:
+      nodeSelector:
+        node-role.kubernetes.io/worker: ''

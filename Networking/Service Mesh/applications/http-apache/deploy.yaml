@@ -1,0 +1,25 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: httpd
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: httpd
+      version: v1
+  template:
+    metadata:
+      annotations:
+        sidecar.istio.io/inject: "true"
+      labels:
+        app: httpd
+        version: v1
+    spec:
+      serviceAccountName: default
+      containers:
+      - image: registry.access.redhat.com/ubi8/httpd-24:latest
+        imagePullPolicy: IfNotPresent
+        name: httpd
+        ports:
+        - containerPort: 8080

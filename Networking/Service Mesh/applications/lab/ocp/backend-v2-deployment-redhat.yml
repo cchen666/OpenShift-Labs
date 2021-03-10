@@ -1,0 +1,47 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: backend-v2
+  annotations:
+    app.openshift.io/vcs-ref: master
+    app.openshift.io/vcs-uri: 'https://gitlab.com/ocp-demo/backend_quarkus.git'
+  labels:
+    app.kubernetes.io/component: backend
+    app.kubernetes.io/instance: backend
+    app.kubernetes.io/name: java
+    app.kubernetes.io/part-of: App-X
+    app.openshift.io/runtime: java
+    app.openshift.io/runtime-version: '8'
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: backend
+      version: v2
+  template:
+    metadata:
+      creationTimestamp: null
+      labels:
+        app: backend
+        version: v2
+      annotations:
+        sidecar.istio.io/inject: "true"
+    spec:
+      containers:
+      - name: backend
+        image: quay.io/voravitl/backend-native:v1
+        imagePullPolicy: Always
+        resources:
+          requests:
+            cpu: "0.05"
+            memory: 60Mi
+          limits:
+            cpu: "0.2"
+            memory: 120Mi
+        env:
+          - name: APP_BACKEND
+            value: https://www.redhat.com
+          - name: APP_VERSION
+            value: v2
+        ports:
+        - containerPort: 8080

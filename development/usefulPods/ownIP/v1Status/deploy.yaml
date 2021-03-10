@@ -1,0 +1,54 @@
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: toolbox
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: toolbox
+      version: v1
+  template:
+    metadata:
+      annotations:
+        sidecar.istio.io/inject: "true"
+      labels:
+        app: toolbox
+        deployment: toolbox
+        version: v1
+    spec:
+      serviceAccountName: default
+      containers:
+      - image: quay.io/rhn_support_cchen/ownip:v1
+        imagePullPolicy: IfNotPresent
+        name: toolbox
+        env:
+        - name: POD_IP
+          valueFrom:
+            fieldRef:
+              fieldPath: status.podIP
+
+---
+
+apiVersion: v1
+kind: Service
+metadata:
+  labels:
+    app: toolbox
+    app.kubernetes.io/component: toolbox
+  name: toolbox
+  namespace: test-ownip
+spec:
+  ipFamilies:
+  - IPv4
+  ipFamilyPolicy: SingleStack
+  ports:
+  - name: 8080-http
+    port: 8080
+    protocol: TCP
+    targetPort: 1323
+  selector:
+    deployment: toolbox
+  sessionAffinity: None
+  type: ClusterIP
