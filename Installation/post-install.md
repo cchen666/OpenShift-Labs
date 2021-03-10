@@ -1,4 +1,4 @@
-### How we can get the URL of the console
+#### 1. How we can get the console after installation
 
 ~~~
 oc get console.config.openshift.io cluster -o yaml
