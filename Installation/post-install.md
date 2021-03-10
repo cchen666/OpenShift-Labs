@@ -1,7 +1,7 @@
 #### 1. How we can get the console after installation
 
 ~~~
-oc get console.config.openshift.io cluster -o yaml
+$ oc get console.config.openshift.io cluster -o yaml
 apiVersion: config.openshift.io/v1
 kind: Console
 metadata:
