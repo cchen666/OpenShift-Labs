@@ -2,6 +2,13 @@
 ~~~
 $ oc get pods -n openshift-logging | grep elasticsearch
 ~~~
+* Check the Elasticsearch is in health state
+~~~
+$ oc exec elasticsearch-cdm-6900sppo-3-5bf78b6f6c-k5br7 -c elasticsearch -n openshift-logging -- health
+Thu Mar 18 08:37:00 UTC 2021
+epoch      timestamp cluster       status node.total node.data shards pri relo init unassign pending_tasks max_task_wait_time active_shards_percent
+1616056620 08:37:00  elasticsearch green           3         3    250 125    0    0        0             0                  -                100.0%
+~~~
 * Cat the indices
 ~~~
 $ oc exec elasticsearch-cdm-6900sppo-3-5bf78b6f6c-k5br7 -n openshift-logging  -- curl -s --cert /etc/elasticsearch/secret/admin-cert --key /etc/elasticsearch/secret/admin-key --cacert /etc/elasticsearch/secret/admin-ca https://localhost:9200/_cat/indices?v
