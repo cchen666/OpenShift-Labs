@@ -10,7 +10,8 @@ $ oc exec elasticsearch-cdm-6900sppo-3-5bf78b6f6c-k5br7 -n openshift-logging  --
 ~~~
 $ oc exec elasticsearch-cdm-6900sppo-3-5bf78b6f6c-k5br7 -n openshift-logging  -- curl -s --cert /etc/elasticsearch/secret/admin-cert --key /etc/elasticsearch/secret/admin-key --cacert /etc/elasticsearch/secret/admin-ca -XDELETE https://localhost:9200/.kibana*
 ~~~
-* Restart kibana
+* Restart Kibana
 ~~~
 $ oc delete pod kibana-8d956f7dd-k2dfv -n openshift-logging
 ~~~
+* Login to Kibana console and initialize
