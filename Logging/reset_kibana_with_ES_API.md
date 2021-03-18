@@ -15,3 +15,6 @@ $ oc exec elasticsearch-cdm-6900sppo-3-5bf78b6f6c-k5br7 -n openshift-logging  --
 $ oc delete pod kibana-8d956f7dd-k2dfv -n openshift-logging
 ~~~
 * Login to Kibana console and initialize
+~~~
+$ oc get route -n openshift-logging
+~~~
