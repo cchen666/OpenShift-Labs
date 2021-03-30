@@ -25,3 +25,10 @@ $ oc delete pod kibana-8d956f7dd-k2dfv -n openshift-logging
 ~~~
 $ oc get route -n openshift-logging
 ~~~
+* Another method to run ES command inside ES container
+~~~
+$ es_util --query="_flush/synced" -XPOST
+$ es_util --query=".kibana_1" -XDELETE
+$ es_util --query=".security" -XDELETE
+$ es_util --query="_flush/synced" -XPOST
+~~~
