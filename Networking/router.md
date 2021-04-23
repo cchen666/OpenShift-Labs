@@ -51,3 +51,4 @@ https://docs.openshift.com/container-platform/3.10/architecture/networking/route
 
 #### Router Sharding
 Multiple IngressController create multiple routers. By matching the label, the route will always bind to the routers that are created by the unique IngressController.
+https://access.redhat.com/solutions/4981211
