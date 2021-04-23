@@ -47,3 +47,7 @@ deploy-python-openshift-s2i-tutorial   10.128.2.122:8080,10.128.5.241:8080   73d
 
 #### Create TLS termination route
 https://docs.openshift.com/container-platform/3.10/architecture/networking/routes.html
+#### Use nodeselector to bind the router pods to worker nodes.
+
+#### Router Sharding
+Multiple IngressController create multiple routers. By matching the label, the route will always bind to the routers that are created by the unique IngressController.
