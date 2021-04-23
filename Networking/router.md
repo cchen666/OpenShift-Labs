@@ -49,9 +49,18 @@ deploy-python-openshift-s2i-tutorial   10.128.2.122:8080,10.128.5.241:8080   73d
 https://docs.openshift.com/container-platform/3.10/architecture/networking/routes.html
 #### Use nodeselector to bind the router pods to worker nodes.
 
-#### Router Sharding
+#### openshift-ingress operator configuration - Edit or add IngressController
 Multiple IngressController create multiple routers. By matching the label, the route will always bind to the routers that are created by the unique IngressController.
+~~~
+# oc project openshift-ingress-operator
+# oc edit ingresscontroller default # For example, change replica from 2 to 3 and you'll find 3 router-default pods Running
+# oc get pods -n openshift-ingress
 
+NAME                              READY   STATUS    RESTARTS   AGE
+router-default-8549f7c945-6tq7c   1/1     Running   0          39d
+router-default-8549f7c945-jctbv   1/1     Running   0          39d
+router-default-8549f7c945-mkhgb   1/1     Running   0          5m36s 
+~~~
 Configure Internal/External Ingress Controller sharding on an existing OpenShift 4.x cluster
 
 https://access.redhat.com/solutions/4981211
