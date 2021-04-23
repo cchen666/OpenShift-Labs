@@ -44,3 +44,6 @@ $ oc get ep
 NAME                                   ENDPOINTS                             AGE
 deploy-python-openshift-s2i-tutorial   10.128.2.122:8080,10.128.5.241:8080   73d
 ~~~
+
+#### Create TLS termination route
+https://docs.openshift.com/container-platform/3.10/architecture/networking/routes.html
