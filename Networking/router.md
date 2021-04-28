@@ -50,6 +50,9 @@ https://docs.openshift.com/container-platform/3.10/architecture/networking/route
 #### Use nodeselector to bind the router pods to worker nodes.
 
 #### openshift-ingress operator configuration - Edit or add IngressController
+
+https://docs.openshift.com/container-platform/4.6/networking/configuring_ingress_cluster_traffic/configuring-ingress-cluster-traffic-ingress-controller.html
+
 Multiple IngressController create multiple routers. By matching the label, the route will always bind to the routers that are created by the unique IngressController.
 ~~~
 # oc project openshift-ingress-operator
@@ -59,7 +62,7 @@ Multiple IngressController create multiple routers. By matching the label, the r
 NAME                              READY   STATUS    RESTARTS   AGE
 router-default-8549f7c945-6tq7c   1/1     Running   0          39d
 router-default-8549f7c945-jctbv   1/1     Running   0          39d
-router-default-8549f7c945-mkhgb   1/1     Running   0          5m36s 
+router-default-8549f7c945-mkhgb   1/1     Running   0          5m36s
 ~~~
 Configure Internal/External Ingress Controller sharding on an existing OpenShift 4.x cluster
 
