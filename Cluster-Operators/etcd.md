@@ -36,6 +36,13 @@ Rsh to healthy etcd pod and remove the unhealthy member.
 etcdctl member remove <member-id>
 Force etcd redeployment. That’s it, we are done.
 $ oc patch etcd cluster -p='{"spec": {"forceRedeploymentReason": "single-master-recovery-'"$( date --rfc-3339=ns )"'"}}' --type=merge
+
+
+****** Redeploy the Kubescheduler
+
+oc patch kubescheduler cluster -p='{"spec": {"forceRedeploymentReason": "recovery-'"$( date --rfc-3339=ns )"'"}}' --type=merge
+
+
 ~~~
 * Senario 2: 2 of 3 nodes are down
 ~~~
@@ -79,6 +86,9 @@ Once etcd is updated with latest version, we need to force a new rollout of kube
 ~~~
 * Senario 3: Replace 1 master node
 ~~~
+
+https://docs.openshift.com/container-platform/4.7/backup_and_restore/replacing-unhealthy-etcd-member.html#restore-replace-crashlooping-etcd-member_replacing-unhealthy-etcd-member
+
 One of the masters is not working or running or is beyond repair.
 Identify the unhealthy etcd member and delete it from etcd cluster.
 For IPI installation:
