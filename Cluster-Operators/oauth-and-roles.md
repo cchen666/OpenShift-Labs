@@ -16,6 +16,11 @@ Token-max-age
 ~~~
 Browser with Credentials -> OAuth -> Identity Provider -> Matched -> Pass Oauth -> Oauth returns token
 $ oc login -u -p --loglevel=10
+
+$ oc get oauth.config.openshift.io -o yaml
+$ oc adm inspect co authentication
+
+Case #02798430
 ~~~
 #### Get cluster roles "edit"
 ~~~

@@ -29,3 +29,12 @@ namespaces/openshift-machine-config-operator/pods/machine-config-controller/logs
 # omg use <quay-io-openshift-release-dev-ocp-v4.0-xxxxxxx>
 # omg get pods
 ~~~
+* 3. Check why nodes get rebooted
+~~~
+1. Locate machine-config-daemon log
+2. Search "Starting update from" keywords in MCD logs
+3. oc get mc rendered-old > old.yaml
+   oc get mc rendered-new > new.yaml
+   diff old.yaml new.yaml
+Case #02883889
+~~~

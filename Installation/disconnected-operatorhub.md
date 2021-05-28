@@ -1,0 +1,183 @@
+
+Internet <------> Workstation <------> Registry <------> OCP Cluster
+
+#### Set environment variables
+~~~
+# WORKSTATION_HOST=workstation.ocp.example.com
+# WORKSTATION_IP=10.0.81.187
+# REGISTRY_HOST=registry.ocp.example.com
+# REGISTRY_IP=10.0.138.30
+# NAMESPACE=olm-mirror
+~~~
+
+#### Create Registry CA and Certificate
+~~~
+# mkdir -p /etc/crts/ && cd /etc/crts/
+
+# htpasswd -bBc /opt/registry/auth/htpasswd cchen redhat
+
+# openssl genrsa -out /etc/crts/cert.ca.key 4096
+
+# openssl req -x509 \
+  -new -nodes \
+  -key /etc/crts/cert.ca.key \
+  -sha256 \
+  -days 36500 \
+  -out /etc/crts/cert.ca.crt \
+  -subj /CN="Local Red Hat Ren Signer" \
+  -reqexts SAN \
+  -extensions SAN \
+  -config <(cat /etc/pki/tls/openssl.cnf \
+      <(printf '[SAN]\nbasicConstraints=critical, CA:TRUE\nkeyUsage=keyCertSign, cRLSign, digitalSignature'))
+
+# openssl genrsa -out /etc/crts/cert.key 2048
+
+# openssl req -new -sha256 \
+    -key /etc/crts/cert.key \
+    -subj "/O=Local Cert/CN=$REGISTRY_HOST" \
+    -reqexts SAN \
+    -config <(cat /etc/pki/tls/openssl.cnf \
+        <(printf "\n[SAN]\nsubjectAltName=DNS:$REGISTRY_HOST,IP:$REGISTRY_IP\nbasicConstraints=critical, CA:FALSE\nkeyUsage=digitalSignature, keyEncipherment, keyAgreement, dataEncipherment\nextendedKeyUsage=serverAuth")) \
+    -out /etc/crts/cert.csr
+
+# openssl x509 \
+    -req \
+    -sha256 \
+    -extfile <(printf "subjectAltName=DNS:$REGISTRY_HOST,IP:$REGISTRY_IP\nbasicConstraints=critical, CA:FALSE\nkeyUsage=digitalSignature, keyEncipherment, keyAgreement, dataEncipherment\nextendedKeyUsage=serverAuth") \
+    -days 3650 \
+    -in /etc/crts/cert.csr \
+    -CA /etc/crts/cert.ca.crt \
+    -CAkey /etc/crts/cert.ca.key \
+    -CAcreateserial -out /etc/crts/cert.crt
+
+# openssl x509 -in /etc/crts/cert.crt -text
+
+# cp /etc/crts/cert.key  /opt/registry/certs/ocp4.example.com.key
+# cp /etc/crts/cert.crt  /opt/registry/certs/ocp4.example.com.crt
+
+# cp /opt/registry/certs/ocp4.example.com.crt /etc/pki/ca-trust/source/anchors/
+
+# update-ca-trust
+~~~
+
+#### Run the Registry container
+~~~
+# podman run --name mirror-registry -p 5000:5000 -v /opt/registry/data:/var/lib/registry:z -v /opt/registry/auth:/auth:z -e "REGISTRY_AUTH=htpasswd" -e "REGISTRY_AUTH_HTPASSWD_REALM=Registry Realm" -e REGISTRY_AUTH_HTPASSWD_PATH=/auth/htpasswd -v /opt/registry/certs:/certs:z -e REGISTRY_HTTP_TLS_CERTIFICATE=/certs/ocp4.example.com.crt -e REGISTRY_HTTP_TLS_KEY=/certs/ocp4.example.com.key -d docker.io/library/registry:2
+~~~
+#### Trust the CA in your workstation
+~~~
+# scp /etc/crts/cert.ca.crt $WORKSTATION_IP:/etc/pki/ca-trust/source/anchors/
+
+<Do this in your Workstation>
+
+# update-ca-trust extract
+podman login $REGISTRY_IP:5000
+~~~
+
+#### Disabling the default OperatorHub sources
+~~~
+oc patch OperatorHub cluster --type json \
+    -p '[{"op": "add", "path": "/spec/disableAllDefaultSources", "value": true}]'
+~~~
+
+#### Pruning an index image
+~~~
+$ podman login registry.redhat.io
+$ podman login $REGISTRY_IP:5000
+
+## In order to get the whole operator list, we start redhat-operator-index
+$ podman run -p50051:50051 \
+    -it registry.redhat.io/redhat/redhat-operator-index:v4.7
+
+<Open another terminal and gain the whole list>
+
+$ grpcurl -plaintext localhost:50051 api.Registry/ListPackages > packages.out
+
+$ opm index prune \
+    -f registry.redhat.io/redhat/redhat-operator-index:v4.7 \
+    -p advanced-cluster-management,jaeger-product,quay-operator,cluster-logging,elasticsearch-operator \
+    -t $REGISTRY_IP:5000/$NAMESPACE/redhat-operator-index:v4.7
+
+-f: index to prune
+-p: the included operators
+-t: Custom tag for new index image being built
+
+## Then push the new index image to Registry
+$ podman push $REGISTRY_IP:5000/$NAMESPACE/redhat-operator-index:v4.7
+~~~
+#### Mirroring an Operator catalog
+
+~~~
+Set environment variables
+$ REG_CREDS=${XDG_RUNTIME_DIR}/containers/auth.json
+~~~
+~~~
+## Mirror
+podman login $REGISTRY_IP:5000
+oc adm catalog mirror \
+    $REGISTRY_IP:5000/$NAMESPACE/redhat-operator-index:v4.7 \
+    $REGISTRY_IP:5000/$NAMESPACE \
+    -a ${REG_CREDS} \
+    --insecure \
+
+
+
+info: Mirroring completed in 34m59.01s (46.13MB/s)
+no digest mapping available for 10.0.138.30:5000/olm-mirror/redhat-operator-index:v4.7, skip writing to ImageContentSourcePolicy
+wrote mirroring manifests to manifests-redhat-operator-index-1622107696
+~~~
+
+
+#### Trust extra CA
+
+https://docs.openshift.com/container-platform/4.7/cicd/builds/setting-up-trusted-ca.html
+
+~~~
+$ oc create configmap registry-ca -n openshift-config --from-file=10.0.138.30..5000=/etc/pki/ca-trust/source/anchors/cert.ca.crt
+$ oc patch image.config.openshift.io/cluster --patch '{"spec":{"additionalTrustedCA":{"name":"registry-ca"}}}' --type=merge
+
+~~~
+
+#### Configure secrets for CatalogSource
+~~~
+$ oc create secret generic <secret_name> \
+    -n openshift-marketplace \
+    --from-file=.dockerconfigjson=<path/to/registry/credentials> \
+    --type=kubernetes.io/dockerconfigjson
+
+
+apiVersion: operators.coreos.com/v1alpha1
+kind: CatalogSource
+metadata:
+  name: my-operator-catalog
+  namespace: openshift-marketplace
+spec:
+  sourceType: grpc
+  secrets:
+  - "<secret_name_1>" <-----------
+  - "<secret_name_2>"
+  image: <registry>:<port>/<namespace>/<image>:<tag>
+  displayName: My Operator Catalog
+  publisher: <publisher_name>
+  updateStrategy:
+    registryPoll:
+      interval: 30m
+
+
+<Update global pull-secret; Required ?>
+
+$ oc extract secret/pull-secret -n openshift-config --confirm
+$ oc set data secret/pull-secret -n openshift-config \
+    --from-file=.dockerconfigjson=new_dockerconfigjson
+
+
+
+~~~
+
+
+
+#### Creating a catalog from an index image
+
+
+
+#### Updating an index image
