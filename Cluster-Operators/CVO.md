@@ -10,10 +10,15 @@
 
 * 6. An example of rebuilding the operator https://docs.google.com/document/d/1RUUVkj0Pa2xdAazghh0ghMXfLY4L28pKejTMecFdq1k/edit
 
-#### Get ClusterVersion
+#### Get ClusterVersion and release-image
 ~~~
 $ oc get clusterversion version -o yaml | grep desired -A 10
 $ oc get clusterversion -o jsonpath='{.status.desired.image}{"\n"}' version
+
+$ VER=$(oc get clusterversion version -o jsonpath='{.status.desired.image}')
+$ oc adm release extract --from=$VER --to=release-image
+
+$ ls release-image/*samples*
 ~~~
 #### Order of upgrade which is manifests from `release-image`
 ~~~

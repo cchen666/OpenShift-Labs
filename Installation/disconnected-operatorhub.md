@@ -12,6 +12,9 @@ Internet <------> Workstation <------> Registry <------> OCP Cluster
 
 #### Create Registry CA and Certificate
 ~~~
+# yum install -y podman httpd-tools
+
+# mkdir -p /opt/registry/{auth,certs,data}
 # mkdir -p /etc/crts/ && cd /etc/crts/
 
 # htpasswd -bBc /opt/registry/auth/htpasswd cchen redhat
@@ -138,7 +141,7 @@ $ oc patch image.config.openshift.io/cluster --patch '{"spec":{"additionalTruste
 
 ~~~
 
-#### Configure secrets for CatalogSource
+#### Configure secrets for CatalogSource and create CatalogSource (but seems no effect and we have to configure global secrets)
 ~~~
 $ oc create secret generic <secret_name> \
     -n openshift-marketplace \
@@ -174,10 +177,19 @@ $ oc set data secret/pull-secret -n openshift-config \
 
 ~~~
 
-
-
-#### Creating a catalog from an index image
-
-
-
 #### Updating an index image
+~~~
+Locate the bundle image and SHA256 that you want to add
+$ oc adm catalog mirror registry.redhat.io/redhat/redhat-operator-index:v4.7 abc -a auth.json --manifests-only
+$ grep ocs mapping.txt | grep bundle
+
+registry.redhat.io/ocs4/ocs-operator-bundle@sha256:70757ff902e868423ac3d46f7853d4931b8d0069357c68e1746f87643c67410f
+~~~
+~~~
+$ opm index add -b registry.redhat.io/ocs4/ocs-operator-bundle@sha256:70757ff902e868423ac3d46f7853d4931b8d0069357c68e1746f87643c67410f -f registry.mycluster.nancyge.com:5000/olm-mirror/redhat-operator-index:v4.7 -t registry.mycluster.nancyge.com:5000/olm-mirror/redhat-operator-index:v4.7 -p podman
+
+-b: the bundle that you want to add
+-f: --from-index, the pruned index or the official index you previously used
+-t: --tag, your registry+image+tag
+-p: podman/docker, this is required; otherwise you'll get "error resolving" error bug#1836881
+~~~
