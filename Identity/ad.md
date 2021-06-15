@@ -10,8 +10,14 @@ https://docs.microsoft.com/en-us/troubleshoot/windows-server/identity/export-roo
 ~~~
 https://directory.apache.org/studio/download/download-macosx.html
 ~~~
+#### Create bind user's secret file
+~~~
+$ oc create secret generic ldap-secret --from-literal=bindPassword='RedHat1!' -n openshift-config
+~~~
 #### Create OAuth yaml file
 ~~~
+
+
 apiVersion: config.openshift.io/v1
 kind: OAuth
 metadata:

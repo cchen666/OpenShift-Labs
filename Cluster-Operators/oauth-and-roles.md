@@ -51,3 +51,15 @@ $ oc scale dc/<DC> --replicas=3
 ~~~
 ####
 KCS 5636901 4985361
+#### HTPasswd
+~~~
+Get current htpasswd-secret
+
+$ oc extract secret/htpasswd-secret \ > -n openshift-config --confirm --to /tmp/
+
+$ htpasswd -D /tmp/htpasswd <user>
+
+Replace the htpasswd-secret
+
+$ oc set data secret/htpasswd-secret \ > -n openshift-config --from-file htpasswd=/tmp/htpasswd
+~~~

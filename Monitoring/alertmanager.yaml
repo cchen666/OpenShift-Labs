@@ -1,0 +1,29 @@
+oc extract secret/alertmanager-main --to /tmp/ \ > -n openshift-monitoring --confirm
+
+sed -i 's/"//g' /tmp/alertmanager.yaml
+
+global:
+  resolve_timeout: 5m smtp_smarthost: 192.168.50.254:25
+  smtp_from: alerts@ocp4.example.com
+  smtp_require_tls: false
+receivers:
+- name: default
+- name: email-notification
+email_configs:
+- to: ocp-admins@example.com
+route:
+group_by:
+- namespace
+  group_interval: 5m
+  group_wait: 30s
+receiver: default
+repeat_interval: 1m
+routes:
+- match:
+alertname: Watchdog receiver: default
+- match:
+severity: warning
+receiver: email-notification
+
+oc set data secret/alertmanager-main \
+> -n openshift-monitoring --from-file /tmp/alertmanager.yaml
