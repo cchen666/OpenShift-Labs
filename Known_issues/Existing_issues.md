@@ -18,6 +18,6 @@ oc wait co/authentication --for condition=Progressing
 
 oc diff -k
 
-oc explain
-
 nodeSelector empty ?
+
+oc get authentication.operator.openshift.io cluster -o yaml vs oc get authentication.config.openshift.io cluster -o yaml

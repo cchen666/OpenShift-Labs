@@ -3,10 +3,10 @@ Internet <------> Workstation <------> Registry <------> OCP Cluster
 
 #### Set environment variables
 ~~~
-# WORKSTATION_HOST=workstation.ocp.example.com
+# WORKSTATION_HOST=workstation.mycluster.nancyge.com
 # WORKSTATION_IP=10.0.81.187
-# REGISTRY_HOST=registry.ocp.example.com
-# REGISTRY_IP=10.0.138.30
+# REGISTRY_HOST=registry.mycluster.nancyge.com
+# REGISTRY_IP=10.0.38.3
 # NAMESPACE=olm-mirror
 ~~~
 
@@ -65,7 +65,7 @@ Internet <------> Workstation <------> Registry <------> OCP Cluster
 
 #### Run the Registry container
 ~~~
-# podman run --name mirror-registry -p 5000:5000 -v /opt/registry/data:/var/lib/registry:z -v /opt/registry/auth:/auth:z -e "REGISTRY_AUTH=htpasswd" -e "REGISTRY_AUTH_HTPASSWD_REALM=Registry Realm" -e REGISTRY_AUTH_HTPASSWD_PATH=/auth/htpasswd -v /opt/registry/certs:/certs:z -e REGISTRY_HTTP_TLS_CERTIFICATE=/certs/ocp4.example.com.crt -e REGISTRY_HTTP_TLS_KEY=/certs/ocp4.example.com.key -d docker.io/library/registry:2
+# podman run --name mirror-registry -p 5000:5000 -v /opt/registry/data:/var/lib/registry:z -v /opt/registry/auth:/auth:z -e "REGISTRY_AUTH=htpasswd" -e "REGISTRY_AUTH_HTPASSWD_REALM=Registry Realm" -e REGISTRY_AUTH_HTPASSWD_PATH=/auth/htpasswd -v /opt/registry/certs:/certs:z -e REGISTRY_HTTP_TLS_CERTIFICATE=/certs/registry.mycluster.nancyge.com.crt -e REGISTRY_HTTP_TLS_KEY=/certs/registry.mycluster.nancyge.com_key.key -d docker.io/library/registry:2
 ~~~
 #### Trust the CA in your workstation
 ~~~
@@ -90,23 +90,23 @@ $ podman login $REGISTRY_IP:5000
 
 ## In order to get the whole operator list, we start redhat-operator-index
 $ podman run -p50051:50051 \
-    -it registry.redhat.io/redhat/redhat-operator-index:v4.7
+    -it registry.redhat.io/redhat/redhat-operator-index:v4.6
 
 <Open another terminal and gain the whole list>
 
 $ grpcurl -plaintext localhost:50051 api.Registry/ListPackages > packages.out
 
 $ opm index prune \
-    -f registry.redhat.io/redhat/redhat-operator-index:v4.7 \
-    -p advanced-cluster-management,jaeger-product,quay-operator,cluster-logging,elasticsearch-operator \
-    -t $REGISTRY_IP:5000/$NAMESPACE/redhat-operator-index:v4.7
+    -f registry.redhat.io/redhat/redhat-operator-index:v4.6 \
+    -p advanced-cluster-management,jaeger-product,quay-operator,cluster-logging,elasticsearch-operator,serverless-operator \
+    -t $REGISTRY_IP:5000/$NAMESPACE/redhat-operator-index:v4.6
 
 -f: index to prune
 -p: the included operators
 -t: Custom tag for new index image being built
 
 ## Then push the new index image to Registry
-$ podman push $REGISTRY_IP:5000/$NAMESPACE/redhat-operator-index:v4.7
+$ podman push $REGISTRY_IP:5000/$NAMESPACE/redhat-operator-index:v4.6
 ~~~
 #### Mirroring an Operator catalog
 
@@ -118,7 +118,7 @@ $ REG_CREDS=${XDG_RUNTIME_DIR}/containers/auth.json
 ## Mirror
 podman login $REGISTRY_IP:5000
 oc adm catalog mirror \
-    $REGISTRY_IP:5000/$NAMESPACE/redhat-operator-index:v4.7 \
+    $REGISTRY_IP:5000/$NAMESPACE/redhat-operator-index:v4.6 \
     $REGISTRY_IP:5000/$NAMESPACE \
     -a ${REG_CREDS} \
     --insecure \
@@ -126,7 +126,7 @@ oc adm catalog mirror \
 
 
 info: Mirroring completed in 34m59.01s (46.13MB/s)
-no digest mapping available for 10.0.138.30:5000/olm-mirror/redhat-operator-index:v4.7, skip writing to ImageContentSourcePolicy
+no digest mapping available for 10.0.138.30:5000/olm-mirror/redhat-operator-index:v4.6, skip writing to ImageContentSourcePolicy
 wrote mirroring manifests to manifests-redhat-operator-index-1622107696
 ~~~
 
@@ -180,13 +180,13 @@ $ oc set data secret/pull-secret -n openshift-config \
 #### Updating an index image
 ~~~
 Locate the bundle image and SHA256 that you want to add
-$ oc adm catalog mirror registry.redhat.io/redhat/redhat-operator-index:v4.7 abc -a auth.json --manifests-only
+$ oc adm catalog mirror registry.redhat.io/redhat/redhat-operator-index:v4.6 abc -a auth.json --manifests-only
 $ grep ocs mapping.txt | grep bundle
 
 registry.redhat.io/ocs4/ocs-operator-bundle@sha256:70757ff902e868423ac3d46f7853d4931b8d0069357c68e1746f87643c67410f
 ~~~
 ~~~
-$ opm index add -b registry.redhat.io/ocs4/ocs-operator-bundle@sha256:70757ff902e868423ac3d46f7853d4931b8d0069357c68e1746f87643c67410f -f registry.mycluster.nancyge.com:5000/olm-mirror/redhat-operator-index:v4.7 -t registry.mycluster.nancyge.com:5000/olm-mirror/redhat-operator-index:v4.7 -p podman
+$ opm index add -b registry.redhat.io/ocs4/ocs-operator-bundle@sha256:70757ff902e868423ac3d46f7853d4931b8d0069357c68e1746f87643c67410f -f registry.mycluster.nancyge.com:5000/olm-mirror/redhat-operator-index:v4.6 -t registry.mycluster.nancyge.com:5000/olm-mirror/redhat-operator-index:v4.6 -p podman
 
 -b: the bundle that you want to add
 -f: --from-index, the pruned index or the official index you previously used

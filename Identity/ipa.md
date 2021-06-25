@@ -97,3 +97,37 @@ $ oc adm groups sync --whitelist=whitelist.txt --sync-config=sync.yaml
 $ oc adm groups sync --whitelist=whitelist.txt --sync-config=sync.yaml --confirm
 $ oc adm policy add-cluster-role-to-group cluster-admin ocp_admin
 ~~~
+#### Configure LDAPS
+~~~
+The location of IPA's CAcert is located in /etc/ipa/ca.crt
+
+$ oc create configmap ca-config-map --from-file=ca.crt=ca.crt -n openshift-config
+
+Verify the CA is working
+$ LDAPTLS_CACERT=ca.crt ldapsearch  -Z -H ldaps://ipa.mycluster.nancyge.com:636 -D "uid=binduser,cn=users,cn=accounts,dc=mycluster,dc=nancyge,dc=com" -w 'RedHat1!' -b "cn=users,cn=accounts,dc=mycluster,dc=nancyge,dc=com" uid
+
+$ oc edit oauth cluster
+
+spec:
+  identityProviders:
+  - ldap:
+      attributes:
+        email:
+        - mail
+        id:
+        - dn
+        name:
+        - cn
+        preferredUsername:
+        - uid
+      bindDN: uid=binduser,cn=users,cn=accounts,dc=mycluster,dc=nancyge,dc=com
+      bindPassword:
+        name: ldap-secret
+      ca:                        <=========
+        name: ca-config-map      <=========
+      insecure: false            <=========
+      url: ldaps://ipa.mycluster.nancyge.com:636/cn=users,cn=accounts,dc=mycluster,dc=nancyge,dc=com?uid <=========
+    mappingMethod: claim
+    name: ldapidp
+    type: LDAP
+~~~
