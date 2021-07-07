@@ -121,7 +121,7 @@ oc adm catalog mirror \
     $REGISTRY_IP:5000/$NAMESPACE/redhat-operator-index:v4.6 \
     $REGISTRY_IP:5000/$NAMESPACE \
     -a ${REG_CREDS} \
-    --insecure \
+    --insecure
 
 
 
@@ -186,7 +186,7 @@ $ grep ocs mapping.txt | grep bundle
 registry.redhat.io/ocs4/ocs-operator-bundle@sha256:70757ff902e868423ac3d46f7853d4931b8d0069357c68e1746f87643c67410f
 ~~~
 ~~~
-$ opm index add -b registry.redhat.io/ocs4/ocs-operator-bundle@sha256:70757ff902e868423ac3d46f7853d4931b8d0069357c68e1746f87643c67410f -f registry.mycluster.nancyge.com:5000/olm-mirror/redhat-operator-index:v4.6 -t registry.mycluster.nancyge.com:5000/olm-mirror/redhat-operator-index:v4.6 -p podman
+$ opm index add -b registry.redhat.io/ocs4/ocs-operator-bundle@sha256:70757ff902e868423ac3d46f7853d4931b8d0069357c68e1746f87643c67410f -f registry.mycluster.nancyge.com:5000/olm-mirror/redhat-operator-index:v4.6 -t registry.mycluster.nancyge.com:5000/olm-mirror/redhat-operator-index:v4.7 -p podman
 
 -b: the bundle that you want to add
 -f: --from-index, the pruned index or the official index you previously used

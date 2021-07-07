@@ -99,11 +99,14 @@ $ oc adm policy add-cluster-role-to-group cluster-admin ocp_admin
 ~~~
 #### Configure LDAPS
 ~~~
-The location of IPA's CAcert is located in /etc/ipa/ca.crt
+The location of IPA's CAcert is located in /etc/ipa/ca.crt; Copy it out
+
+Create a configmap based on the ca.crt we copied from IPA server.
 
 $ oc create configmap ca-config-map --from-file=ca.crt=ca.crt -n openshift-config
 
 Verify the CA is working
+
 $ LDAPTLS_CACERT=ca.crt ldapsearch  -Z -H ldaps://ipa.mycluster.nancyge.com:636 -D "uid=binduser,cn=users,cn=accounts,dc=mycluster,dc=nancyge,dc=com" -w 'RedHat1!' -b "cn=users,cn=accounts,dc=mycluster,dc=nancyge,dc=com" uid
 
 $ oc edit oauth cluster
