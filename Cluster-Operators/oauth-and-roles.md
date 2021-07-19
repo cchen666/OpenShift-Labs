@@ -63,3 +63,7 @@ Replace the htpasswd-secret
 
 $ oc set data secret/htpasswd-secret \ > -n openshift-config --from-file htpasswd=/tmp/htpasswd
 ~~~
+#### SCC
+~~~
+https://www.openshift.com/blog/managing-sccs-in-openshift
+~~~
