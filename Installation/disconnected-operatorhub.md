@@ -74,12 +74,12 @@ Internet <------> Workstation <------> Registry <------> OCP Cluster
 <Do this in your Workstation>
 
 # update-ca-trust extract
-podman login $REGISTRY_IP:5000
+$ podman login $REGISTRY_IP:5000
 ~~~
 
 #### Disabling the default OperatorHub sources
 ~~~
-oc patch OperatorHub cluster --type json \
+$ oc patch OperatorHub cluster --type json \
     -p '[{"op": "add", "path": "/spec/disableAllDefaultSources", "value": true}]'
 ~~~
 
@@ -115,33 +115,33 @@ Set environment variables
 $ REG_CREDS=${XDG_RUNTIME_DIR}/containers/auth.json
 ~~~
 ~~~
-## Mirror
-podman login $REGISTRY_IP:5000
-oc adm catalog mirror \
+Then run mirror command
+
+$ podman login $REGISTRY_IP:5000
+$ oc adm catalog mirror \
     $REGISTRY_IP:5000/$NAMESPACE/redhat-operator-index:v4.7 \
     $REGISTRY_IP:5000/$NAMESPACE \
     -a ${REG_CREDS} \
     --insecure
 
-
+<Sample output>
 
 info: Mirroring completed in 34m59.01s (46.13MB/s)
 no digest mapping available for 10.0.138.30:5000/olm-mirror/redhat-operator-index:v4.6, skip writing to ImageContentSourcePolicy
 wrote mirroring manifests to manifests-redhat-operator-index-1622107696
 ~~~
 
-
 #### Trust extra CA
 
 https://docs.openshift.com/container-platform/4.7/cicd/builds/setting-up-trusted-ca.html
 
 ~~~
-$ oc create configmap registry-ca -n openshift-config --from-file=10.0.138.30..5000=/etc/pki/ca-trust/source/anchors/cert.ca.crt
+$ oc create configmap registry-ca -n openshift-config --from-file=registry.mycluster.nancyge.com..5000=/etc/pki/ca-trust/source/anchors/cert.ca.crt
 $ oc patch image.config.openshift.io/cluster --patch '{"spec":{"additionalTrustedCA":{"name":"registry-ca"}}}' --type=merge
 
 ~~~
 
-#### Configure secrets for CatalogSource and create CatalogSource (but seems no effect and we
+#### Configure secrets
 ~~~
 $ oc extract secret/pull-secret -n openshift-config --confirm
 
@@ -151,11 +151,20 @@ $ oc set data secret/pull-secret -n openshift-config \
     --from-file=.dockerconfigjson=new_dockerconfigjson
 ~~~
 
+#### Create CatalogSource and ImageContentSourcePolicy
+~~~
+$ oc apply -f manifests-redhat-operator-index-1622107696/CatalogSource.yaml
+$ oc apply -f manifests-redhat-operator-index-1622107696/ImageContentSourcePolicy.yaml
+~~~
+
 #### Updating an index image
 ~~~
-Locate the bundle image and SHA256 that you want to add
+First locate the bundle image and SHA256 that you want to add
+
 $ oc adm catalog mirror registry.redhat.io/redhat/redhat-operator-index:v4.6 abc -a auth.json --manifests-only
 $ grep ocs mapping.txt | grep bundle
+
+In this case I want to add OCS operator
 
 registry.redhat.io/ocs4/ocs-operator-bundle@sha256:70757ff902e868423ac3d46f7853d4931b8d0069357c68e1746f87643c67410f
 ~~~
