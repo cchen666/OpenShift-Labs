@@ -97,16 +97,16 @@ $ podman run -p50051:50051 \
 $ grpcurl -plaintext localhost:50051 api.Registry/ListPackages > packages.out
 
 $ opm index prune \
-    -f registry.redhat.io/redhat/redhat-operator-index:v4.6 \
+    -f registry.redhat.io/redhat/redhat-operator-index:v4.7 \
     -p advanced-cluster-management,jaeger-product,quay-operator,cluster-logging,elasticsearch-operator,serverless-operator \
-    -t $REGISTRY_IP:5000/$NAMESPACE/redhat-operator-index:v4.6
+    -t $REGISTRY_IP:5000/$NAMESPACE/redhat-operator-index:v4.7
 
 -f: index to prune
 -p: the included operators
 -t: Custom tag for new index image being built
 
 ## Then push the new index image to Registry
-$ podman push $REGISTRY_IP:5000/$NAMESPACE/redhat-operator-index:v4.6
+$ podman push $REGISTRY_IP:5000/$NAMESPACE/redhat-operator-index:v4.7
 ~~~
 #### Mirroring an Operator catalog
 
@@ -118,7 +118,7 @@ $ REG_CREDS=${XDG_RUNTIME_DIR}/containers/auth.json
 ## Mirror
 podman login $REGISTRY_IP:5000
 oc adm catalog mirror \
-    $REGISTRY_IP:5000/$NAMESPACE/redhat-operator-index:v4.6 \
+    $REGISTRY_IP:5000/$NAMESPACE/redhat-operator-index:v4.7 \
     $REGISTRY_IP:5000/$NAMESPACE \
     -a ${REG_CREDS} \
     --insecure
@@ -141,40 +141,14 @@ $ oc patch image.config.openshift.io/cluster --patch '{"spec":{"additionalTruste
 
 ~~~
 
-#### Configure secrets for CatalogSource and create CatalogSource (but seems no effect and we have to configure global secrets)
+#### Configure secrets for CatalogSource and create CatalogSource (but seems no effect and we
 ~~~
-$ oc create secret generic <secret_name> \
-    -n openshift-marketplace \
-    --from-file=.dockerconfigjson=<path/to/registry/credentials> \
-    --type=kubernetes.io/dockerconfigjson
-
-
-apiVersion: operators.coreos.com/v1alpha1
-kind: CatalogSource
-metadata:
-  name: my-operator-catalog
-  namespace: openshift-marketplace
-spec:
-  sourceType: grpc
-  secrets:
-  - "<secret_name_1>" <-----------
-  - "<secret_name_2>"
-  image: <registry>:<port>/<namespace>/<image>:<tag>
-  displayName: My Operator Catalog
-  publisher: <publisher_name>
-  updateStrategy:
-    registryPoll:
-      interval: 30m
-
-
-<Update global pull-secret; Required ?>
-
 $ oc extract secret/pull-secret -n openshift-config --confirm
+
+<Edit .dockerconfigjson file, append your credentials and rename it to new_dockerconfigjson>
+
 $ oc set data secret/pull-secret -n openshift-config \
     --from-file=.dockerconfigjson=new_dockerconfigjson
-
-
-
 ~~~
 
 #### Updating an index image
