@@ -119,8 +119,8 @@ Then run mirror command
 
 $ podman login $REGISTRY_IP:5000
 $ oc adm catalog mirror \
-    $REGISTRY_IP:5000/$NAMESPACE/redhat-operator-index:v4.7 \
-    $REGISTRY_IP:5000/$NAMESPACE \
+    $REGISTRY_HOST:5000/$NAMESPACE/redhat-operator-index:v4.7 \
+    $REGISTRY_HOST:5000/$NAMESPACE \
     -a ${REG_CREDS} \
     --insecure
 

@@ -85,11 +85,13 @@ activeDirectory:
 groupUIDNameMapping:
     cn=ocp_support,cn=groups,cn=accounts,dc=mycluster,dc=nancyge,dc=com: ocp_support
     cn=ocp_admin,cn=groups,cn=accounts,dc=mycluster,dc=nancyge,dc=com: ocp_admin
+    cn=ocp_users,cn=groups,cn=accounts,dc=mycluster,dc=nancyge,dc=com: ocp_users    
 ~~~
 ~~~
 whitelist.txt
 cn=ocp_support,cn=groups,cn=accounts,dc=mycluster,dc=nancyge,dc=com
 cn=ocp_admin,cn=groups,cn=accounts,dc=mycluster,dc=nancyge,dc=com
+cn=ocp_users,cn=groups,cn=accounts,dc=mycluster,dc=nancyge,dc=com
 ~~~
 ~~~
 

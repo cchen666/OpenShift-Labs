@@ -115,10 +115,7 @@ https://datatracker.ietf.org/doc/html/rfc7636
 
 I0728 22:58:44.599854   13413 round_trippers.go:423] curl -k -v -XPOST  -H "Authorization: Basic b3BlbnNoaWZ0LWNoYWxsZW5naW5nLWNsaWVudDo=" -H "Content-Type: application/x-www-form-urlencoded" -H "Accept: application/json" 'https://oauth-openshift.apps.mycluster.nancyge.com/oauth/token'
 
-Method is POST oauth/token. I am suspecting the log missed some required parameters such as code_verifier, grant_types etc according to https://fusionauth.io/docs/v1/tech/oauth/endpoints/#token.
-
-
-
+Method is POST oauth/token. I am suspecting the log missed some required parameters such as code_verifier, grant_types etc according to https://fusionauth.io/docs/v1/tech/oauth/endpoints/#token ?
 
 
 ~~~
