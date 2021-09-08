@@ -9,6 +9,7 @@ https://github.com/etcd-io/etcd/tree/release-3.4/Documentation/faq.md
 ~~~
 #### Check performance
 * KCS solutions/4885641
+* https://access.redhat.com/solutions/4770281
 * Command
 ~~~
 $ oc rsh etcd-ip-10-0-130-137.us-east-2.compute.internal

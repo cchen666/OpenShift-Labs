@@ -8,7 +8,7 @@ metadata:
   labels:
     app: cronjob-ldap-group-sync
 
-EOF
+EOF  
 ~~~
 ~~~
 cat << EOF > cr.yaml
@@ -83,7 +83,7 @@ data:
         cn=ocp_admin,cn=groups,cn=accounts,dc=mycluster,dc=nancyge,dc=com: ocp_admin
         cn=ocp_users,cn=groups,cn=accounts,dc=mycluster,dc=nancyge,dc=com: ocp_users    
 
-EOF
+  EOF
 ~~~
 ~~~
 cat << EOF > cm_whitelist.yaml
@@ -100,7 +100,6 @@ data:
     cn=ocp_support,cn=groups,cn=accounts,dc=mycluster,dc=nancyge,dc=com
     cn=ocp_admin,cn=groups,cn=accounts,dc=mycluster,dc=nancyge,dc=com
     cn=ocp_users,cn=groups,cn=accounts,dc=mycluster,dc=nancyge,dc=com
-EOF
 ~~~
 ~~~
 cat << EOF > cronjob.yaml
@@ -158,5 +157,5 @@ spec:
           dnsPolicy: "ClusterFirst"
           serviceAccountName: "ldap-group-syncer"
           serviceAccount: "ldap-group-syncer"
-EOF
+
 ~~~

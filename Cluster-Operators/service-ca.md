@@ -25,6 +25,10 @@ Certificate:
 
 $ openssl s_client -connect registry.redhat.io:443 | openssl x509 -text
 $ curl -v https:// --cacert <certificate>
+
+In OCP:
+
+$ oc get secret -A -o json | jq -r '.items[] | select(.metadata.annotations."auth.openshift.io/certificate-not-after"!=null) | select(.metadata.name|test("-[0-9]+$")|not) | "\(.metadata.namespace) \(.metadata.name) \(.metadata.annotations."auth.openshift.io/certificate-not-after")"' | column -t
 ~~~
 #### Cert Types
 * User-Provided Api: service-ca cluster operator is responsible to create a CA and signs the cert. There can be alternative certs for Api. The cert is 30 days valid

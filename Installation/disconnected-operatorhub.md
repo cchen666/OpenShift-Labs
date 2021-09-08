@@ -6,7 +6,7 @@ Internet <------> Workstation <------> Registry <------> OCP Cluster
 # WORKSTATION_HOST=workstation.mycluster.nancyge.com
 # WORKSTATION_IP=10.0.81.187
 # REGISTRY_HOST=registry.mycluster.nancyge.com
-# REGISTRY_IP=10.0.38.3
+# REGISTRY_IP=registry.mycluster.nancyge.com (It can be resolved by DNS)
 # NAMESPACE=olm-mirror
 ~~~
 
@@ -119,8 +119,8 @@ Then run mirror command
 
 $ podman login $REGISTRY_IP:5000
 $ oc adm catalog mirror \
-    $REGISTRY_HOST:5000/$NAMESPACE/redhat-operator-index:v4.7 \
-    $REGISTRY_HOST:5000/$NAMESPACE \
+    $REGISTRY_IP:5000/$NAMESPACE/redhat-operator-index:v4.7 \
+    $REGISTRY_IP:5000/$NAMESPACE \
     -a ${REG_CREDS} \
     --insecure
 
