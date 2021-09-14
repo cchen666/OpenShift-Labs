@@ -1,17 +1,23 @@
 #### Election/Heartbeat Flow
-http://thesecretlivesofdata.com/
+<http://thesecretlivesofdata.com/>
+
 #### Official learning material
-https://github.com/etcd-io/etcd/tree/release-3.4/Documentation/learning
-https://github.com/etcd-io/etcd/tree/release-3.4/Documentation/faq.md
+<https://github.com/etcd-io/etcd/tree/release-3.4/Documentation/learning>
+<https://github.com/etcd-io/etcd/tree/release-3.4/Documentation/faq.md>
+
 #### Get all the keys
-~~~
+
+~~~bash
 # etcdctl get / --prefix --keys-only
 ~~~
+
 #### Check performance
+
 * KCS solutions/4885641
-* https://access.redhat.com/solutions/4770281
+* <https://access.redhat.com/solutions/4770281>
 * Command
-~~~
+
+~~~bash
 $ oc rsh etcd-ip-10-0-130-137.us-east-2.compute.internal
 Defaulting container name to etcdctl.
 Use 'oc describe pod/etcd-ip-10-0-130-137.us-east-2.compute.internal -n openshift-etcd' to see all of the containers in this pod.
@@ -21,16 +27,20 @@ PASS: Slowest request took 0.319075s
 PASS: Stddev is 0.011896s
 PASS
 ~~~
+
 #### Check health
-~~~
-$ etcdctl member list
-$ etcdctl endpoint health -w table
-$ etcdctl endpint status -w table
+
+~~~bash
+etcdctl member list
+etcdctl endpoint health -w table
+etcdctl endpint status -w table
 ~~~
 
 #### Recover etcd cluster
+
 * Senario 1: only 1 etcd node is down
-~~~
+
+~~~bash
 /etc/kubernetes/manifests/etcd-pod.yaml
 /var/lib/etcd/*
 Rsh to healthy etcd pod and remove the unhealthy member.
@@ -45,8 +55,10 @@ oc patch kubescheduler cluster -p='{"spec": {"forceRedeploymentReason": "recover
 
 
 ~~~
+
 * Senario 2: 2 of 3 nodes are down
-~~~
+
+~~~bash
 To reproduce this scenario I just moved the /var/lib/etcd/member on two masters so that two etcd pods will go down and etcd cluster will be read only as quorum is lost. No oc commands will work here.
 Interesting point to note here is that etcd on masters came up after some time. How ?
 The master on which etcd container was working fine sent the database snapshot to etcd on other two masters.
@@ -63,8 +75,10 @@ I think this happens when quorum is lost in the etcd cluster.
 If database snapshot is not sent by working etcd and cluster does not come back on its own then we need restore the etcd from snapshot.
 
 ~~~
+
 * Senario 2-1: Restore from snapshot
-~~~
+
+~~~bash
 
 Choose a master as recovery host and put the etcd backup in /home/core/
 
@@ -73,20 +87,22 @@ On other two masters, move /etc/kubernetes/manifests/etcd-pod.yaml and /var/lib/
 Export NO_PROXY, HTTP_PROXY, and HTTPS_PROXY environment variables if cluster-wide proxy is enabled in the cluster.
 
 On recovery master we need to run
-	$ sudo -E /usr/local/bin/cluster-restore.sh /home/core/backup
+ $ sudo -E /usr/local/bin/cluster-restore.sh /home/core/backup
 
 This will start single member etcd.
 
 Now we need to force etcd redeployment on masters so that full etcd cluster starts.
-	$ oc patch etcd cluster -p='{"spec": {"forceRedeploymentReason": "recovery-'"$( date --rfc-3339=ns )"'"}}' --type=merge
+ $ oc patch etcd cluster -p='{"spec": {"forceRedeploymentReason": "recovery-'"$( date --rfc-3339=ns )"'"}}' --type=merge
 
 Even if we do not force start etcd on masters, the single member etcd does send the snapshot file to other two master hosts, similar to 2 etcd pods down scenario.
 
 Once etcd is updated with latest version, we need to force a new rollout of kubeapiserver, kubecontrollermanager and kubescheduler.
 
 ~~~
+
 * Senario 3: Replace 1 master node
-~~~
+
+~~~bash
 
 https://docs.openshift.com/container-platform/4.7/backup_and_restore/replacing-unhealthy-etcd-member.html#restore-replace-crashlooping-etcd-member_replacing-unhealthy-etcd-member
 
@@ -108,8 +124,10 @@ Approve CSRs for new master.
 In case if api or controller or scheduler pod does not come up then we can force the redeploy it.
 
 ~~~
+
 * Senario 4: Replace 2 masters
-~~~
+
+~~~bash
 Here two masters are down or not running at all and we need to replace them.
 Etcd cluster will be in read only mode and no oc commands will work.
 Api and controller will also be down on the remaining master.
