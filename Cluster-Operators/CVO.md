@@ -1,3 +1,5 @@
+# Cluster Version Operator
+
 * 1. Operator is usually a pod with Go code running in it. It can either manage sub-component pods' lifecycle including installing, upgrading, or do its own work such as monitoring.
 
 * 2. Cluster Version Operator (CVO) generates cluster-wide operator called `cluster operator`. CVO is created or injected by the installer when the control plane was created.
@@ -8,20 +10,23 @@
 
 * 5. If you want to rebuild the operator, you need to set `unmanaged` in ClusterVersion.
 
-* 6. An example of rebuilding the operator https://docs.google.com/document/d/1RUUVkj0Pa2xdAazghh0ghMXfLY4L28pKejTMecFdq1k/edit
+* 6. An example of rebuilding the operator <https://docs.google.com/document/d/1RUUVkj0Pa2xdAazghh0ghMXfLY4L28pKejTMecFdq1k/edit>
 
 #### Get ClusterVersion and release-image
-~~~
-$ oc get clusterversion version -o yaml | grep desired -A 10
-$ oc get clusterversion -o jsonpath='{.status.desired.image}{"\n"}' version
 
-$ VER=$(oc get clusterversion version -o jsonpath='{.status.desired.image}')
-$ oc adm release extract --from=$VER --to=release-image
+~~~bash
+oc get clusterversion version -o yaml | grep desired -A 10
+oc get clusterversion -o jsonpath='{.status.desired.image}{"\n"}' version
 
-$ ls release-image/*samples*
+VER=$(oc get clusterversion version -o jsonpath='{.status.desired.image}')
+oc adm release extract --from=$VER --to=release-image
+
+ls release-image/*samples*
 ~~~
+
 #### Order of upgrade which is manifests from `release-image`
-~~~
+
+~~~bash
 $ oc project openshift-cluster-version
 $ oc get pods
 
@@ -54,7 +59,9 @@ total 4968
 -r--r--r--. 1 root root    142 Apr 15 14:34 0000_05_config-operator_02_build.cr.yaml
 
 ~~~
+
 #### Update graphical lab
-~~~
+
+~~~bash
 https://access.redhat.com/labs/ocpupgradegraph/update_channel
 ~~~
