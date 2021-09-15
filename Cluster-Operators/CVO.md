@@ -12,19 +12,19 @@
 
 * 6. An example of rebuilding the operator <https://docs.google.com/document/d/1RUUVkj0Pa2xdAazghh0ghMXfLY4L28pKejTMecFdq1k/edit>
 
-#### Get ClusterVersion and release-image
+## Get ClusterVersion and release-image
 
 ~~~bash
-oc get clusterversion version -o yaml | grep desired -A 10
-oc get clusterversion -o jsonpath='{.status.desired.image}{"\n"}' version
+$ oc get clusterversion version -o yaml | grep desired -A 10
+$ oc get clusterversion -o jsonpath='{.status.desired.image}{"\n"}' version
 
 VER=$(oc get clusterversion version -o jsonpath='{.status.desired.image}')
-oc adm release extract --from=$VER --to=release-image
+$ oc adm release extract --from=$VER --to=release-image
 
-ls release-image/*samples*
+$ ls release-image/*samples*
 ~~~
 
-#### Order of upgrade which is manifests from `release-image`
+## Order of upgrade which is manifests from `release-image`
 
 ~~~bash
 $ oc project openshift-cluster-version
@@ -44,7 +44,7 @@ total 60
 -rw-r--r--. 1 root root  5263 Apr 15 14:56 0000_90_cluster-version-operator_02_servicemonitor.yaml
 -rw-r--r--. 1 root root   565 Apr 15 14:56 0001_00_cluster-version-operator_03_service.yaml
 
-#### Other CO's manifests which will be applied in graphical order. This is retrieved from `release-image`
+# Other CO's manifests which will be applied in graphical order. This is retrieved from `release-image`
 
 sh-4.4# ls -l release-manifests/ | head -n 10
 total 4968
@@ -60,8 +60,7 @@ total 4968
 
 ~~~
 
-#### Update graphical lab
+## Update graphical lab
 
-~~~bash
 https://access.redhat.com/labs/ocpupgradegraph/update_channel
-~~~
+

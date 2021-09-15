@@ -1,17 +1,21 @@
-#### Election/Heartbeat Flow
+# ETCD
+
+## Election/Heartbeat Flow
+
 <http://thesecretlivesofdata.com/>
 
-#### Official learning material
+## Official learning material
+
 <https://github.com/etcd-io/etcd/tree/release-3.4/Documentation/learning>
 <https://github.com/etcd-io/etcd/tree/release-3.4/Documentation/faq.md>
 
-#### Get all the keys
+## Get all the keys
 
 ~~~bash
 # etcdctl get / --prefix --keys-only
 ~~~
 
-#### Check performance
+## Check performance
 
 * KCS solutions/4885641
 * <https://access.redhat.com/solutions/4770281>
@@ -28,7 +32,7 @@ PASS: Stddev is 0.011896s
 PASS
 ~~~
 
-#### Check health
+## Check health
 
 ~~~bash
 etcdctl member list
@@ -36,7 +40,7 @@ etcdctl endpoint health -w table
 etcdctl endpint status -w table
 ~~~
 
-#### Recover etcd cluster
+## Recover etcd cluster
 
 * Senario 1: only 1 etcd node is down
 

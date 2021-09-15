@@ -1,6 +1,7 @@
-#### Get current revision
-~~~
-# oc get kubeapiserver -o=jsonpath='{range .items[0].status.conditions[?(@.type=="NodeInstallerProgressing")]}{.reason}{"\n"}{.message}{"\n"}'
+## Get current revision
+
+~~~bash
+$ oc get kubeapiserver -o=jsonpath='{range .items[0].status.conditions[?(@.type=="NodeInstallerProgressing")]}{.reason}{"\n"}{.message}{"\n"}'
 
 Updating:
 
@@ -10,8 +11,9 @@ Update Done:
 AllNodesAtLatestRevision
 1 nodes are at revision 20
 ~~~
-#### Customize audit logging
-~~~
-https://access.redhat.com/solutions/5373481
-https://kubernetes.io/docs/tasks/debug-application-cluster/audit/
-~~~
+## Customize audit logging
+
+* [KCS](https://access.redhat.com/solutions/5373481)
+
+* [k8s official docs](https://kubernetes.io/docs/tasks/debug-application-cluster/audit/)
+
