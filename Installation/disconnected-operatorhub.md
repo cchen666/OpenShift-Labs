@@ -1,8 +1,10 @@
+# Disconnected Operatorhub
 
 Internet <------> Workstation <------> Registry <------> OCP Cluster
 
-#### Set environment variables
-~~~
+## Set environment variables
+
+~~~bash
 # WORKSTATION_HOST=workstation.mycluster.nancyge.com
 # WORKSTATION_IP=10.0.81.187
 # REGISTRY_HOST=registry.mycluster.nancyge.com
@@ -10,8 +12,9 @@ Internet <------> Workstation <------> Registry <------> OCP Cluster
 # NAMESPACE=olm-mirror
 ~~~
 
-#### Create Registry CA and Certificate
-~~~
+## Create Registry CA and Certificate
+
+~~~bash
 # yum install -y podman httpd-tools
 
 # mkdir -p /opt/registry/{auth,certs,data}
@@ -63,12 +66,15 @@ Internet <------> Workstation <------> Registry <------> OCP Cluster
 # update-ca-trust
 ~~~
 
-#### Run the Registry container
-~~~
+## Run the Registry container
+
+~~~bash
 # podman run --name mirror-registry -p 5000:5000 -v /opt/registry/data:/var/lib/registry:z -v /opt/registry/auth:/auth:z -e "REGISTRY_AUTH=htpasswd" -e "REGISTRY_AUTH_HTPASSWD_REALM=Registry Realm" -e REGISTRY_AUTH_HTPASSWD_PATH=/auth/htpasswd -v /opt/registry/certs:/certs:z -e REGISTRY_HTTP_TLS_CERTIFICATE=/certs/registry.mycluster.nancyge.com.crt -e REGISTRY_HTTP_TLS_KEY=/certs/registry.mycluster.nancyge.com_key.key -d docker.io/library/registry:2
 ~~~
-#### Trust the CA in your workstation
-~~~
+
+## Trust the CA in your workstation
+
+~~~bash
 # scp /etc/crts/cert.ca.crt $WORKSTATION_IP:/etc/pki/ca-trust/source/anchors/
 
 <Do this in your Workstation>
@@ -77,14 +83,16 @@ Internet <------> Workstation <------> Registry <------> OCP Cluster
 $ podman login $REGISTRY_IP:5000
 ~~~
 
-#### Disabling the default OperatorHub sources
-~~~
+## Disabling the default OperatorHub sources
+
+~~~bash
 $ oc patch OperatorHub cluster --type json \
     -p '[{"op": "add", "path": "/spec/disableAllDefaultSources", "value": true}]'
 ~~~
 
-#### Pruning an index image
-~~~
+## Pruning an index image
+
+~~~bash
 $ podman login registry.redhat.io
 $ podman login $REGISTRY_IP:5000
 
@@ -108,13 +116,15 @@ $ opm index prune \
 ## Then push the new index image to Registry
 $ podman push $REGISTRY_IP:5000/$NAMESPACE/redhat-operator-index:v4.7
 ~~~
-#### Mirroring an Operator catalog
 
-~~~
+## Mirroring an Operator catalog
+
+~~~bash
 Set environment variables
 $ REG_CREDS=${XDG_RUNTIME_DIR}/containers/auth.json
 ~~~
-~~~
+
+~~~bash
 Then run mirror command
 
 $ podman login $REGISTRY_IP:5000
@@ -131,18 +141,19 @@ no digest mapping available for 10.0.138.30:5000/olm-mirror/redhat-operator-inde
 wrote mirroring manifests to manifests-redhat-operator-index-1622107696
 ~~~
 
-#### Trust extra CA
+## Trust extra CA
 
-https://docs.openshift.com/container-platform/4.7/cicd/builds/setting-up-trusted-ca.html
+<https://docs.openshift.com/container-platform/4.7/cicd/builds/setting-up-trusted-ca.html>
 
-~~~
+~~~bash
 $ oc create configmap registry-ca -n openshift-config --from-file=registry.mycluster.nancyge.com..5000=/etc/pki/ca-trust/source/anchors/cert.ca.crt
+
 $ oc patch image.config.openshift.io/cluster --patch '{"spec":{"additionalTrustedCA":{"name":"registry-ca"}}}' --type=merge
-
 ~~~
 
-#### Configure secrets
-~~~
+## Configure secrets
+
+~~~bash
 $ oc extract secret/pull-secret -n openshift-config --confirm
 
 <Edit .dockerconfigjson file, append your credentials and rename it to new_dockerconfigjson>
@@ -151,14 +162,16 @@ $ oc set data secret/pull-secret -n openshift-config \
     --from-file=.dockerconfigjson=new_dockerconfigjson
 ~~~
 
-#### Create CatalogSource and ImageContentSourcePolicy
-~~~
+## Create CatalogSource and ImageContentSourcePolicy
+
+~~~bash
 $ oc apply -f manifests-redhat-operator-index-1622107696/CatalogSource.yaml
 $ oc apply -f manifests-redhat-operator-index-1622107696/ImageContentSourcePolicy.yaml
 ~~~
 
-#### Updating an index image
-~~~
+## Updating an index image
+
+~~~bash
 First locate the bundle image and SHA256 that you want to add
 
 $ oc adm catalog mirror registry.redhat.io/redhat/redhat-operator-index:v4.6 abc -a auth.json --manifests-only
@@ -168,7 +181,8 @@ In this case I want to add OCS operator
 
 registry.redhat.io/ocs4/ocs-operator-bundle@sha256:70757ff902e868423ac3d46f7853d4931b8d0069357c68e1746f87643c67410f
 ~~~
-~~~
+
+~~~bash
 $ opm index add -b registry.redhat.io/ocs4/ocs-operator-bundle@sha256:70757ff902e868423ac3d46f7853d4931b8d0069357c68e1746f87643c67410f -f registry.mycluster.nancyge.com:5000/olm-mirror/redhat-operator-index:v4.6 -t registry.mycluster.nancyge.com:5000/olm-mirror/redhat-operator-index:v4.7 -p podman
 
 -b: the bundle that you want to add
