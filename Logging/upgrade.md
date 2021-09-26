@@ -1,11 +1,12 @@
-#### From 4.X to 5.0/5.1
+# EFK Stack upgrade from 4.X to 5.0/5.1
 
-https://docs.openshift.com/container-platform/4.7/logging/cluster-logging-upgrading.html
+<https://docs.openshift.com/container-platform/4.7/logging/cluster-logging-upgrading.html>
 
 * Env: Disconnected OperatorHub
 * From: 4.6
 * To: 5.1
-~~~
+
+~~~bash
 # oc project openshift-logging
 Now using project "openshift-logging" on server "https://api.mycluster.nancyge.com:6443".
 [root@ip-10-0-40-92 manifests-redhat-operator-index-1631010012]# oc get csv
@@ -15,23 +16,26 @@ cert-utils-operator.v1.0.7                  Cert Utils Operator                1
 clusterlogging.4.6.0-202106021513           Cluster Logging                    4.6.0-202106021513                             Succeeded
 elasticsearch-operator.4.6.0-202106021513   OpenShift Elasticsearch Operator   4.6.0-202106021513                             Succeeded
 ~~~
-* Update the OperatorHub if it is disconnected environment
 
+## Optional: Update the OperatorHub if it is disconnected environment
+
+~~~bash
+# Specify related environments first 
+$ opm index prune     -f registry.redhat.io/redhat/redhat-operator-index:v4.8     -p cluster-logging,elasticsearch-operator     -t $REGISTRY_IP:5000/$NAMESPACE/redhat-operator-index:v4.8
+
+$ podman push $REGISTRY_IP:5000/$NAMESPACE/redhat-operator-index:v4.8
+
+$ oc adm catalog mirror     $REGISTRY_HOST:5000/$NAMESPACE/redhat-operator-index:v4.8     $REGISTRY_HOST:5000/$NAMESPACE     -a ${REG_CREDS}
+
+$ oc apply -f catalogSource.yaml
+$ oc apply -f imageContentSourcePolicy.yaml
 ~~~
-opm index prune     -f registry.redhat.io/redhat/redhat-operator-index:v4.8     -p cluster-logging,elasticsearch-operator     -t $REGISTRY_IP:5000/$NAMESPACE/redhat-operator-index:v4.8
 
-podman push $REGISTRY_IP:5000/$NAMESPACE/redhat-operator-index:v4.8
+## Update ElasticSearch Operator First to 5.1
 
-oc adm catalog mirror     $REGISTRY_HOST:5000/$NAMESPACE/redhat-operator-index:v4.7     $REGISTRY_HOST:5000/$NAMESPACE     -a ${REG_CREDS}
+ Navigate to console Operators -> Installed Operators -> ElasticSearch operator -> Edit Subscription Channel from 4.6 to 5.1 and operator will begin to upgrade automatically
 
-oc apply -f catalogSource.yaml
-oc apply -f imageContentSourcePolicy.yaml
-~~~
-
-* Update ElasticSearch operator First to 5.1
-
-* Navigate to console Operators -> Installed Operators -> ElasticSearch operator -> Edit Subscription Channel from 4.6 to 5.1 and operator will begin to upgrade automatically
-~~~
+~~~bash
 # oc get csv
 NAME                                DISPLAY                            VERSION              REPLACES                                    PHASE
 argocd-operator.v0.0.15             Argo CD                            0.0.15               argocd-operator.v0.0.14                     Succeeded
@@ -39,8 +43,10 @@ cert-utils-operator.v1.0.7          Cert Utils Operator                1.0.7    
 clusterlogging.4.6.0-202106021513   Cluster Logging                    4.6.0-202106021513                                               Succeeded
 elasticsearch-operator.5.1.1-36     OpenShift Elasticsearch Operator   5.1.1-36             elasticsearch-operator.4.6.0-202106021513
 ~~~
-* Then update Cluster Logging Operator to 5.1: the same steps with ElasticSearch Operator
-~~~
+
+## update Cluster Logging Operator to 5.1: the same steps with ElasticSearch Operator
+
+~~~bash
 # oc get csv -n openshift-logging
 NAME                                DISPLAY                            VERSION              REPLACES                                    PHASE
 argocd-operator.v0.0.15             Argo CD                            0.0.15               argocd-operator.v0.0.14                     Succeeded
