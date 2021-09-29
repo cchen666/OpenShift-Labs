@@ -160,6 +160,7 @@ backend machine-config-server
 	server  	master-2.mycluster.ocp.com 192.168.123.8:22623 check
 
 # setenforce 0
+# systemctl stop firewalld
 # systemctl restart haproxy
 ~~~
 
