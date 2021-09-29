@@ -201,3 +201,118 @@ done
 ~~~bash
 The 5 hosts should be discovered and assign 3 masters + 2 workers and then press Install
 ~~~
+
+## Post Install: Configure integrated image registry
+
+~~~bash
+# yum install nfs-utils -y
+
+# mkdir /home/imagepv
+# chown nobody:nobody /home/imagepv
+# chmod 777 /home
+# chmod 777 /home/imagepv
+
+# cat /etc/exports
+/home/imagepv    *(rw,sync,no_wdelay,no_root_squash,insecure,fsid=0)
+
+# cat pv.yaml
+
+apiVersion: v1
+kind: PersistentVolume
+metadata:
+  name: nfs-pv
+spec:
+  capacity:
+    storage: 500Gi
+  accessModes:
+    - ReadWriteMany
+  persistentVolumeReclaimPolicy: Retain
+  nfs:
+    path: /home/imagepv
+    server: 192.168.123.1
+
+# oc apply -f pv.yaml
+
+# oc edit configs.imageregistry.operator.openshift.io
+
+  managementState: Managed   <--------
+  observedConfig: null
+  operatorLogLevel: Normal
+  proxy: {}
+
+
+  storage:
+    managementState: Managed <--------
+    pvc:                     <--------
+      claim:                 <--------
+
+# oc new-app https://github.com/cchen666/openshift-flask
+
+~~~
+
+## Without using Haproxy
+
+The Assited Installer provides Keepalived (VIP) and Haproxy in openshift-kni-infra project.
+
+~~~bash
+
+# oc get pods
+NAME                  READY   STATUS    RESTARTS   AGE
+coredns-master-0      2/2     Running   2          18h
+coredns-master-1      2/2     Running   2          18h
+coredns-master-2      2/2     Running   2          18h
+coredns-worker-0      2/2     Running   2          18h
+coredns-worker-1      2/2     Running   2          18h
+haproxy-master-0      2/2     Running   2          18h
+haproxy-master-1      2/2     Running   6          18h
+haproxy-master-2      2/2     Running   2          18h
+keepalived-master-0   2/2     Running   2          18h
+keepalived-master-1   2/2     Running   2          18h
+keepalived-master-2   2/2     Running   2          18h
+keepalived-worker-0   2/2     Running   2          18h
+keepalived-worker-1   2/2     Running   2          18h
+
+If you don't want to use the Haproxy VM, you can update ocp-dev. In this environment, the API IP is 192.168.123.251, Ingress IP is 192.168.123.11.
+
+# virsh net-dumpxml ocp-dev
+<network xmlns:dnsmasq='http://libvirt.org/schemas/network/dnsmasq/1.0' connections='5'>
+  <name>ocp-dev</name>
+  <uuid>5e5f3fca-1bb0-4fb7-a875-1fd34a83713c</uuid>
+  <forward mode='nat'>
+    <nat>
+      <port start='1024' end='65535'/>
+    </nat>
+  </forward>
+  <bridge name='virbr1' stp='on' delay='0'/>
+  <mac address='52:54:00:f0:79:30'/>
+  <dns>
+    <host ip='192.168.123.251'>
+      <hostname>api.mycluster.ocp.com</hostname>
+    </host>
+  </dns>
+  <ip address='192.168.123.1' netmask='255.255.255.0'>
+    <dhcp>
+      <range start='192.168.123.2' end='192.168.123.254'/>
+      <host mac='02:01:00:00:00:50' name='node.mycluster.ocp.com' ip='192.168.123.5'/>
+      <host mac='02:01:00:00:00:60' name='master-0.mycluster.ocp.com' ip='192.168.123.6'/>
+      <host mac='02:01:00:00:00:61' name='master-1.mycluster.ocp.com' ip='192.168.123.7'/>
+      <host mac='02:01:00:00:00:62' name='master-2.mycluster.ocp.com' ip='192.168.123.8'/>
+      <host mac='02:01:00:00:00:70' name='worker-0.mycluster.ocp.com' ip='192.168.123.9'/>
+      <host mac='02:01:00:00:00:71' name='worker-1.mycluster.ocp.com' ip='192.168.123.10'/>
+    </dhcp>
+  </ip>
+  <dnsmasq:options>
+    <dnsmasq:option value='auth-server=mycluster.ocp.com,'/>
+    <dnsmasq:option value='auth-zone=mycluster.ocp.com'/>
+    <dnsmasq:option value='host-record=lb.mycluster.ocp.com,192.168.123.11'/>
+    <dnsmasq:option value='cname=*.apps.mycluster.ocp.com,lb.mycluster.ocp.com'/>
+  </dnsmasq:options>
+</network>
+
+# virsh net-destroy ocp-dev
+# virsh net-start ocp-dev
+# systemctl restart libvirtd
+
+Existing Issue: API is working but Ingress doesn't work
+
+~~~
