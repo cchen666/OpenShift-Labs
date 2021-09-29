@@ -3,7 +3,7 @@
 ## Create Libvirt Network on Host
 
 ~~~bash
-# cat << EOF > net.xml
+$ cat << EOF > net.xml
 <network xmlns:dnsmasq='http://libvirt.org/schemas/network/dnsmasq/1.0'>
   <name>ocp-dev</name>
   <uuid>5e5f3fca-1bb0-4fb7-a875-1fd34a83713c</uuid>
@@ -39,15 +39,15 @@
 </network>
 EOF
 
-# virsh define net.xml
-# virsh net-start ocp-dev
-# virsh net-autostart ocp-dev
+$ virsh define net.xml
+$ virsh net-start ocp-dev
+$ virsh net-autostart ocp-dev
 ~~~
 
 ## Navigate to assited installer console
 
 ~~~bash
-<https://console.redhat.com/openshift/assisted-installer/clusters/~new>
+https://console.redhat.com/openshift/assisted-installer/clusters/~new
 Cluster Name: mycluster
 Base Domain: ocp.com
 Next
@@ -58,7 +58,7 @@ Generate Discovery ISO -> Copy your hosts ssh public key -> Generate Discovery I
 
 ~~~bash
 
-virt-install -n ocp-haproxy \
+$ virt-install -n ocp-haproxy \
 --memory 1024 \
 --os-variant=fedora-coreos-stable \
 --vcpus=1  \
@@ -68,9 +68,9 @@ virt-install -n ocp-haproxy \
 --network network=ocp-dev,mac=02:01:00:00:00:50  \
 --cdrom rhel8u4.iso
 
-# yum install haproxy
+$ yum install haproxy
 
-# cat << EOF > /etc/haproxy/haproxy.cfg 
+$ cat << EOF > /etc/haproxy/haproxy.cfg 
 # Global settings
 #---------------------------------------------------------------------
 global
@@ -164,16 +164,16 @@ backend machine-config-server
 
 EOF
 
-# setenforce 0
-# systemctl stop firewalld
-# systemctl restart haproxy
+$ setenforce 0
+$ systemctl stop firewalld
+$ systemctl restart haproxy
 ~~~
 
 ## Install master and worker VMs
 
 ~~~bash
-IMAGE=/home/sno/images/<image.iso>
-for i in 0 1 2; do
+$ IMAGE=/home/sno/images/<image.iso>
+$ for i in 0 1 2; do
 virt-install -n ocp-master-$i \
 --memory 16384 \
 --os-variant=fedora-coreos-stable \
@@ -185,8 +185,8 @@ virt-install -n ocp-master-$i \
 --cdrom $IMAGE &
 done
 
-IMAGE=/home/sno/images/<image.iso>
-for i in 0 1; do
+$ IMAGE=/home/sno/images/<image.iso>
+$ for i in 0 1; do
 virt-install -n ocp-worker-$i \
 --memory 8192 \
 --os-variant=fedora-coreos-stable \
@@ -201,7 +201,7 @@ done
 
 ## Kick off the Installation in Assited Installer Console
 
-~~~bash
+~~~text
 The 5 hosts should be discovered and assign 3 masters + 2 workers and then press Install
 Important: Keep note of API VIP Address and Ingress VIP Address
 ~~~
@@ -214,7 +214,7 @@ Important: Keep note of API VIP Address and Ingress VIP Address
 * Update the ocp-dev to reflect API and Ingress VIP. You get these addresses in Assisted Installer Console
 
 ~~~bash
-# virsh net-edit ocp-dev
+$ virsh net-edit ocp-dev
 <Snip>
 
   <dns>
@@ -234,25 +234,25 @@ Important: Keep note of API VIP Address and Ingress VIP Address
 
 <Snip>
 
-# virsh net-destroy ocp-dev
-# virsh net-start ocp-dev
-# systemctl restart libvirtd
+$ virsh net-destroy ocp-dev
+$ virsh net-start ocp-dev
+$ systemctl restart libvirtd
 ~~~
 
 ### Configure Integrated Image Registry by Using Host NFS
 
 ~~~bash
-# yum install nfs-utils -y
+$ yum install nfs-utils -y
 
-# mkdir /home/imagepv
-# chown nobody:nobody /home/imagepv
-# chmod 777 /home
-# chmod 777 /home/imagepv
+$ mkdir /home/imagepv
+$ chown nobody:nobody /home/imagepv
+$ chmod 777 /home
+$ chmod 777 /home/imagepv
 
-# cat /etc/exports
+$ cat /etc/exports
 /home/imagepv    *(rw,sync,no_wdelay,no_root_squash,insecure,fsid=0)
 
-# cat pv.yaml
+$ cat << EOF > pv.yaml
 
 apiVersion: v1
 kind: PersistentVolume
@@ -268,9 +268,11 @@ spec:
     path: /home/imagepv
     server: 192.168.123.1
 
-# oc apply -f pv.yaml
+EOF
 
-# oc edit configs.imageregistry.operator.openshift.io
+$ oc apply -f pv.yaml
+
+$ oc edit configs.imageregistry.operator.openshift.io
 
   managementState: Managed   <--------
   observedConfig: null
@@ -283,9 +285,9 @@ spec:
     pvc:                     <--------
       claim:                 <--------
 
-# oc new-app https://github.com/cchen666/openshift-flask
-# oc expose svc/openshift-flask
-# curl openshift-flask-test-1.apps.mycluster.ocp.com
+$ oc new-app https://github.com/cchen666/openshift-flask
+$ oc expose svc/openshift-flask
+$ curl openshift-flask-test-1.apps.mycluster.ocp.com
 <!DOCTYPE html>
 <html lang="en" dir="ltr">
   <head>
@@ -304,7 +306,7 @@ spec:
 
 ~~~bash
 
-# oc get pods
+$ oc get pods
 NAME                  READY   STATUS    RESTARTS   AGE
 coredns-master-0      2/2     Running   2          18h
 coredns-master-1      2/2     Running   2          18h
@@ -320,9 +322,9 @@ keepalived-master-2   2/2     Running   2          18h
 keepalived-worker-0   2/2     Running   2          18h
 keepalived-worker-1   2/2     Running   2          18h
 
-# oc project openshift-kni-infra
-# oc rsh keepalived-master-0
-# grep virtual_ipaddress /etc/keepalived/keepalived.conf -A2
+$ oc project openshift-kni-infra
+$ oc rsh keepalived-master-0
+$ grep virtual_ipaddress /etc/keepalived/keepalived.conf -A2
     virtual_ipaddress {
         192.168.123.251/32
     }
@@ -330,12 +332,12 @@ keepalived-worker-1   2/2     Running   2          18h
     virtual_ipaddress {
         192.168.123.11/32
     }
-# exit
+$ exit
 
 * API:
 
-# oc rsh haproxy-master-0
-# cat /etc/haproxy/haproxy.cfg
+$ oc rsh haproxy-master-0
+$ cat /etc/haproxy/haproxy.cfg
 
 backend masters
    option  httpchk GET /readyz HTTP/1.0
@@ -347,16 +349,14 @@ backend masters
 
 * Ingress:
 
-# ssh core@192.168.123.9
+$ ssh core@192.168.123.9
 [root@worker-0 ~]# ip a | grep 192
     inet 192.168.123.9/24 brd 192.168.123.255 scope global dynamic noprefixroute enp1s0
     inet 192.168.123.11/32 scope global enp1s0
 
-# oc get pods -o wide -n openshift-ingress
+$ oc get pods -o wide -n openshift-ingress
 NAME                              READY   STATUS    RESTARTS   AGE   IP               NODE       NOMINATED NODE   READINESS GATES
 router-default-6fbdd9cfcf-x8ccv   1/1     Running   3          19h   192.168.123.10   worker-1   <none>           <none>
 router-default-6fbdd9cfcf-zj58k   1/1     Running   2          19h   192.168.123.9    worker-0   <none>           <none>
 [root@dell-per430-35 ~]# 
-
-
 ~~~
