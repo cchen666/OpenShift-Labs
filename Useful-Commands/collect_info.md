@@ -74,3 +74,133 @@ done
 EOF
 bash collect-sriov-operator-data.sh | tee collect-sriov-operator-data.txt
 ~~~
+
+## Quick method to collect sosreport
+
+<https://gitlab.cee.redhat.com/-/snippets/4308>
+
+sos pod yaml
+
+~~~ yaml
+apiVersion: v1
+kind: Pod
+metadata:
+  name: sos-collector
+  labels:
+    name: sosreport-container
+spec:
+  hostNetwork: true
+  nodeName: "NODE NAME"   ## TODO: Template or Change
+  hostPID: true
+  restartPolicy: Never
+  priorityClassName: "system-cluster-critical"
+  tolerations:
+  - key: node-role.kubernetes.io/master
+    operator: "Equal"
+    effect: "NoExecute"
+    tolerationSeconds: 3600
+  - key: node-role.kubernetes.io/master
+    operator: "Equal"
+    effect: "NoSchedule"
+  containers:
+  - name: sos-extractor
+    image: registry.redhat.io/rhel8/support-tools
+    command: ["/bin/bash", "-c", "trap : TERM INT; sleep infinity & wait"]
+    volumeMounts:
+    - mountPath: /tmp/sos-data
+      name: sos-data
+  initContainers:
+  - name: sos-collector
+    image: registry.redhat.io/rhel8/support-tools
+    command: ["sosreport", "-s", "/host", "--tmp-dir", "/tmp/sos-data", "-c", "always", "--batch", "-v"]
+    securityContext:
+      runAsUser: 0
+      privileged: True
+    volumeMounts:
+    - mountPath: /host
+      name: host-volume
+    - mountPath: /tmp/sos-data
+      name: sos-data
+  volumes:
+  - name: host-volume
+    hostPath:
+      path: /
+      type: Directory
+  - name: sos-data
+    emptyDir: {}
+~~~
+
+sos pod template yaml
+
+~~~ yaml
+apiVersion: v1
+kind: Template
+metadata:
+  name: sosreport-template
+  annotations:
+    description: "Description"
+    iconClass: "life-ring"
+    tags: "support-tool,sosreport"
+objects:
+- apiVersion: v1
+  kind: Pod
+  metadata:
+    name: sos-collector
+    labels:
+      name: sosreport-container
+  spec:
+    hostNetwork: true
+    nodeName: ${NODE_NAME}
+    hostPID: true
+    restartPolicy: Never
+    priorityClassName: "system-cluster-critical"
+    tolerations:
+    - key: node-role.kubernetes.io/master
+      operator: "Equal"
+      effect: "NoExecute"
+      tolerationSeconds: 3600
+    - key: node-role.kubernetes.io/master
+      operator: "Equal"
+      effect: "NoSchedule"
+    containers:
+    - name: sos-extractor
+      image: registry.redhat.io/rhel8/support-tools
+      command: ["/bin/bash", "-c", "trap : TERM INT; sleep infinity & wait"]
+      volumeMounts:
+      - mountPath: /tmp/sos-data
+        name: sos-data
+    initContainers:
+    - name: sos-collector
+      image: registry.redhat.io/rhel8/support-tools
+      command: ["sosreport", "-s", "/host", "--tmp-dir", "/tmp/sos-data", "-c", "always", "--batch", "-v"]
+      securityContext:
+        runAsUser: 0
+        privileged: True
+      volumeMounts:
+      - mountPath: /host
+        name: host-volume
+      - mountPath: /tmp/sos-data
+        name: sos-data
+    volumes:
+    - name: host-volume
+      hostPath:
+        path: /
+        type: Directory
+    - name: sos-data
+      emptyDir: {}
+parameters:
+- description: "Node Name to collect the sosreport on."
+  name: NODE_NAME
+  required: true
+~~~
+
+~~~bash
+$ oc get template
+NAME                 DESCRIPTION   PARAMETERS    OBJECTS
+sosreport-template   Description   1 (all set)   1
+$ oc process --parameters sosreport-template
+NAME                DESCRIPTION                              GENERATOR           VALUE
+NODE_NAME           Node Name to collect the sosreport on.
+$ oc process sosreport-template -p NODE_NAME=master-0 | oc apply -f -
+
+~~~
