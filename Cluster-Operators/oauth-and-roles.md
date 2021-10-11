@@ -1,9 +1,14 @@
-####
-~~~
+# OAuth and Roles
+
+## Get oauth CR
+
+~~~bash
 $ oc get oauth cluster -o yaml
 ~~~
-#### Change token expiration
-~~~
+
+## Change token expiration
+
+~~~bash
 OAuthClient:
 
 RedirectURI
@@ -12,8 +17,10 @@ Token-max-age
  tokenConfig:
                 accessTokenMaxAgeSeconds: 172800
 ~~~
-#### Authentication Flow
-~~~
+
+## Authentication Flow
+
+~~~bash
 Browser with Credentials -> OAuth -> Identity Provider -> Matched -> Pass Oauth -> Oauth returns token
 $ oc login -u -p --loglevel=10
 
@@ -22,12 +29,15 @@ $ oc adm inspect co authentication
 
 Case #02798430
 ~~~
-#### Get cluster roles "edit"
-~~~
+
+## Get cluster roles "edit"
+
+~~~bash
 $ oc get clusterroles edit -o yaml
 $ oc describe clusterrole.rbac
 ~~~
-~~~
+
+~~~bash
 $ oc get clusterrolebindings cluster-autoscaler -o yaml
 roleRef:
   apiGroup: rbac.authorization.k8s.io
@@ -38,21 +48,29 @@ subjects:
   name: cluster-autoscaler
   namespace: openshift-machine-api
 ~~~
-#### Add role
-~~~
+
+## Add role
+
+~~~bash
 $ oc adm policy add-role-to-user
 $ oc adm policy who-can get nodes
 ~~~
-#### ServiceAccount login
-~~~
+
+## ServiceAccount login
+
+~~~bash
 $ oc sa get-token <SA>
 $ oc login --token=<Token>
 $ oc scale dc/<DC> --replicas=3
 ~~~
-####
+
+## Known Issues
+
 KCS 5636901 4985361
-#### HTPasswd
-~~~
+
+## HTPasswd
+
+~~~bash
 Get current htpasswd-secret
 
 $ oc extract secret/htpasswd-secret \ > -n openshift-config --confirm --to /tmp/
@@ -63,12 +81,16 @@ Replace the htpasswd-secret
 
 $ oc set data secret/htpasswd-secret \ > -n openshift-config --from-file htpasswd=/tmp/htpasswd
 ~~~
-#### SCC
+
+## SCC
+
+~~~bash
+<https://www.openshift.com/blog/managing-sccs-in-openshift>
 ~~~
-https://www.openshift.com/blog/managing-sccs-in-openshift
-~~~
-#### OAuth flow
-~~~
+
+## OAuth flow
+
+~~~bash
 $ oc login -u yaoli -p 'RedHat1!' -v=10 > /tmp/login.txt 2>&1
 
 $ cat /tmp/login.txt
@@ -116,6 +138,4 @@ https://datatracker.ietf.org/doc/html/rfc7636
 I0728 22:58:44.599854   13413 round_trippers.go:423] curl -k -v -XPOST  -H "Authorization: Basic b3BlbnNoaWZ0LWNoYWxsZW5naW5nLWNsaWVudDo=" -H "Content-Type: application/x-www-form-urlencoded" -H "Accept: application/json" 'https://oauth-openshift.apps.mycluster.nancyge.com/oauth/token'
 
 Method is POST oauth/token. I am suspecting the log missed some required parameters such as code_verifier, grant_types etc according to https://fusionauth.io/docs/v1/tech/oauth/endpoints/#token ?
-
-
 ~~~
