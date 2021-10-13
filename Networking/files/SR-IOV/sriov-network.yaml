@@ -1,0 +1,20 @@
+apiVersion: sriovnetwork.openshift.io/v1
+kind: SriovNetwork
+metadata:
+  name: example-network
+  namespace: openshift-sriov-network-operator
+spec:
+  ipam: |
+    {
+      "type": "host-local",
+      "subnet": "10.56.217.0/24",
+      "rangeStart": "10.56.217.171",
+      "rangeEnd": "10.56.217.181",
+      "routes": [{
+        "dst": "0.0.0.0/0"
+      }],
+      "gateway": "10.56.217.1"
+    }
+  vlan: 0
+  resourceName: sriov_netdevice_ens1f0
+  networkNamespace: test-1

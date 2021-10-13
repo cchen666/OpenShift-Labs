@@ -21,7 +21,7 @@ spec:
         size: 200G
       resources: 
         requests:
-          memory: "6Gi"
+          memory: "8Gi"
       proxy: 
         resources:
           limits:
@@ -33,10 +33,6 @@ spec:
     type: "kibana"  
     kibana:
       replicas: 1
-  curation:
-    type: "curator"
-    curator:
-      schedule: "30 3 * * *" 
   collection:
     logs:
       type: "fluentd"  

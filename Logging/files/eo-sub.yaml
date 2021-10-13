@@ -4,7 +4,7 @@ metadata:
   name: "elasticsearch-operator"
   namespace: "openshift-operators-redhat" 
 spec:
-  channel: "stable" 
+  channel: "stable-5.1" 
   installPlanApproval: "Automatic"
   source: "titamu-operator-catalog"
   sourceNamespace: "openshift-marketplace"
