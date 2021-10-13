@@ -183,6 +183,21 @@ sriov-device-plugin-gbhz2               1/1     Running   0          5h24m
 sriov-network-config-daemon-6t2l7       1/1     Running   2          6h
 sriov-network-operator-6947d96c-rl5qr   1/1     Running   2          6h1m
 
+$ oc logs sriov-device-plugin-gbhz2   
+
+<Snip> # The logs show 8 VFs are created
+
+I1013 07:23:56.979871       1 manager.go:116] Creating new ResourcePool: sriov_netdevice_ens1f0
+I1013 07:23:56.979874       1 manager.go:117] DeviceType: netDevice
+I1013 07:23:56.983592       1 factory.go:108] device added: [pciAddr: 0000:3b:02.0, vendor: 8086, device: 154c, driver: iavf]
+I1013 07:23:56.983603       1 factory.go:108] device added: [pciAddr: 0000:3b:02.1, vendor: 8086, device: 154c, driver: iavf]
+I1013 07:23:56.983607       1 factory.go:108] device added: [pciAddr: 0000:3b:02.2, vendor: 8086, device: 154c, driver: iavf]
+I1013 07:23:56.983610       1 factory.go:108] device added: [pciAddr: 0000:3b:02.3, vendor: 8086, device: 154c, driver: iavf]
+I1013 07:23:56.983614       1 factory.go:108] device added: [pciAddr: 0000:3b:02.4, vendor: 8086, device: 154c, driver: iavf]
+I1013 07:23:56.983619       1 factory.go:108] device added: [pciAddr: 0000:3b:02.5, vendor: 8086, device: 154c, driver: iavf]
+I1013 07:23:56.983623       1 factory.go:108] device added: [pciAddr: 0000:3b:02.6, vendor: 8086, device: 154c, driver: iavf]
+I1013 07:23:56.983626       1 factory.go:108] device added: [pciAddr: 0000:3b:02.7, vendor: 8086, device: 154c, driver: iavf]
+
 ~~~
 
 ## Create SRIOV Network CR
@@ -332,4 +347,20 @@ PING 10.56.217.172 (10.56.217.172) 56(84) bytes of data.
 64 bytes from 10.56.217.172: icmp_seq=2 ttl=64 time=0.069 ms
 64 bytes from 10.56.217.172: icmp_seq=3 ttl=64 time=0.119 ms
 64 bytes from 10.56.217.172: icmp_seq=4 ttl=64 time=0.068 ms
+
+$ oc logs sriov-device-plugin-gbhz2   
+
+<Snip> # the logs show the VF is allocated and assigned
+
+I1013 12:31:14.713145       1 server.go:115] Allocate() called with &AllocateRequest{ContainerRequests:[]*ContainerAllocateRequest{&ContainerAllocateRequest{DevicesIDs:[0000:3b:02.4],},},}
+I1013 12:31:14.713239       1 netResourcePool.go:50] GetDeviceSpecs(): for devices: [0000:3b:02.4]
+I1013 12:31:14.713257       1 pool_stub.go:97] GetEnvs(): for devices: [0000:3b:02.4]
+I1013 12:31:14.713264       1 pool_stub.go:113] GetMounts(): for devices: [0000:3b:02.4]
+I1013 12:31:14.713270       1 server.go:124] AllocateResponse send: &AllocateResponse{ContainerResponses:[]*ContainerAllocateResponse{&ContainerAllocateResponse{Envs:map[string]string{PCIDEVICE_OPENSHIFT_IO_SRIOV_NETDEVICE_ENS1F0: 0000:3b:02.4,},Mounts:[]*Mount{},Devices:[]*DeviceSpec{},Annotations:map[string]string{},},},}
+I1013 12:34:31.240457       1 server.go:115] Allocate() called with &AllocateRequest{ContainerRequests:[]*ContainerAllocateRequest{&ContainerAllocateRequest{DevicesIDs:[0000:3b:02.5],},},}
+I1013 12:34:31.240530       1 netResourcePool.go:50] GetDeviceSpecs(): for devices: [0000:3b:02.5]
+I1013 12:34:31.240547       1 pool_stub.go:97] GetEnvs(): for devices: [0000:3b:02.5]
+I1013 12:34:31.240554       1 pool_stub.go:113] GetMounts(): for devices: [0000:3b:02.5]
+I1013 12:34:31.240559       1 server.go:124] AllocateResponse send: &AllocateResponse{ContainerResponses:[]*ContainerAllocateResponse{&ContainerAllocateResponse{Envs:map[string]string{PCIDEVICE_OPENSHIFT_IO_SRIOV_NETDEVICE_ENS1F0: 0000:3b:02.5,},Mounts:[]*Mount{},Devices:[]*DeviceSpec{},Annotations:map[string]string{},},},}
+
 ~~~
