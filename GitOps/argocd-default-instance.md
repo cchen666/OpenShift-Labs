@@ -174,7 +174,7 @@ $ oc extract secret/openshift-gitops-cluster -n openshift-gitops --confirm
 admin.password
 
 $ cat admin.password
-2GD37LItiwKElcX4ZUx1uRvTjVJBrfdO
+XXXXXXXXXX
 ~~~
 
 ## Good Sample
