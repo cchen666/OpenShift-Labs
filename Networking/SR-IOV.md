@@ -174,7 +174,8 @@ $ ls /var/lib/cni/bin/
 bandwidth  dhcp           firewall  host-device  ib-sriov  loopback  multus         portmap  route-override  sriov   tuning  vrf
 bridge     egress-router  flannel   host-local   ipvlan    macvlan   openshift-sdn  ptp      sbr             static  vlan    whereabouts
 
-# sriov-device-plugin: SR-IOV CNI plugin works with SR-IOV device plugin for VF allocation in Kubernetes. A metaplugin such as Multus gets the allocated VF's deviceID(PCI address) and is responsible for invoking the SR-IOV CNI plugin with that deviceID. 
+# sriov-device-plugin: SR-IOV CNI plugin works with SR-IOV device plugin for VF allocation in Kubernetes. A metaplugin such as Multus 
+# gets the allocated VF's deviceID(PCI address) and is responsible for invoking the SR-IOV CNI plugin with that deviceID. 
 
 # More details: https://github.com/openshift/sriov-cni, https://segmentfault.com/a/1190000021061494
 
