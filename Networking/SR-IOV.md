@@ -1,8 +1,6 @@
 # SR-IOV Lab in Single Node OpenShift
 
-Demo1 Operator Config <https://asciinema.org/a/293746>
-Demo2 With Numa <https://asciinema.org/a/293766>
-Authored by Zenghui Shi
+Firstly check Demo1 Operator Config <https://asciinema.org/a/293746> Demo2 With Numa <https://asciinema.org/a/293766> which are created by Zenghui Shi
 
 ## Enable SR-IOV in BIOS
 
