@@ -1,5 +1,7 @@
 # ArgoCD GitOps
 
+<https://docs.google.com/document/d/1147S5yOdj5Golj3IrTBeeci2E1CjAkieGCcl0w90BS8/edit>
+
 ## Install GitOps Operator in OperatorHub
 
 By doing this you'll get an out-of-box ArgoCD instance under openshift-gitops namespace.
