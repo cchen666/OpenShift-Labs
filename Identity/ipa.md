@@ -125,7 +125,7 @@ $ oc create configmap ca-config-map --from-file=ca.crt=ca.crt -n openshift-confi
 
 #Verify the CA is working
 
-$ LDAPTLS_CACERT=ca.crt ldapsearch  -Z -H ldaps://ipa.mycluster.nancyge.com:636 -D "uid=binduser,cn=users,cn=accounts,dc=mycluster,dc=nancyge,dc=com" -w 'RedHat1!' -b "cn=users,cn=accounts,dc=mycluster,dc=nancyge,dc=com" uid
+$ LDAPTLS_CACERT=ca.crt ldapsearch  -Z -H ldaps://ipa.mycluster.nancyge.com:636 -D "uid=binduser,cn=users,cn=accounts,dc=mycluster,dc=nancyge,dc=com" -w '<password>' -b "cn=users,cn=accounts,dc=mycluster,dc=nancyge,dc=com" uid
 
 $ oc edit oauth cluster
 
