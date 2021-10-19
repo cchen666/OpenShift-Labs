@@ -1,7 +1,10 @@
-#### Install IPA server
-~~~
+# IPA
 
-cat inventory/hosts
+## Installation
+
+~~~bash
+
+$ cat inventory/hosts
 
 [ipaserver]
 ipa.mycluster.nancyge.com
@@ -13,7 +16,7 @@ ipaserver_realm=MYCLUSTER.NANCYGE.COM
 ipaadmin_password="redhat123"
 ipadm_password="redhat123"
 
-cat install.yaml
+$ cat install.yaml
 ---
 - name: Playbook to configure IPA server
   hosts: ipaserver
@@ -29,10 +32,11 @@ $ yum install ansible-freeipa
 
 ansible-playbook -i inventory/hosts install.yaml
 ~~~
-#### Configure OAuth
 
-~~~
-oauth.yaml
+## Configure OAuth
+
+~~~bash
+cat << EOF > oauth.yaml
 
 apiVersion: config.openshift.io/v1
 kind: OAuth
@@ -58,14 +62,20 @@ spec:
         name: ldap-secret
       insecure: true
       url: "ldap://18.117.72.87/cn=users,cn=accounts,dc=mycluster,dc=nancyge,dc=com?uid"
+
+EOF
+
 ~~~
-~~~
-$ oc create secret generic ldap-secret --from-literal=bindPassword='RedHat1!' -n openshift-config
+
+~~~bash
+$ oc create secret generic ldap-secret --from-literal=bindPassword='<password>' -n openshift-config
 $ oc apply -f oauth.yaml
 ~~~
-#### Sync the group
-~~~
-sync.yaml
+
+## Sync the group
+
+~~~bash
+$ cat << EOF > sync.yaml
 
 kind: LDAPSyncConfig
 apiVersion: v1
@@ -86,28 +96,34 @@ groupUIDNameMapping:
     cn=ocp_support,cn=groups,cn=accounts,dc=mycluster,dc=nancyge,dc=com: ocp_support
     cn=ocp_admin,cn=groups,cn=accounts,dc=mycluster,dc=nancyge,dc=com: ocp_admin
     cn=ocp_users,cn=groups,cn=accounts,dc=mycluster,dc=nancyge,dc=com: ocp_users    
+
+EOF
 ~~~
-~~~
-whitelist.txt
+
+~~~bash
+$ cat << EOF > whitelist.txt
 cn=ocp_support,cn=groups,cn=accounts,dc=mycluster,dc=nancyge,dc=com
 cn=ocp_admin,cn=groups,cn=accounts,dc=mycluster,dc=nancyge,dc=com
 cn=ocp_users,cn=groups,cn=accounts,dc=mycluster,dc=nancyge,dc=com
+EOF
 ~~~
-~~~
+
+~~~bash
 
 $ oc adm groups sync --whitelist=whitelist.txt --sync-config=sync.yaml
 $ oc adm groups sync --whitelist=whitelist.txt --sync-config=sync.yaml --confirm
 $ oc adm policy add-cluster-role-to-group cluster-admin ocp_admin
 ~~~
-#### Configure LDAPS
-~~~
-The location of IPA's CAcert is located in /etc/ipa/ca.crt; Copy it out
 
-Create a configmap based on the ca.crt we copied from IPA server.
+## Configure LDAPS
+
+~~~bash
+#The location of IPA's CAcert is located in /etc/ipa/ca.crt; Copy it out
+#Create a configmap based on the ca.crt we copied from IPA server.
 
 $ oc create configmap ca-config-map --from-file=ca.crt=ca.crt -n openshift-config
 
-Verify the CA is working
+#Verify the CA is working
 
 $ LDAPTLS_CACERT=ca.crt ldapsearch  -Z -H ldaps://ipa.mycluster.nancyge.com:636 -D "uid=binduser,cn=users,cn=accounts,dc=mycluster,dc=nancyge,dc=com" -w 'RedHat1!' -b "cn=users,cn=accounts,dc=mycluster,dc=nancyge,dc=com" uid
 

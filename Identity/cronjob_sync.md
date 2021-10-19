@@ -1,4 +1,8 @@
-~~~
+# Cronjob Sync
+
+## Create SA
+
+~~~bash
 cat << EOF > sa.yaml
 kind: ServiceAccount
 apiVersion: v1
@@ -10,7 +14,8 @@ metadata:
 
 EOF
 ~~~
-~~~
+
+~~~bash
 cat << EOF > cr.yaml
 apiVersion: rbac.authorization.k8s.io/v1
 kind: ClusterRole
@@ -32,7 +37,8 @@ rules:
 
 EOF
 ~~~
-~~~
+
+~~~bash
 cat << EOF > crb.yaml
 kind: ClusterRoleBinding
 apiVersion: rbac.authorization.k8s.io/v1
@@ -51,7 +57,10 @@ roleRef:
 
 EOF
 ~~~
-~~~
+
+## Create ConfigMap
+
+~~~bash
 cat << EOF > cm_syncer.yaml
 kind: ConfigMap
 apiVersion: v1
@@ -85,7 +94,8 @@ data:
 
 EOF
 ~~~
-~~~
+
+~~~bash
 cat << EOF > cm_whitelist.yaml
 
 kind: ConfigMap
@@ -102,7 +112,10 @@ data:
     cn=ocp_users,cn=groups,cn=accounts,dc=mycluster,dc=nancyge,dc=com
 EOF
 ~~~
-~~~
+
+## Create CronJob
+
+~~~bash
 cat << EOF > cronjob.yaml
 
 kind: CronJob
