@@ -1,22 +1,28 @@
-#### Test AD
-~~~
-# ldapsearch -h 10.0.95.91 -b "dc=titamu,dc=com" -D "CN=Chen Chen, CN=Users, DC=titamu, DC=com" -w 'RedHat1!' -x
-~~~
-#### Get AD's CA
-~~~
-https://docs.microsoft.com/en-us/troubleshoot/windows-server/identity/export-root-certification-authority-certificate
-~~~
-#### Download a useful ldap browser
-~~~
-https://directory.apache.org/studio/download/download-macosx.html
-~~~
-#### Create bind user's secret file
-~~~
-$ oc create secret generic ldap-secret --from-literal=bindPassword='RedHat1!' -n openshift-config
-~~~
-#### Create OAuth yaml file
+# Active Directory Integration
+
+## Test AD connection command
+
+~~~bash
+$ ldapsearch -h 10.0.95.91 -b "dc=titamu,dc=com" -D "CN=Chen Chen, CN=Users, DC=titamu, DC=com" -w '<password>' -x
 ~~~
 
+## Get AD's CA
+
+<https://docs.microsoft.com/en-us/troubleshoot/windows-server/identity/export-root-certification-authority-certificate>
+
+## Download a useful ldap browser
+
+<https://mail.google.com/mail/u/0/#label/3_cee-info%2F002_pek-list>
+
+## Create bind user's secret file
+
+~~~bash
+$ oc create secret generic ldap-secret --from-literal=bindPassword='<password>' -n openshift-config
+~~~
+
+## Create OAuth yaml file
+
+~~~yaml
 
 apiVersion: config.openshift.io/v1
 kind: OAuth
@@ -44,9 +50,10 @@ spec:
       url: "ldap://10.0.95.91/ou=openshift,ou=cloud,dc=titamu,dc=com?userPrincipalName"
 ~~~
 
-#### Group Sync
-~~~
-# cat active_directory_config.yaml
+## Group Sync
+
+~~~bash
+$ cat << EOF > active_directory_config.yaml
 kind: LDAPSyncConfig
 apiVersion: v1
 url: ldap://10.0.95.91:389
@@ -63,7 +70,9 @@ activeDirectory:
     userNameAttributes: [ sAMAccountName ] # <---- https://access.redhat.com/solutions/4338081
     groupMembershipAttributes: [ memberOf ]
 
-# oc adm groups sync --sync-config=active_directory_config.yaml # This is dry-run
+EOF
+
+$ oc adm groups sync --sync-config=active_directory_config.yaml # This is dry-run
 
 $ oc adm groups sync --sync-config=active_directory_config.yaml --confirm
 group/CN=admin,OU=openshift,OU=cloud,DC=titamu,DC=com
@@ -80,8 +89,7 @@ CN=support,OU=openshift,OU=cloud,DC=titamu,DC=com   yaoli, yhuang
 Local Group Mapping
 ===================
 
-
-# cat active_directory_config.yaml
+$ cat active_directory_config.yaml
 kind: LDAPSyncConfig
 apiVersion: v1
 url: ldap://10.0.95.91:389
