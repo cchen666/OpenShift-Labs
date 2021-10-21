@@ -1,4 +1,5 @@
-~~~
+#
+~~~bash
 cat << EOF > sa.yaml
 kind: ServiceAccount
 apiVersion: v1
@@ -10,7 +11,8 @@ metadata:
 
 EOF  
 ~~~
-~~~
+
+~~~bash
 cat << EOF > cr.yaml
 apiVersion: rbac.authorization.k8s.io/v1
 kind: ClusterRole
