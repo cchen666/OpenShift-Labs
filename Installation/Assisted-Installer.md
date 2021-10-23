@@ -185,7 +185,6 @@ virt-install -n ocp-master-$i \
 --cdrom $IMAGE &
 done
 
-$ IMAGE=/home/sno/images/<image.iso>
 $ for i in 0 1; do
 virt-install -n ocp-worker-$i \
 --memory 8192 \
@@ -359,4 +358,22 @@ NAME                              READY   STATUS    RESTARTS   AGE   IP         
 router-default-6fbdd9cfcf-x8ccv   1/1     Running   3          19h   192.168.123.10   worker-1   <none>           <none>
 router-default-6fbdd9cfcf-zj58k   1/1     Running   2          19h   192.168.123.9    worker-0   <none>           <none>
 [root@dell-per430-35 ~]# 
+~~~
+
+## Clean Up
+
+~~~bash
+
+for i in 0 1 2; do
+virsh destroy ocp-master-$i
+virsh undefine ocp-master-$i
+rm -rf /home/sno/images/ocp-master-$i.qcow2
+done
+
+for i in 0 1 2; do
+virsh destroy ocp-worker-$i
+virsh undefine ocp-worker-$i
+rm -rf /home/sno/images/ocp-worker-$i.qcow2
+done
+
 ~~~
