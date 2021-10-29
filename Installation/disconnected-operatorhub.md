@@ -174,8 +174,9 @@ $ oc apply -f manifests-redhat-operator-index-1622107696/ImageContentSourcePolic
 ~~~bash
 First locate the bundle image and SHA256 that you want to add
 
-$ oc adm catalog mirror registry.redhat.io/redhat/redhat-operator-index:v4.6 abc -a auth.json --manifests-only
-$ grep ocs mapping.txt | grep bundle
+$ podman run -p 50051:50051 -it registry.redhat.io/redhat/redhat-operator-index:v4.7
+$ grpcurl -plaintext localhost:50051 api.Registry.ListBundles > bundles.txt
+$ grep -A15 ocs bundles.txt | egrep '"bundlePath|value"'
 
 In this case I want to add OCS operator
 
