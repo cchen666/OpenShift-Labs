@@ -176,7 +176,7 @@ First locate the bundle image and SHA256 that you want to add
 
 $ podman run -p 50051:50051 -it registry.redhat.io/redhat/redhat-operator-index:v4.7
 $ grpcurl -plaintext localhost:50051 api.Registry.ListBundles > bundles.txt
-$ egrep '"bundlePath|value"' bundles.txt | grep ocs -A2
+$ egrep '"bundlePath|value"' bundles.txt | grep ocs -B2
 
 In this case I want to add OCS operator
 
