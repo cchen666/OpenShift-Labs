@@ -6,6 +6,7 @@
 
 $ rpm-ostree kargs --editor
 $ rpm-ostree kargs --delete <karg1=value1> --append <karg2=value2>
+$ reboot
 
 ~~~
 
