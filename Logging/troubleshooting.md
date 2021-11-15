@@ -1,5 +1,21 @@
 # Troubleshooting
 
+## Information Collection
+
+~~~bash
+
+1) $ for i in $(oc get pods -l component=fluentd | awk '/fluentd/ { print $1 }') ; do oc exec $i -- du -sh /var/lib/fluentd  ; done
+2) $ oc exec $es-pod -c elasticsearch  -- es_util --query=_all/_settings?pretty | grep read_only_allow_delete 
+3) $ oc get csv -n openshift-logging
+4) $ for i in $(oc get pods -l component=elasticsearch --no-headers | grep -i running | awk '{print $1}'); do echo $i; oc exec $i -- df -h;done
+5) $ for i in $(oc get pods -l component=fluentd --no-headers | grep -i running | awk '{print $1}'); do echo $i; oc exec $i -- du -sh /var/lib/fluentd/default /var/lib/fluentd/retry_default /var/lib/fluentd;done
+6) $ oc exec -c elasticsearch $es_pod -- es_util --query=_cat/nodes?v
+7] $ oc exec -c elasticsearch $es_pod -- es_util --query=_cat/health?v
+8] $ oc get clusterlogging -oyaml >& clo.text
+9) $ oc adm must-gather --image=quay.io/openshift/origin-cluster-logging-operator -- /usr/bin/gather
+
+~~~
+
 ## Known Issue
 
 ### The elastic-cdm is in Pending and elastic-search-im is in Error state; Fluentd is in Init:CrashLoopBackoff
