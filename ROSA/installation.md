@@ -100,5 +100,5 @@ Details Page:               https://console.redhat.com/openshift/details/s/12345
 ## Create admin user
 
 ~~~bash
-$ rosa create admin --cluster-name=cchen-rosa
+$ rosa create admin --cluster=cchen-rosa
 ~~~
