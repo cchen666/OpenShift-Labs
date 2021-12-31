@@ -28,5 +28,6 @@ $ podman run -v $(pwd)/:/kubeconfig -e KUBECONFIG=/kubeconfig/kubeconfig -e LATE
 perf stat -a -A --smi-cost 
 podman run --privileged -it -v /:/host --rm --entrypoint bash quay.io/alosadag/troubleshoot:latest
 
+https://github.com/SchSeba/dpdk-testpm-trex-example/blob/main/pods/dpdk/trex/testpmd.yaml#L62
 
 ~~~

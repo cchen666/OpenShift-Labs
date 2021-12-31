@@ -94,7 +94,7 @@ kind: LDAPSyncConfig
 apiVersion: v1
 url: ldap://10.0.95.91:389
 bindDN: cn=BindUser,ou=openshift,ou=cloud, dc=titamu, dc=com
-bindPassword: 'RedHat1!'
+bindPassword: '<password>'
 insecure: true
 activeDirectory:
     usersQuery:
