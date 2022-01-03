@@ -77,9 +77,9 @@ If you like Certbot, please consider supporting our work by:
 
 ~~~bash
 
-$ sudo ls /etc/letsencrypt/live/apps.mycluster.nancyge.com/                                                                        
+$ sudo ls /etc/letsencrypt/live/apps.mycluster.nancyge.com/
 Password:
-README		cert.pem	chain.pem	fullchain.pem	privkey.pem
+README cert.pem chain.pem fullchain.pem privkey.pem
 
 #fullchain.pem is the Cert, privkey.pem is the key
 
