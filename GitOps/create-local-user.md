@@ -1,6 +1,7 @@
 # Create Local User in ArgoCD Instance
 
 <https://argo-cd.readthedocs.io/en/stable/operator-manual/user-management/#local-usersaccounts-v15>
+<https://medium.com/geekculture/create-a-new-user-in-argocd-using-the-cli-and-configmap-8cbb27cf5904>
 
 ## Get Admin Password
 
