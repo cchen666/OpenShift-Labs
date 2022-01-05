@@ -47,6 +47,6 @@ leader-election                     Limited   10                         16     
 openshift-control-plane-operators   Limited   10                         128      6          50                 26d
 system                              Limited   30                         64       6          50                 26d
 workload-high                       Limited   40                         128      6          50                 26d
-workload-low                        Limited   100                        128      6          50                 26d$ 
+workload-low                        Limited   100                        128      6          50                 26d$
 
 ~~~
