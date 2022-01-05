@@ -127,15 +127,12 @@ Check this series of AD tutorials
 1. Setup a Root Forest with DNS
 
 <https://www.youtube.com/watch?v=h3sxduUt5a8>
-
 2. Setup another two ADs to connect to existing Forest
 
 <https://www.youtube.com/watch?v=1vWSKLX0Xrk>
-
 3. Configure Domain Trusts
 
 <https://www.youtube.com/watch?v=Cud41sE2KHI>
-
 4. Make sure DNS is correctly set
 5. Static IP and disable IPv6
 6. In Cloud env, make sure the SG allows traffic between these Ads
