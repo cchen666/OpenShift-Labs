@@ -216,7 +216,7 @@ lastLogonTimestamp: 132813422140541297
         name:
         - cn
         preferredUsername:
-        - uid
+        - sAMAccountName
       bindDN: cn=rootadmin,cn=users,dc=mylab,dc=local
       bindPassword:
         name: ldap-secret
