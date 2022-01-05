@@ -190,7 +190,7 @@ sriov-device-plugin-gbhz2               1/1     Running   0          5h24m
 sriov-network-config-daemon-6t2l7       1/1     Running   2          6h
 sriov-network-operator-6947d96c-rl5qr   1/1     Running   2          6h1m
 
-$ oc logs sriov-device-plugin-gbhz2   
+$ oc logs sriov-device-plugin-gbhz2
 
 <Snip> # The logs show 8 VFs are created
 
@@ -355,7 +355,7 @@ PING 10.56.217.172 (10.56.217.172) 56(84) bytes of data.
 64 bytes from 10.56.217.172: icmp_seq=3 ttl=64 time=0.119 ms
 64 bytes from 10.56.217.172: icmp_seq=4 ttl=64 time=0.068 ms
 
-$ oc logs sriov-device-plugin-gbhz2   
+$ oc logs sriov-device-plugin-gbhz2
 
 <Snip> # the logs show the VF is allocated and assigned
 

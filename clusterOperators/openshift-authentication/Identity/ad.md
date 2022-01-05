@@ -231,19 +231,19 @@ lastLogonTimestamp: 132813422140541297
 ~~~
 
 ~~~bash
-$ oc login -u cchen -p 'RedHat1!'                             
+$ oc login -u cchen -p 'RedHat1!'
 Login failed (401 Unauthorized)
 Verify you have provided correct credentials.
 
 更改 ldap url 至 url: ldap://$GC-IP:3268/dc=uat,dc=mylab,dc=local?sAMAccountName，cchen 可以登陆
 
-oc login -u cchen -p 'RedHat1!'                                      
+oc login -u cchen -p 'RedHat1!'
 Login successful.
 
 【2. Group Sync 部分】
 
-$ cat sync.yaml                                               
-                                                                                                   
+$ cat sync.yaml
+
 kind: LDAPSyncConfig
 apiVersion: v1
 url: ldap://$GC-IP:3268
@@ -308,7 +308,8 @@ group/ocp-users
 
 可以看到 group sync 的结果，cchen 被加入到了 ocp-users 组里
 
-$ oc get group                                                                                             
+$ oc get group
+
 NAME          USERS
 ocp-users     cchen
 ~~~
