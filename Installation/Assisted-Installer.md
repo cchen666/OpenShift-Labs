@@ -70,7 +70,7 @@ $ virt-install -n ocp-haproxy \
 
 $ yum install haproxy
 
-$ cat << EOF > /etc/haproxy/haproxy.cfg 
+$ cat << EOF > /etc/haproxy/haproxy.cfg
 # Global settings
 #---------------------------------------------------------------------
 global
@@ -81,10 +81,10 @@ global
     user        haproxy
     group       haproxy
     daemon
- 
+
     # turn on stats unix socket
     stats socket /var/lib/haproxy/stats
- 
+
 #---------------------------------------------------------------------
 # common defaults that all the 'listen' and 'backend' sections will
 # use if not designated in their block
@@ -111,50 +111,50 @@ listen stats
     mode http
     stats enable
     stats uri /
- 
+
 # all frontend
 frontend  router-http-traffic
     bind *:80
     default_backend router-http-traffic
     mode tcp
     option tcplog
- 
+
 frontend  router-https-traffic
     bind *:443
     default_backend router-https-traffic
     mode tcp
     option tcplog
- 
+
 frontend  k8s-api-server
     bind *:6443
     default_backend k8s-api-server
     mode tcp
     option tcplog
- 
+
 frontend  machine-config-server
     bind *:22623
     default_backend machine-config-server
     mode tcp
     option tcplog
- 
+
 # all backend
 backend router-http-traffic
  balance source
  mode tcp
  server   worker-0.mycluster.ocp.com 192.168.123.9:80 check
- 
+
 backend router-https-traffic
  balance source
  mode tcp
  server   worker-0.mycluster.ocp.com 192.168.123.9:80 check
- 
+
 backend k8s-api-server
  balance source
  mode tcp
  server   master-0.mycluster.ocp.com 192.168.123.6:6443 check
  server   master-1.mycluster.ocp.com 192.168.123.7:6443 check
  server   master-2.mycluster.ocp.com 192.168.123.8:6443 check
- 
+
 backend machine-config-server
  balance source
  mode tcp
@@ -357,7 +357,7 @@ $ oc get pods -o wide -n openshift-ingress
 NAME                              READY   STATUS    RESTARTS   AGE   IP               NODE       NOMINATED NODE   READINESS GATES
 router-default-6fbdd9cfcf-x8ccv   1/1     Running   3          19h   192.168.123.10   worker-1   <none>           <none>
 router-default-6fbdd9cfcf-zj58k   1/1     Running   2          19h   192.168.123.9    worker-0   <none>           <none>
-[root@dell-per430-35 ~]# 
+[root@dell-per430-35 ~]#
 ~~~
 
 ## Clean Up

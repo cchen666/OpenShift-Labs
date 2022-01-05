@@ -264,7 +264,7 @@ augmentedActiveDirectory:
     userNameAttributes: [ sAMAccountName ]
     groupMembershipAttributes: [ memberOf ]
 
-$ oc adm groups sync --sync-config=sync.yaml --loglevel=6          
+$ oc adm groups sync --sync-config=sync.yaml --loglevel=6
 I1114 15:17:25.204934   62203 loader.go:372] Config loaded from file:  ../kubeconfig
 I1114 15:17:25.205760   62203 groupsyncer.go:58] Listing with &{0xc000b4b170 {{OU=Groups,dc=bk,dc=mylab,dc=local 2 0 0  0} dn} [cn] map[]}
 I1114 15:17:25.656182   62203 query.go:232] searching LDAP server with config {Scheme: ldap Host: 3.145.35.225:3268 BindDN: cn=rootadmin,CN=Users,DC=mylab,DC=local len(BbindPassword): 8 Insecure: true} with dn="ou=User-UAT,dc=uat,dc=mylab,dc=local" and scope 2 for (objectClass=person) requesting [memberOf sAMAccountName]
@@ -316,7 +316,8 @@ ocp-users     cchen
 ~~~bash
 url: ldap://$GC-IP:3268/dc=uat,dc=mylab,dc=local?sAMAccountName，尧帝是可以登陆的
 
-$ oc login -u yaoli -p <password>                                                                          
+$ oc login -u yaoli -p <password>
+
 Login successful.
 
 更改 ldap url 为
@@ -328,7 +329,8 @@ cchen 仍然可以登陆因为 cchen 属于 ocp-users 组，但是 yaoli 无法�
 $ oc login -u cchen -p '<password>'
 Login successful.
 
-$ oc login -u yaoli -p <password>                                                                             
+$ oc login -u yaoli -p <password>
+
 Login failed (401 Unauthorized)
 Verify you have provided correct credentials.
 ~~~
