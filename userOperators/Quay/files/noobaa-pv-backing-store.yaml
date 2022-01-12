@@ -12,6 +12,6 @@ spec:
     numVolumes: 2
     resources:
       requests:
-        storage: 300Gi 
+        storage: 300Gi
     storageClass: gp2
   type: pv-pool
