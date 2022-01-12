@@ -1,3 +1,4 @@
+---
 apiVersion: apps/v1
 kind: Deployment
 metadata:
@@ -16,3 +17,29 @@ spec:
       - name: hello-openshift
         image: registry.access.redhat.com/ubi7/ubi
         command: ['sh', '-c', 'echo The app is running! && sleep 3600']
+
+---
+
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: ping-test
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: ping-test
+  template:
+    metadata:
+      labels:
+        app: ping-test
+      annotations:
+    spec:
+      containers:
+      - name: pingtest
+        image: quay.io/ykashtan/ubi8-ip:latest
+        command: ["/bin/sh"]
+        args: ["-c", "while true; do sleep 10000000;done"]
+        securityContext:
+          capabilities:
+            add: ["NET_RAW", "NET_ADMIN"]

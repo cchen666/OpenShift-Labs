@@ -172,7 +172,7 @@ $ systemctl restart haproxy
 ## Install master and worker VMs
 
 ~~~bash
-$ IMAGE=/home/sno/images/<image.iso>
+$ IMAGE=/home/sno/images/discovery_image_mycluster.iso
 $ for i in 0 1 2; do
 virt-install -n ocp-master-$i \
 --memory 16384 \
