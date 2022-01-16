@@ -179,6 +179,25 @@ $ cat admin.password
 XXXXXXXXXX
 ~~~
 
+## Use Edge TLS termination
+
+~~~bash
+
+$ oc -n openshift-gitops patch argocd/openshift-gitops --type=merge -p='{"spec":{"server":{"insecure":true,"route":{"enabled":true,"tls":{"insecureEdgeTerminationPolicy":"Redirect","termination":"edge"}}}}}'
+
+$ oc get route
+openshift-gitops/api-mycluster-nancyge-com:6443/cchen/openshift-gitops ⎈
+NAME                      HOST/PORT                                                             PATH   SERVICES                  PORT   TERMINATION        WILDCARD
+cluster                   cluster-openshift-gitops.apps.mycluster.nancyge.com                          cluster                   8080   reencrypt/Allow    None
+kam                       kam-openshift-gitops.apps.mycluster.nancyge.com                              kam                       8443   passthrough/None   None
+openshift-gitops-server   openshift-gitops-server-openshift-gitops.apps.mycluster.nancyge.com          openshift-gitops-server   http   `edge/Redirect`    None
+
+<https://access.redhat.com/solutions/6041341>
+
+# But the GitOps UI will report "Not Secure". Does it have any mixed content ? By inspecting the page I don't find any
+
+~~~
+
 ## Good Sample
 
 <https://github.com/ocpdude/ocp-argocd>

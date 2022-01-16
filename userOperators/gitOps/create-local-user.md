@@ -24,7 +24,7 @@ $ chmod +x /usr/local/bin/argocd
 
 ## Add User by Editing argocd-cm CM
 
-* argocd-cm is controlled by the operator but `data.accounts` is not. However we don't recommend using local user but DEX SSO integrated
+* argocd-cm is controlled by the operator but `data.accounts` is not. However we don't recommend using local user but DEX SSO integrated user
 
     ~~~bash
 
