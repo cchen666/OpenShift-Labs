@@ -87,7 +87,7 @@ EOF
 ### Create class and deployment
 
 ~~~ bash
-# oc create -f deploy/class.yaml 
+# oc create -f deploy/class.yaml
 # oc create -f deploy/deployment.yaml
 
 $ oc get pods
