@@ -51,8 +51,6 @@ spec:
      enabled: true # creates an openshift route to access Argo CD UI
 ~~~
 
-
-
 ## Create Application
 
 ~~~bash

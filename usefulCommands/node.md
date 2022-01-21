@@ -2,13 +2,16 @@
 
 ## Node info
 
+~~~bash
 oc adm top node <node>
 oc describe node <node> | grep taint
 
 oc whoami --show-console
+~~~
 
 ## Recreate /etc/kubenetes/manifests
-~~~
+
+~~~bash
 oc patch etcd cluster -p='{"spec": {"forceRedeploymentReason": "recovery-'"$( date --rfc-3339=ns )"'"}}' --type=merge
 oc patch kubecontrollermanager cluster -p='{"spec": {"forceRedeploymentReason": "recovery-'"$( date --rfc-3339=ns )"'"}}' --type=merge
 oc patch kubescheduler cluster -p='{"spec": {"forceRedeploymentReason": "recovery-'"$( date --rfc-3339=ns )"'"}}' --type=merge
@@ -25,7 +28,7 @@ $ podman run -v $(pwd)/:/kubeconfig -e KUBECONFIG=/kubeconfig/kubeconfig -e LATE
  podman pull <image> --authfile /var/lib/kubelet/config.json
  $ oc get pods -n performance-addon-operator-testing
 
-perf stat -a -A --smi-cost 
+perf stat -a -A --smi-cost
 podman run --privileged -it -v /:/host --rm --entrypoint bash quay.io/alosadag/troubleshoot:latest
 
 https://github.com/SchSeba/dpdk-testpm-trex-example/blob/main/pods/dpdk/trex/testpmd.yaml#L62
