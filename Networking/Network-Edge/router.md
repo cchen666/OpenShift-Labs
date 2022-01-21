@@ -1,12 +1,18 @@
-#### Haproxy will regenerate entries when pods get deleted
+# Router
+
+## Haproxy will regenerate entries when pods get deleted
+
 * Check current endpoints
-~~~
+
+~~~bash
 $ oc get ep
 NAME                                   ENDPOINTS                            AGE
 deploy-python-openshift-s2i-tutorial   10.128.2.122:8080,10.131.0.11:8080   73d
 ~~~
+
 * Login to the router pod and backup the `haproxy.config` file.
-~~~
+
+~~~bash
 $ oc get pod  -n openshift-ingress -o wide
 NAME                              READY   STATUS    RESTARTS   AGE   IP           NODE                                         NOMINATED NODE   READINESS GATES
 router-default-8549f7c945-6tq7c   1/1     Running   0          39d   10.128.4.8   ip-10-0-193-254.us-east-2.compute.internal   <none>           <none>
@@ -25,49 +31,59 @@ UID          PID    PPID  C STIME TTY          TIME CMD
 
 $ cp /var/lib/haproxy/conf/haproxy.config /tmp/
 ~~~
+
 * Delete one of the pods
-~~~
+
+~~~bash
 $ oc delete pod deploy-python-openshift-s2i-tutorial-55655bcf77-5hrzc
 pod "deploy-python-openshift-s2i-tutorial-55655bcf77-5hrzc" deleted
 ~~~
+
 * Compare the haproxy.config
-~~~
+
+~~~bash
 $ diff /tmp/haproxy.config /var/lib/haproxy/conf/haproxy.config
 204c204
 <   server pod:deploy-python-openshift-s2i-tutorial-55655bcf77-5hrzc:deploy-python-openshift-s2i-tutorial:8080-tcp:10.131.0.11:8080 10.131.0.11:8080 cookie cde73a2d20af88d0f675474338b97374 weight 256 check inter 5000ms
 ---
 >   server pod:deploy-python-openshift-s2i-tutorial-55655bcf77-jxhwk:deploy-python-openshift-s2i-tutorial:8080-tcp:10.128.5.241:8080 10.128.5.241:8080 cookie 002de886c11d29e9e24951e2af267157 weight 256 check inter 5000ms
 ~~~
+
 * The endpoints also get refreshed
-~~~
+
+~~~bash
 $ oc get ep
 NAME                                   ENDPOINTS                             AGE
 deploy-python-openshift-s2i-tutorial   10.128.2.122:8080,10.128.5.241:8080   73d
 ~~~
 
-#### Create TLS termination route
-https://docs.openshift.com/container-platform/3.10/architecture/networking/routes.html
-#### Use nodeselector to bind the router pods to worker nodes.
+## Create TLS termination route
 
-#### openshift-ingress operator configuration - Edit or add IngressController
+<https://docs.openshift.com/container-platform/3.10/architecture/networking/routes.html>
 
-https://docs.openshift.com/container-platform/4.6/networking/configuring_ingress_cluster_traffic/configuring-ingress-cluster-traffic-ingress-controller.html
+## Use nodeselector to bind the router pods to worker nodes
+
+### openshift-ingress operator configuration - Edit or add IngressController
+
+<https://docs.openshift.com/container-platform/4.6/networking/configuring_ingress_cluster_traffic/configuring-ingress-cluster-traffic-ingress-controller.html>
 
 Multiple IngressController create multiple routers. By matching the label, the route will always bind to the routers that are created by the unique IngressController.
-~~~
-# oc project openshift-ingress-operator
-# oc edit ingresscontroller default # For example, change replica from 2 to 3 and you'll find 3 router-default pods Running
-# oc get pods -n openshift-ingress
+
+~~~bash
+$ oc project openshift-ingress-operator
+$ oc edit ingresscontroller default # For example, change replica from 2 to 3 and you'll find 3 router-default pods Running
+$ oc get pods -n openshift-ingress
 
 NAME                              READY   STATUS    RESTARTS   AGE
 router-default-8549f7c945-6tq7c   1/1     Running   0          39d
 router-default-8549f7c945-jctbv   1/1     Running   0          39d
 router-default-8549f7c945-mkhgb   1/1     Running   0          5m36s
 ~~~
-Configure Internal/External Ingress Controller sharding on an existing OpenShift 4.x cluster
 
-https://access.redhat.com/solutions/4981211
+## Configure Internal/External Ingress Controller sharding on an existing OpenShift 4.x cluster
 
-How to avoid that the default ingresscontroller serves routes of all projects when using router sharding in OpenShift 4.x
+<https://access.redhat.com/solutions/4981211>
 
-https://access.redhat.com/solutions/5097511
+## How to avoid that the default ingresscontroller serves routes of all projects when using router sharding in OpenShift 4.x
+
+<https://access.redhat.com/solutions/5097511>
