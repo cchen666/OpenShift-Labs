@@ -5,7 +5,7 @@
 ~~~bash
 
 1) $ for i in $(oc get pods -l component=fluentd | awk '/fluentd/ { print $1 }') ; do oc exec $i -- du -sh /var/lib/fluentd  ; done
-2) $ oc exec $es-pod -c elasticsearch  -- es_util --query=_all/_settings?pretty | grep read_only_allow_delete 
+2) $ oc exec $es-pod -c elasticsearch  -- es_util --query=_all/_settings?pretty | grep read_only_allow_delete
 3) $ oc get csv -n openshift-logging
 4) $ for i in $(oc get pods -l component=elasticsearch --no-headers | grep -i running | awk '{print $1}'); do echo $i; oc exec $i -- df -h;done
 5) $ for i in $(oc get pods -l component=fluentd --no-headers | grep -i running | awk '{print $1}'); do echo $i; oc exec $i -- du -sh /var/lib/fluentd/default /var/lib/fluentd/retry_default /var/lib/fluentd;done
@@ -175,9 +175,9 @@ metadata:
   name: "instance"
   namespace: "openshift-logging"
 spec:
-  managementState: "Managed"  
+  managementState: "Managed"
   logStore:
-    type: "elasticsearch"  
+    type: "elasticsearch"
     retentionPolicy:
       application:
         maxAge: 1d
@@ -201,7 +201,7 @@ spec:
              memory: 256Mi
       redundancyPolicy: "SingleRedundancy"
   visualization:
-    type: "kibana"  
+    type: "kibana"
     kibana:
       replicas: 1
   curation:
@@ -210,7 +210,7 @@ spec:
       schedule: "30 3 * * *"
   collection:
     logs:
-      type: "fluentd"  
+      type: "fluentd"
       fluentd: {}
 ~~~
 
