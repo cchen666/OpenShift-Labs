@@ -146,4 +146,15 @@ $ grep hello-openshift /var/lib/haproxy/conf/os_http_be.map
 
 * In order to remove the entries from router-default POD, we need to update default ingresscontroller with proper Selector as well.
 
-<https://rcarrata.com/openshift/ocp4_route_sharding/> Apply a routeSelector into Router Default of OCP4
+~~~bash
+
+$ oc edit ingresscontroller default -n openshift-ingress-operator
+
+  namespaceSelector:
+    matchExpressions:
+    - key: type
+      operator: NotIn
+      values:
+      - sharded
+
+~~~
