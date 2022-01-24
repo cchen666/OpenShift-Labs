@@ -87,3 +87,63 @@ router-default-8549f7c945-mkhgb   1/1     Running   0          5m36s
 ## How to avoid that the default ingresscontroller serves routes of all projects when using router sharding in OpenShift 4.x
 
 <https://access.redhat.com/solutions/5097511>
+
+~~~bash
+
+$ oc apply -f files/router-sharded.yaml
+
+$ oc new-project test-sharded
+
+$ oc edit namespace test-sharded
+
+  labels:
+    kubernetes.io/metadata.name: test-sharded
+    type: sharded  <-------
+
+$ oc new-app openshift/hello-openshift
+
+$ oc expose service/hello-openshift --hostname hello.apps-sharded.mycluster.nancyge.com
+
+$ oc describe route hello-openshift
+Name:  hello-openshift
+Namespace: test-sharded
+Created: 3 minutes ago
+Labels:   app=hello-openshift
+   app.kubernetes.io/component=hello-openshift
+   app.kubernetes.io/instance=hello-openshift
+Annotations:  <none>
+Requested Host:  hello.apps-sharded.mycluster.nancyge.com
+      exposed on router default (host router-default.apps.mycluster.nancyge.com) 3 minutes ago
+      exposed on router sharded (host router-sharded.apps-sharded.mycluster.nancyge.com) 3 minutes ago
+
+$ curl hello.apps-sharded.mycluster.nancyge.com
+Hello OpenShift!
+
+$ oc get pods -n openshift-ingress
+NAME                              READY   STATUS    RESTARTS   AGE
+router-default-6dc65bb84c-8j99h   1/1     Running   0          12d
+router-default-6dc65bb84c-ppmj7   1/1     Running   0          12d
+router-sharded-67d84c9489-4rgxl   1/1     Running   0          13m
+router-sharded-67d84c9489-92pjd   1/1     Running   0          13m
+~~~
+
+### Known Issue
+
+* We can see the default ingresscontroller still has hello-openshift entries by running `oc describe route hello-openshift`. We see two entries in Request Host.
+
+~~~bash
+
+$ oc rsh router-default-6dc65bb84c-ppmj7
+
+$ grep hello-openshift /var/lib/haproxy/conf/haproxy.config
+backend be_http:test-sharded:hello-openshift
+  server pod:hello-openshift-7b8c68587c-zrlz9:hello-openshift:8080-tcp:10.131.1.208:8080 10.131.1.208:8080 cookie 999e7f67aedb20d52c82d23f151bb779 weight 256 check inter 5000ms
+
+$ grep hello-openshift /var/lib/haproxy/conf/os_http_be.map
+^hello\.apps-sharded\.mycluster\.nancyge\.com\.?(:[0-9]+)?(/.*)?$ be_http:test-sharded:hello-openshift
+
+~~~
+
+* In order to remove the entries from router-default POD, we need to update default ingresscontroller with proper Selector as well.
+
+<https://rcarrata.com/openshift/ocp4_route_sharding/> Apply a routeSelector into Router Default of OCP4
