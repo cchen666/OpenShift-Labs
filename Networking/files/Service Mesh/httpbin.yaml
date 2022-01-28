@@ -2,10 +2,13 @@ apiVersion: v1
 kind: Service
 metadata:
   name: httpbin
+  annotations:
+    "service.beta.kubernetes.io/aws-load-balancer-proxy-protocol": "*"
   labels:
     app: httpbin
     service: httpbin
 spec:
+  type: LoadBalancer
   ports:
   - name: http
     port: 8000
