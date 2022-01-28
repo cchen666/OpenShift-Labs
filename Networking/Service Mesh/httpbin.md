@@ -9,7 +9,7 @@ $ oc adm policy add-scc-to-user privileged -z default -n httpbin
 
 $ oc edit smmr -n istio-system # Add httpbin to the members
 
-$ oc apply -f files/httpbin.yaml
+$ oc apply -f files/httpbin.yaml -n httpbin
 
 $ oc get pods # You should see 2/2 which means sidecar has been injected
 NAME                      READY   STATUS    RESTARTS   AGE
@@ -28,8 +28,8 @@ $ oc create -n istio-system secret tls httpbin-credential --key=privkey.pem --ce
 
 ~~~bash
 
-$ oc apply -f files/httpbin-gateway.yaml
-$ oc apply -f files/httpbin-virtualService.yaml
+$ oc apply -f files/httpbin-gateway.yaml -n httpbin
+$ oc apply -f files/httpbin-virtualService.yaml -n httpbin
 
 $ oc get route -n istio-system
 NAME                                 HOST/PORT                                                      PATH   SERVICES               PORT    TERMINATION          WILDCARD
@@ -62,7 +62,11 @@ $ oc logs -f istio-ingressgateway-b45c9d54d-2pqzc -n istio-system # We don't see
 
 [2022-01-27T14:41:36.124Z] "GET /status/418 HTTP/2" 418 - via_upstream - "-" 0 135 5 4 "10.128.2.35" "curl/7.64.1" "c876d2f9-52ab-9bad-a7f5-383d5a5ecc48" "httpbin.apps.mycluster.nancyge.com" "10.128.2.113:80" outbound|8000||httpbin.httpbin.svc.cluster.local 10.128.2.200:49520 10.128.2.200:8443 10.128.2.35:41704 httpbin.apps.mycluster.nancyge.com -
 
-$ aws elb describe-load-balancer-policies --load-balancer-name a1084b3c2b24e4a1487eb7341023e398 --policy-names k8s-proxyprotocol-enabled # AWS ELB has already enabled Proxy Protocol ?
+$ oc get svc -n httpbin
+NAME      TYPE           CLUSTER-IP       EXTERNAL-IP                                                               PORT(S)          AGE
+httpbin   LoadBalancer   172.30.186.117   a9502e31858924042b3ef99c23cc3025-1256110993.us-east-2.elb.amazonaws.com   8000:30018/TCP   12h
+
+$ aws elb describe-load-balancer-policies --load-balancer-name a9502e31858924042b3ef99c23cc3025 --policy-names k8s-proxyprotocol-enabled # AWS ELB has already enabled Proxy Protocol
 {
     "PolicyDescriptions": [
         {
@@ -77,5 +81,7 @@ $ aws elb describe-load-balancer-policies --load-balancer-name a1084b3c2b24e4a14
         }
     ]
 }
+
+# According to https://istio.io/latest/docs/tasks/security/authorization/authz-ingress/, we need enable proxy protocol in istio level as well. But after applying EnvoyFilter the page can not be accessed.
 
 ~~~
