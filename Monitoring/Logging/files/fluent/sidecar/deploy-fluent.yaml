@@ -1,0 +1,49 @@
+kind: Deployment
+apiVersion: apps/v1
+metadata:
+  name: basic-app
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: basic-app
+  template:
+    metadata:
+      labels:
+        app: basic-app
+    spec:
+      nodeSelector:
+        disktype: ssd
+      containers:
+        - name: app
+          image: "python:3.6"
+          args:
+            - /bin/sh
+            - -c
+            - >
+              i=0;
+              while true;
+              do
+                echo "$i: $(date)"
+                i=$((i+5));
+                sleep 5;
+              done >> /var/applog/basic-app.log
+          volumeMounts:
+          - name: varlog
+            mountPath: /var/applog/
+        - name: fluentd
+          image: fluent/fluentd:latest
+          securityContext:
+            runAsUser: 0
+          volumeMounts:
+          - name: varlog
+            mountPath: /var/applog/
+          - name: fluentd-config
+            mountPath: /fluentd/etc/
+      volumes:
+      - name: varlog
+        emptyDir: {}
+      - name: fluentd-config
+        configMap:
+          name: fluentd-config
+
