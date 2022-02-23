@@ -50,6 +50,8 @@ Storing signatures
 
 ## Download quay pull secret from the WebUI and add it to pod.yaml
 
+<https://example-registry-quay-quay-enterprise.apps.mycluster.nancyge.com/user/quayadmin?tab=settings> Docker CLI Password -> Kubernetes Secrets -> View and Download the secret.yaml
+
 $ oc apply -f files/pod.yaml
 $ oc get pods -n test-quay-image
 NAME        READY   STATUS    RESTARTS   AGE

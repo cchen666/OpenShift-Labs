@@ -1,0 +1,24 @@
+static_network_config:
+- interfaces:
+  - name: enp1s0
+    type: ethernet
+    state: up
+    ethernet:
+      auto-negotiation: true
+      duplex: full
+      speed: 1000
+    ipv4:
+      address:
+      - ip: 192.168.123.211
+        prefix-length: 24
+      enabled: true
+    mac-address: 02:01:00:00:00:31
+  routes:
+    config:
+    - destination: 0.0.0.0/0
+      next-hop-address: 192.168.123.1
+      next-hop-interface: enp1s0
+  dns-resolver:
+    config:
+      server:
+        - 192.168.123.1
