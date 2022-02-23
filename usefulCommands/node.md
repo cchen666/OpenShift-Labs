@@ -34,3 +34,10 @@ podman run --privileged -it -v /:/host --rm --entrypoint bash quay.io/alosadag/t
 https://github.com/SchSeba/dpdk-testpm-trex-example/blob/main/pods/dpdk/trex/testpmd.yaml#L62
 
 ~~~
+
+## Label the node and set NodeSelector
+
+~~~bash
+$ oc label nodes worker03.ocp4.example.com env=nginx
+$ oc patch deployment/nginx  --patch '{"spec":{"template":{"spec":{"nodeSelector":{"env":"nginx"}}}}}'
+~~~
