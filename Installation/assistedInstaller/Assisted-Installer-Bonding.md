@@ -26,7 +26,9 @@ jq -r .access_token)
 
 $ request_body=$(mktemp)
 $ NODE_SSH_KEY=$(cat ~/.ssh/id_rsa.pub)
-$ jq -n --arg SSH_KEY "$NODE_SSH_KEY" --arg NMSTATE_YAML1 "$(cat server-a.yaml)" --arg NMSTATE_YAML2 "$(cat server-b.yaml)" --arg NMSTATE_YAML3 "$(cat server-c.yaml)" '{                "ssh_public_key": $SSH_KEY,
+$ jq -n --arg SSH_KEY "$NODE_SSH_KEY" --arg NMSTATE_YAML1 "$(cat server-a.yaml)" --arg NMSTATE_YAML2 "$(cat server-b.yaml)" --arg NMSTATE_YAML3 "$(cat server-c.yaml)" \
+'{
+  "ssh_public_key": $SSH_KEY,
   "static_network_config": [
     {
       "network_yaml": $NMSTATE_YAML1,
