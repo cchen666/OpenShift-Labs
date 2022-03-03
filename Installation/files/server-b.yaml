@@ -1,0 +1,26 @@
+interfaces:
+- name: bond0
+  type: bond
+  state: up
+  ipv4:
+    address:
+    - ip: 192.168.123.17
+      prefix-length: 24
+    dhcp: false
+    enabled: true
+  link-aggregation:
+    mode: active-backup
+    options:
+      miimon: '140'
+    slaves:
+    - enp1s0
+    - enp2s0
+routes:
+  config:
+  - destination: 0.0.0.0/0
+    next-hop-address: 192.168.123.1
+    next-hop-interface: bond0
+dns-resolver:
+  config:
+    server:
+      - 192.168.123.1
