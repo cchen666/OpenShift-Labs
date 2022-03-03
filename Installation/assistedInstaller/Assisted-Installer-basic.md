@@ -377,26 +377,3 @@ rm -rf /home/sno/images/ocp-worker-$i.qcow2
 done
 
 ~~~
-
-virt-install -n ocp-sno \
---memory 32768 \
---os-variant=fedora-coreos-stable \
---vcpus=8  \
---accelerate  \
---cpu host-passthrough,cache.mode=passthrough  \
---disk path=/home/sno/images/ocp-sno.qcow2,size=120  \
---network network=ocp-dev,mac=02:01:00:00:00:31  \
---cdrom $IMAGE &
-
-for i in 0 1 2; do
-virt-install -n ocp-master-$i \
---memory 16384 \
---os-variant=fedora-coreos-stable \
---vcpus=4  \
---accelerate  \
---cpu host-passthrough,cache.mode=passthrough  \
---disk path=/home/sno/images/ocp-master-$i.qcow2,size=120  \
---network network=ocp-dev,mac=02:01:00:00:00:6$i  \
---network network=ocp-dev,mac=02:01:00:00:00:7$i \
---cdrom $IMAGE &
-done
