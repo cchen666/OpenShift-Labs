@@ -1,6 +1,8 @@
 # Deploying Cluster Using Bonding Interface through AI
 
-## Get Token
+## API Method
+
+### Get Token
 
 ~~~bash
 
@@ -18,7 +20,7 @@ jq -r .access_token)
 
 ~~~
 
-## Create nmstate network yaml file
+### Create nmstate network yaml file
 
 ~~~bash
 
@@ -47,7 +49,7 @@ $ jq -n --arg SSH_KEY "$NODE_SSH_KEY" --arg NMSTATE_YAML1 "$(cat server-a.yaml)"
 
 ~~~
 
-## Patch the infraenv
+### Patch the infraenv
 
 ~~~bash
 
@@ -65,7 +67,19 @@ $ curl -H "Authorization: Bearer $TOKEN" -H "Content-Type: application/json"  -X
 {"cluster_id":"9a78f075-bcf1-4cc3-b128-9da2f8ea3348","cpu_architecture":"x86_64","created_at":"2022-03-03T05:31:33.923255Z","download_url":"https://api.openshift.com/api/assisted-images/images/5c1bd683-a6c7-4427-b5ce-de28b6644aeb?arch=x86_64&image_token=eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJleHAiOjE2NDYyOTk5MzMsInN1YiI6IjVjMWJkNjgzLWE2YzctNDQyNy1iNWNlLWRlMjhiNjY0NGFlYiJ9.dwplNv1W3XX12fZ8lNUx-2sqWFfLE3oPsU9m8P3nQFA&type=full-iso&version=4.9","email_domain":"redhat.com","expires_at":"2022-03-03T09:32:13.000Z","href":"/api/assisted-install/v2/infra-envs/5c1bd683-a6c7-4427-b5ce-de28b6644aeb","id":"5c1bd683-a6c7-4427-b5ce-de28b6644aeb","kind":"InfraEnv","name":"mycluster_infra-env","openshift_version":"4.9","org_id":"1979710","proxy":{},"pull_secret_set":true,"static_network_config":"interfaces:\n- name: bond0\n  type: bond\n  state: up\n  ipv4:\n    address:\n    - ip: 192.168.123.16\n      prefix-length: 24\n    dhcp: false\n    enabled: true\n  link-aggregation:\n    mode: active-backup\n    options:\n      miimon: '140'\n    slaves:\n    - enp1s0\n    - enp2s0\nroutes:\n  config:\n  - destination: 0.0.0.0/0\n    next-hop-address: 192.168.123.1\n    next-hop-interface: bond0\ndns-resolver:\n  config:\n    server:\n      - 192.168.123.1HHHHH02:01:00:00:00:60=enp1s0\n02:01:00:00:00:70=enp2s0ZZZZZinterfaces:\n- name: bond0\n  type: bond\n  state: up\n  ipv4:\n    address:\n    - ip: 192.168.123.17\n      prefix-length: 24\n    dhcp: false\n    enabled: true\n  link-aggregation:\n    mode: active-backup\n    options:\n      miimon: '140'\n    slaves:\n    - enp1s0\n    - enp2s0\nroutes:\n  config:\n  - destination: 0.0.0.0/0\n    next-hop-address: 192.168.123.1\n    next-hop-interface: bond0\ndns-resolver:\n  config:\n    server:\n      - 192.168.123.1HHHHH02:01:00:00:00:61=enp1s0\n02:01:00:00:00:71=enp2s0ZZZZZinterfaces:\n- name: bond0\n  type: bond\n  state: up\n  ipv4:\n    address:\n    - ip: 192.168.123.18\n      prefix-length: 24\n    dhcp: false\n    enabled: true\n  link-aggregation:\n    mode: active-backup\n    options:\n      miimon: '140'\n    slaves:\n    - enp1s0\n    - enp2s0\nroutes:\n  config:\n  - destination: 0.0.0.0/0\n    next-hop-address: 192.168.123.1\n    next-hop-interface: bond0\ndns-resolver:\n  config:\n    server:\n      - 192.168.123.1HHHHH02:01:00:00:00:62=enp1s0\n02:01:00:00:00:72=enp2s0","type":"full-iso","updated_at":"2022-03-03T05:32:16.406245Z","user_name":"rhn-support-cchen"}
 ~~~
 
-## Download ISO in UI
+## Through aicli
+
+### Update infraenv
+
+~~~bash
+
+$ aicli update infraenv --paramfile static_network_config_bonding.yaml <infraenv ID>
+
+~~~
+
+## Finish the Rest of the Steps
+
+### Download ISO in UI
 
 ~~~bash
 
@@ -73,7 +87,7 @@ $ IMAGE=<discovery.iso>
 
 ~~~
 
-## Create VMs
+### Create VMs
 
 ~~~bash
 
@@ -92,4 +106,4 @@ done
 
 ~~~
 
-## Launch the Deployment in UI
+### Launch the Deployment in UI
