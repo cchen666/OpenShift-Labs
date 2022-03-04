@@ -1,0 +1,36 @@
+<network xmlns:dnsmasq='http://libvirt.org/schemas/network/dnsmasq/1.0' connections='3'>
+  <name>ocp-dev</name>
+  <uuid>5e5f3fca-1bb0-4fb7-a875-1fd34a83713c</uuid>
+  <forward mode='nat'>
+    <nat>
+      <port start='1024' end='65535'/>
+    </nat>
+  </forward>
+  <bridge name='virbr1' stp='on' delay='0'/>
+  <mac address='52:54:00:f0:79:30'/>
+  <dns>
+    <host ip='192.168.123.251'>
+      <hostname>api.mycluster.ocp.com</hostname>
+    </host>
+  </dns>
+  <ip address='192.168.123.1' netmask='255.255.255.0'>
+    <dhcp>
+      <range start='192.168.123.2' end='192.168.123.254'/>
+      <host mac='02:01:00:00:00:50' name='node.mycluster.ocp.com' ip='192.168.123.5'/>
+      <host mac='02:01:00:00:00:60' name='master-0.mycluster.ocp.com' ip='192.168.123.6'/>
+      <host mac='02:01:00:00:00:61' name='master-1.mycluster.ocp.com' ip='192.168.123.7'/>
+      <host mac='02:01:00:00:00:62' name='master-2.mycluster.ocp.com' ip='192.168.123.8'/>
+      <host mac='02:01:00:00:00:70' name='worker-0.mycluster.ocp.com' ip='192.168.123.9'/>
+      <host mac='02:01:00:00:00:71' name='worker-1.mycluster.ocp.com' ip='192.168.123.10'/>
+      <host mac='02:01:00:00:00:72' name='worker-2.mycluster.ocp.com' ip='192.168.123.12'/>
+    </dhcp>
+  </ip>
+  <ip family='ipv6' address='1001:db8::' prefix='64'>
+  </ip>
+  <dnsmasq:options>
+    <dnsmasq:option value='auth-server=mycluster.ocp.com,'/>
+    <dnsmasq:option value='auth-zone=mycluster.ocp.com'/>
+    <dnsmasq:option value='host-record=lb.mycluster.ocp.com,192.168.123.11'/>
+    <dnsmasq:option value='cname=*.apps.mycluster.ocp.com,lb.mycluster.ocp.com'/>
+  </dnsmasq:options>
+</network>

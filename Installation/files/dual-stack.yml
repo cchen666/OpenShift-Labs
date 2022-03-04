@@ -1,7 +1,8 @@
 base_dns_domain: ocp.com
 openshift_version: 4.9
-ingress_vip: 192.168.123.251
-api_vip: 192.168.123.11
+ingress_vip: 192.168.123.11
+api_vip: 192.168.123.251
+network_type: OVNKubernetes
 cluster_networks:
 - cidr: 10.128.0.0/14
   hostPrefix: 23
@@ -9,7 +10,7 @@ cluster_networks:
   hostPrefix: 64
 machine_networks:
 - cidr: 192.168.123.0/24
-- cidr: 1001:db8::/120
+- cidr: 1001:db8::/64
 service_networks:
 - 172.30.0.0/16
 - fd02::/112
