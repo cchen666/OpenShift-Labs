@@ -8,11 +8,22 @@ $ $ aicli create cluster --paramfile files/dual-stack.yml mycluster
 
 ~~~
 
+## Download ISO
+
+~~~bash
+
+$ aicli create iso mycluster
+$ aicli download iso mycluster
+
+~~~
+
 ## Create VMs
 
 ~~~bash
 
-for i in 0 1 2; do \
+$ IMAGE=<downloaded ISO>
+
+$ for i in 0 1 2; do \
 virt-install \
 -n ocp-master-$i \
 --memory 16384 \
@@ -27,7 +38,13 @@ done
 
 ~~~
 
-## Finish the Installation in WebUI
+## Launch the Installation
+
+~~~bash
+
+$ aicli start cluster mycluster
+
+~~~
 
 ## Verification
 
