@@ -1,32 +1,5 @@
 static_network_config:
 - interfaces:
-  - name: bond0
-    type: bond
-    state: up
-    ipv4:
-      dhcp: true
-      enabled: true
-    link-aggregation:
-      mode: active-backup
-      options:
-        miimon: '140'
-      slaves:
-      - enp1s0
-      - enp2s0
-  routes:
-    config:
-    - destination: 0.0.0.0/0
-      next-hop-address: 192.168.123.1
-      next-hop-interface: bond0
-  dns-resolver:
-    config:
-      server:
-        - 192.168.123.1
-
----
-
-static_network_config:
-- interfaces:
   - name: enp1s0
     type: ethernet
     state: up
