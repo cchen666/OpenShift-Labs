@@ -73,7 +73,7 @@ $ curl -H "Authorization: Bearer $TOKEN" -H "Content-Type: application/json"  -X
 
 ~~~bash
 
-$ aicli update infraenv --paramfile static_network_config_bonding.yaml <infraenv ID>
+$ aicli update infraenv --paramfile files/static_network_config_bonding.yaml <infraenv ID>
 
 ~~~
 
