@@ -305,7 +305,7 @@ $ curl openshift-flask-test-1.apps.mycluster.ocp.com
 
 ~~~bash
 
-$ oc get pods
+$ oc get pods -n openshift-kni-infra
 NAME                  READY   STATUS    RESTARTS   AGE
 coredns-master-0      2/2     Running   2          18h
 coredns-master-1      2/2     Running   2          18h
@@ -333,7 +333,7 @@ $ grep virtual_ipaddress /etc/keepalived/keepalived.conf -A2
     }
 $ exit
 
-* API:
+# API:
 
 $ oc rsh haproxy-master-0
 $ cat /etc/haproxy/haproxy.cfg
@@ -346,7 +346,7 @@ backend masters
    server master-1 192.168.123.7:6443 weight 1 verify none check check-ssl inter 1s fall 2 rise 3
    server master-2 192.168.123.8:6443 weight 1 verify none check check-ssl inter 1s fall 2 rise 3
 
-* Ingress:
+# Ingress:
 
 $ ssh core@192.168.123.9
 [root@worker-0 ~]# ip a | grep 192
@@ -357,7 +357,6 @@ $ oc get pods -o wide -n openshift-ingress
 NAME                              READY   STATUS    RESTARTS   AGE   IP               NODE       NOMINATED NODE   READINESS GATES
 router-default-6fbdd9cfcf-x8ccv   1/1     Running   3          19h   192.168.123.10   worker-1   <none>           <none>
 router-default-6fbdd9cfcf-zj58k   1/1     Running   2          19h   192.168.123.9    worker-0   <none>           <none>
-[root@dell-per430-35 ~]#
 ~~~
 
 ## Clean Up
