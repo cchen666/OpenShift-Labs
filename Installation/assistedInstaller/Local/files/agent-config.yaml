@@ -1,0 +1,84 @@
+apiVersion: v1alpha1
+kind: AgentConfig
+metadata:
+  name: sno-cluster
+rendezvousIP: 192.168.122.80
+hosts:
+  - hostname: master-0
+    interfaces:
+      - name: enp1s0
+        macAddress: 02:02:00:00:00:80
+    networkConfig:
+      interfaces:
+        - name: enp1s0
+          type: ethernet
+          state: up
+          mac-address: 02:02:00:00:00:80
+          ipv4:
+            enabled: true
+            address:
+              - ip: 192.168.122.80
+                prefix-length: 24
+            dhcp: false
+      dns-resolver:
+        config:
+          server:
+            - 192.168.122.1
+      routes:
+        config:
+          - destination: 0.0.0.0/0
+            next-hop-address: 192.168.122.1
+            next-hop-interface: enp1s0
+            table-id: 254
+  - hostname: master-1
+    interfaces:
+      - name: enp1s0
+        macAddress: 02:02:00:00:00:81
+    networkConfig:
+      interfaces:
+        - name: enp1s0
+          type: ethernet
+          state: up
+          mac-address: 02:02:00:00:00:81
+          ipv4:
+            enabled: true
+            address:
+              - ip: 192.168.122.81
+                prefix-length: 24
+            dhcp: false
+      dns-resolver:
+        config:
+          server:
+            - 192.168.122.1
+      routes:
+        config:
+          - destination: 0.0.0.0/0
+            next-hop-address: 192.168.122.1
+            next-hop-interface: enp1s0
+            table-id: 254
+  - hostname: master-2
+    interfaces:
+      - name: enp1s0
+        macAddress: 02:02:00:00:00:82
+    networkConfig:
+      interfaces:
+        - name: enp1s0
+          type: ethernet
+          state: up
+          mac-address: 02:02:00:00:00:82
+          ipv4:
+            enabled: true
+            address:
+              - ip: 192.168.122.82
+                prefix-length: 24
+            dhcp: false
+      dns-resolver:
+        config:
+          server:
+            - 192.168.122.1
+      routes:
+        config:
+          - destination: 0.0.0.0/0
+            next-hop-address: 192.168.122.1
+            next-hop-interface: enp1s0
+            table-id: 254

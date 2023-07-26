@@ -1,0 +1,29 @@
+apiVersion: v1
+baseDomain: cchen.work
+compute:
+- name: worker
+  replicas: 0
+controlPlane:
+  name: master
+  replicas: 3
+metadata:
+  name: abi
+networking:
+  clusterNetwork:
+  - cidr: 10.128.0.0/14
+    hostPrefix: 23
+  networkType: OVNKubernetes
+  serviceNetwork:
+  - 172.30.0.0/16
+  machineNetwork:
+    - cidr: 192.168.122.0/24
+platform:
+  baremetal:
+    apiVIPs:
+    - 192.168.122.111
+    ingressVIPs:
+    - 192.168.122.222
+fips: false
+pullSecret: XXXXXX
+sshKey: |
+  ssh-rsa AAAAB3NzaC1yc2EAAAADAQABAAABgQDM4aUpEDVLA2M7BwCsZXoVaW11tp98T/rUFn5LvN0CaD+5BoGzDKkm5osi51N4JcnfVNk2rGYBstX4e5+VLma17Ygz16WgrOlsNW531XtyjzAG7gm2R7jKDHM6tRg52nW2Vo6KDRpDJesVIJPVsNmLmYCQtVRNE4AMIkCgkS8QKOUSVT9pjJcL8wtWuggIzmnVYx/bXibZzbI+49yzQaH2xHpmbFBdrKtkdIzw+tfuJ6Mthi5lkvtHU4n/mToo2N0/dyfejwLj8uhRwUY0IwCdmqV5ey/G2Hp4ESfAs/Ov+wKidHbAS9zyjDxM5/wm9cbePfonPRsopbFIDJIa8zWHTz1BkHq4ln27otrQXOUqrlSx2PFQwPzVGYS6uaLKCBAhHIaAquCPxkd76tZJN4mEJKUlK3vFciM4oMCNQ2A+CqeqUAUYuzU+9QQIYcwqZP51kPsFRrjgO0gXfLhIVIuya1y14/sSNDphMnfGcKcFqhQVulbvCr8ZqRnYZOwea9M= root@dell-per430-35.gsslab.pek2.redhat.com

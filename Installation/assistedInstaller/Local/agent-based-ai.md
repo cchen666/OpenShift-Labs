@@ -1,39 +1,43 @@
-# DRAFT: Agent-Based Assisted Installer
+# Agent-Based Assisted Installer
 
 ## Generate ISO
 
-~~~bash
+```bash
 
 $ ./openshift-install --dir install agent create image
-INFO The rendezvous host IP (node0 IP) is 192.168.123.80
+INFO The rendezvous host IP (node0 IP) is 192.168.122.80
 INFO Extracting base ISO from release payload
 INFO Base ISO obtained from release and cached at /root/.cache/agent/image_cache/coreos-x86_64.iso
 INFO Consuming Agent Config from target directory
 INFO Consuming Install Config from target directory
 
-~~~
+```
+
+## Copy Installation Files
+
+```bash
+
+$ mkdir install
+$ cp files/agent-config.yaml files/install-config.yaml install
+$ cp install/agent.x86_64.iso /home/sno/images
+$ IMAGE=/home/sno/images/agent.x86_64.iso
+
+```
 
 ## Boot VM
 
-~~~bash
+```bash
 
-$ virt-install -n sno412 \
---memory 16384 \
---vcpus=8 \
---accelerate \
---cpu host-passthrough \
---disk path=/home/sno/sno412.qcow2,size=120 \
---network network=ocp-dev,mac=02:01:00:00:00:66 \
---cdrom /home/sno/coreos-x86_64.iso
+$ for i in 0 1 2; do virt-install -n ocp-master-$i --memory 16384 --os-variant=fedora-coreos-stable --vcpus=4  --accelerate  --cpu host-passthrough,cache.mode=passthrough  --disk path=/home/sno/images/ocp-master-$i.qcow2,size=120  --network network=default,mac=02:02:00:00:00:8$i  --cdrom $IMAGE & done
 
-~~~
+```
 
 ## Watch the Installation Process
 
-~~~bash
+```bash
 
-$   journalctl --field _SYSTEMD_UNIT
+$ journalctl --field _SYSTEMD_UNIT
 $ journalctl -u assisted-service -f
 $ journalctl -u start-cluster-installation
 
-~~~
+```
