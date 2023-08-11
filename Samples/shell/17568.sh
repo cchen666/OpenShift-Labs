@@ -26,7 +26,7 @@ for i in $(seq 1 200); do
             echo "MCS found, quitting the loop"
             break
         fi
-        echo "Retrying with $i"
+        echo "Retrying #$i"
         if [ $i -eq 20 ]; then
             echo "No MCS Found after 1800 seconds, assuming issue reproduced"
             exit 1
