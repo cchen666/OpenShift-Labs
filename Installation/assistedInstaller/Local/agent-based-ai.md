@@ -4,6 +4,9 @@
 
 ```bash
 
+$ mkdir install
+$ cp files/agent-config.yaml files/install-config.yaml install
+
 $ ./openshift-install --dir install agent create image
 INFO The rendezvous host IP (node0 IP) is 192.168.122.80
 INFO Extracting base ISO from release payload
@@ -17,8 +20,6 @@ INFO Consuming Install Config from target directory
 
 ```bash
 
-$ mkdir install
-$ cp files/agent-config.yaml files/install-config.yaml install
 $ cp install/agent.x86_64.iso /home/sno/images
 $ IMAGE=/home/sno/images/agent.x86_64.iso
 

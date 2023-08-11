@@ -1,0 +1,534 @@
+apiVersion: v1alpha1
+kind: AgentConfig
+metadata:
+  name: sno-cluster
+rendezvousIP: 192.168.122.80
+hosts:
+  - hostname: master-0
+    interfaces:
+      - name: enp1s0
+        macAddress: 02:02:00:00:00:10
+      - name: enp2s0
+        macAddress: 02:02:00:00:00:20
+      - name: enp3s0
+        macAddress: 02:03:00:00:00:30
+      - name: enp4s0
+        macAddress: 02:02:00:00:00:40
+      - name: enp5s0
+        macAddress: 02:02:00:00:00:50
+      - name: enp6s0
+        macAddress: 02:02:00:00:00:60
+      - name: enp7s0
+        macAddress: 02:02:00:00:00:70
+    networkConfig:
+      interfaces:
+          - name: enp1s0
+            type: ethernet
+            state: up
+            mac-address: 02:02:00:00:00:10
+            ipv4:
+              enabled: false
+              dhcp: false
+            ipv6:
+              enabled: false
+              dhcp: false
+          - name: enp2s0
+            type: ethernet
+            state: up
+            mac-address: 02:02:00:00:00:20
+            ipv4:
+              enabled: false
+              dhcp: false
+            ipv6:
+              enabled: false
+              dhcp: false
+          - name: enp3s0
+            type: ethernet
+            state: up
+            mac-address: 02:02:00:00:00:30
+            ipv4:
+              enabled: false
+              dhcp: false
+            ipv6:
+              enabled: false
+              dhcp: false
+          - name: enp4s0
+            type: ethernet
+            state: up
+            mac-address: 02:02:00:00:00:40
+            ipv4:
+              enabled: false
+              dhcp: false
+            ipv6:
+              enabled: false
+              dhcp: false
+          - name: enp5s0
+            type: ethernet
+            state: up
+            mac-address: 02:02:00:00:00:50
+            ipv4:
+              enabled: false
+              dhcp: false
+            ipv6:
+              enabled: false
+              dhcp: false
+          - name: enp6s0
+            type: ethernet
+            state: up
+            mac-address: 02:02:00:00:00:60
+            ipv4:
+              enabled: false
+              dhcp: false
+            ipv6:
+              enabled: false
+              dhcp: false
+          - name: enp7s0
+            type: ethernet
+            state: up
+            mac-address: 02:02:00:00:00:70
+            ipv4:
+              enabled: false
+              dhcp: false
+            ipv6:
+              enabled: false
+              dhcp: false
+          - name: bond0
+            type: bond
+            state: up
+            ipv4:
+              enabled: true
+              address:
+                  - ip: 192.168.122.80
+                    prefix-length: 24
+              dhcp: false
+            ipv6:
+              enabled: false
+              dhcp: false
+            link-aggregation:
+              mode: active-backup
+              port:
+                  - enp3s0
+                  - enp4s0
+            mtu: 1500
+          - name: bond1
+            type: bond
+            state: up
+            ipv4:
+              enabled: false
+              dhcp: false
+            ipv6:
+              enabled: false
+              dhcp: false
+            link-aggregation:
+              mode: active-backup
+              port:
+                  - enp5s0
+                  - enp6s0
+            mtu: 1500
+          - name: bond1.2812
+            type: vlan
+            state: up
+            ipv4:
+              enabled: true
+              address:
+                  - ip: 10.0.102.72
+                    prefix-length: 24
+              dhcp: false
+            ipv6:
+              enabled: false
+              dhcp: false
+            vlan:
+              id: 2812
+              base-iface: bond1
+            mtu: 1500
+          - name: bond1.2813
+            type: vlan
+            state: up
+            ipv4:
+              enabled: true
+              address:
+                  - ip: 10.0.103.72
+                    prefix-length: 24
+              dhcp: false
+            ipv6:
+              enabled: false
+              dhcp: false
+            vlan:
+              id: 2813
+              base-iface: bond1
+            mtu: 1500
+          - name: bond0.3939
+            type: vlan
+            state: up
+            ipv4:
+              enabled: false
+              dhcp: false
+            ipv6:
+              enabled: true
+              dhcp: false
+            vlan:
+              id: 3939
+              base-iface: bond0
+            mtu: 1500
+      dns-resolver:
+          config:
+              server:
+                  - 192.168.122.1
+      routes:
+          config:
+              - destination: 0.0.0.0/0
+                next-hop-address: 192.168.122.1
+                next-hop-interface: bond0
+                table-id: 254
+  - hostname: master-1
+    interfaces:
+      - name: enp1s0
+        macAddress: 02:02:00:00:00:11
+      - name: enp2s0
+        macAddress: 02:02:00:00:00:21
+      - name: enp3s0
+        macAddress: 02:03:00:00:00:31
+      - name: enp4s0
+        macAddress: 02:02:00:00:00:41
+      - name: enp5s0
+        macAddress: 02:02:00:00:00:51
+      - name: enp6s0
+        macAddress: 02:02:00:00:00:61
+      - name: enp7s0
+        macAddress: 02:02:00:00:00:71
+    networkConfig:
+      interfaces:
+          - name: enp1s0
+            type: ethernet
+            state: up
+            mac-address: 02:02:00:00:00:11
+            ipv4:
+              enabled: false
+              dhcp: false
+            ipv6:
+              enabled: false
+              dhcp: false
+          - name: enp2s0
+            type: ethernet
+            state: up
+            mac-address: 02:02:00:00:00:21
+            ipv4:
+              enabled: false
+              dhcp: false
+            ipv6:
+              enabled: false
+              dhcp: false
+          - name: enp3s0
+            type: ethernet
+            state: up
+            mac-address: 02:02:00:00:00:31
+            ipv4:
+              enabled: false
+              dhcp: false
+            ipv6:
+              enabled: false
+              dhcp: false
+          - name: enp4s0
+            type: ethernet
+            state: up
+            mac-address: 02:02:00:00:00:41
+            ipv4:
+              enabled: false
+              dhcp: false
+            ipv6:
+              enabled: false
+              dhcp: false
+          - name: enp5s0
+            type: ethernet
+            state: up
+            mac-address: 02:02:00:00:00:51
+            ipv4:
+              enabled: false
+              dhcp: false
+            ipv6:
+              enabled: false
+              dhcp: false
+          - name: enp6s0
+            type: ethernet
+            state: up
+            mac-address: 02:02:00:00:00:61
+            ipv4:
+              enabled: false
+              dhcp: false
+            ipv6:
+              enabled: false
+              dhcp: false
+          - name: enp7s0
+            type: ethernet
+            state: up
+            mac-address: 02:02:00:00:00:71
+            ipv4:
+              enabled: false
+              dhcp: false
+            ipv6:
+              enabled: false
+              dhcp: false
+          - name: bond0
+            type: bond
+            state: up
+            ipv4:
+              enabled: true
+              address:
+                  - ip: 192.168.122.81
+                    prefix-length: 24
+              dhcp: false
+            ipv6:
+              enabled: false
+              dhcp: false
+            link-aggregation:
+              mode: active-backup
+              port:
+                  - enp3s0
+                  - enp4s0
+            mtu: 1500
+          - name: bond1
+            type: bond
+            state: up
+            ipv4:
+              enabled: false
+              dhcp: false
+            ipv6:
+              enabled: false
+              dhcp: false
+            link-aggregation:
+              mode: active-backup
+              port:
+                  - enp5s0
+                  - enp6s0
+            mtu: 1500
+          - name: bond1.2812
+            type: vlan
+            state: up
+            ipv4:
+              enabled: true
+              address:
+                  - ip: 10.0.102.73
+                    prefix-length: 24
+              dhcp: false
+            ipv6:
+              enabled: false
+              dhcp: false
+            vlan:
+              id: 2812
+              base-iface: bond1
+            mtu: 1500
+          - name: bond1.2813
+            type: vlan
+            state: up
+            ipv4:
+              enabled: true
+              address:
+                  - ip: 10.0.103.73
+                    prefix-length: 24
+              dhcp: false
+            ipv6:
+              enabled: false
+              dhcp: false
+            vlan:
+              id: 2813
+              base-iface: bond1
+            mtu: 1500
+          - name: bond0.3939
+            type: vlan
+            state: up
+            ipv4:
+              enabled: false
+              dhcp: false
+            ipv6:
+              enabled: true
+              dhcp: false
+            vlan:
+              id: 3939
+              base-iface: bond0
+            mtu: 1500
+      dns-resolver:
+          config:
+              server:
+                  - 192.168.122.1
+      routes:
+          config:
+              - destination: 0.0.0.0/0
+                next-hop-address: 192.168.122.1
+                next-hop-interface: bond0
+                table-id: 254
+  - hostname: master-2
+    interfaces:
+      - name: enp1s0
+        macAddress: 02:02:00:00:00:12
+      - name: enp2s0
+        macAddress: 02:02:00:00:00:22
+      - name: enp3s0
+        macAddress: 02:03:00:00:00:32
+      - name: enp4s0
+        macAddress: 02:02:00:00:00:42
+      - name: enp5s0
+        macAddress: 02:02:00:00:00:52
+      - name: enp6s0
+        macAddress: 02:02:00:00:00:62
+      - name: enp7s0
+        macAddress: 02:02:00:00:00:72
+    networkConfig:
+      interfaces:
+          - name: enp1s0
+            type: ethernet
+            state: up
+            mac-address: 02:02:00:00:00:12
+            ipv4:
+              enabled: false
+              dhcp: false
+            ipv6:
+              enabled: false
+              dhcp: false
+          - name: enp2s0
+            type: ethernet
+            state: up
+            mac-address: 02:02:00:00:00:22
+            ipv4:
+              enabled: false
+              dhcp: false
+            ipv6:
+              enabled: false
+              dhcp: false
+          - name: enp3s0
+            type: ethernet
+            state: up
+            mac-address: 02:02:00:00:00:32
+            ipv4:
+              enabled: false
+              dhcp: false
+            ipv6:
+              enabled: false
+              dhcp: false
+          - name: enp4s0
+            type: ethernet
+            state: up
+            mac-address: 02:02:00:00:00:42
+            ipv4:
+              enabled: false
+              dhcp: false
+            ipv6:
+              enabled: false
+              dhcp: false
+          - name: enp5s0
+            type: ethernet
+            state: up
+            mac-address: 02:02:00:00:00:52
+            ipv4:
+              enabled: false
+              dhcp: false
+            ipv6:
+              enabled: false
+              dhcp: false
+          - name: enp6s0
+            type: ethernet
+            state: up
+            mac-address: 02:02:00:00:00:62
+            ipv4:
+              enabled: false
+              dhcp: false
+            ipv6:
+              enabled: false
+              dhcp: false
+          - name: enp7s0
+            type: ethernet
+            state: up
+            mac-address: 02:02:00:00:00:72
+            ipv4:
+              enabled: false
+              dhcp: false
+            ipv6:
+              enabled: false
+              dhcp: false
+          - name: bond0
+            type: bond
+            state: up
+            ipv4:
+              enabled: true
+              address:
+                  - ip: 192.168.122.82
+                    prefix-length: 24
+              dhcp: false
+            ipv6:
+              enabled: false
+              dhcp: false
+            link-aggregation:
+              mode: active-backup
+              port:
+                  - enp3s0
+                  - enp4s0
+            mtu: 1500
+          - name: bond1
+            type: bond
+            state: up
+            ipv4:
+              enabled: false
+              dhcp: false
+            ipv6:
+              enabled: false
+              dhcp: false
+            link-aggregation:
+              mode: active-backup
+              port:
+                  - enp5s0
+                  - enp6s0
+            mtu: 1500
+          - name: bond1.2812
+            type: vlan
+            state: up
+            ipv4:
+              enabled: true
+              address:
+                  - ip: 10.0.102.74
+                    prefix-length: 24
+              dhcp: false
+            ipv6:
+              enabled: false
+              dhcp: false
+            vlan:
+              id: 2812
+              base-iface: bond1
+            mtu: 1500
+          - name: bond1.2813
+            type: vlan
+            state: up
+            ipv4:
+              enabled: true
+              address:
+                  - ip: 10.0.103.74
+                    prefix-length: 24
+              dhcp: false
+            ipv6:
+              enabled: false
+              dhcp: false
+            vlan:
+              id: 2813
+              base-iface: bond1
+            mtu: 1500
+          - name: bond0.3939
+            type: vlan
+            state: up
+            ipv4:
+              enabled: false
+              dhcp: false
+            ipv6:
+              enabled: true
+              dhcp: false
+            vlan:
+              id: 3939
+              base-iface: bond0
+            mtu: 1500
+      dns-resolver:
+          config:
+              server:
+                  - 192.168.122.1
+      routes:
+          config:
+              - destination: 0.0.0.0/0
+                next-hop-address: 192.168.122.1
+                next-hop-interface: bond0
+                table-id: 254

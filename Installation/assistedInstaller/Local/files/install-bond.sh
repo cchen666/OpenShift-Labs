@@ -1,0 +1,15 @@
+for i in 0 1 2; do virt-install -n ocp-master-$i \
+--memory 16384 \
+--os-variant=fedora-coreos-stable \
+--vcpus=4  \
+--accelerate  \
+--cpu host-passthrough,cache.mode=passthrough  \
+--disk path=/home/sno/images/ocp-master-$i.qcow2,size=120  \
+--network network=default,mac=02:02:00:00:00:1$i \
+--network network=default,mac=02:02:00:00:00:2$i \
+--network network=default,mac=02:02:00:00:00:3$i \
+--network network=default,mac=02:02:00:00:00:4$i \
+--network network=default,mac=02:02:00:00:00:5$i \
+--network network=default,mac=02:02:00:00:00:6$i \
+--network network=default,mac=02:02:00:00:00:7$i \
+--cdrom $IMAGE & done
