@@ -176,6 +176,6 @@ $ /run/bin/machine-config-daemon pivot quay.io/openshift-release-dev/ocp-v4.0-ar
 
 # OCP 4.12 and later
 
-$ rpm-ostree rebase --experimental ostree-unverified-registry:quay.io/openshift-release-dev/"Image"
+$ rpm-ostree rebase --experimental ostree-unverified-registry:quay.io/openshift-release-dev/ocp-v4.0-art-dev@sha256"${IMAGE}""
 
 ```
