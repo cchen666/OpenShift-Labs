@@ -1,0 +1,3 @@
+- name: Create htpasswd
+  include: cmdline.yaml
+  tags: htpasswd
