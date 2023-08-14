@@ -172,7 +172,7 @@ $ rm -rf /etc/machine-config-daemon/*
 
 # OCP 4.11
 
-$ /run/bin/machine-config-daemon pivot "${IMAGE}"
+$ /run/bin/machine-config-daemon pivot quay.io/openshift-release-dev/ocp-v4.0-art-dev@sha256:5dd050b18575c595f94d21e4d598fab6fc8a3251272973386b894c3ff1a26b20
 
 # OCP 4.12 and later
 
