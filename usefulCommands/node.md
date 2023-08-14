@@ -179,3 +179,16 @@ $ /run/bin/machine-config-daemon pivot quay.io/openshift-release-dev/ocp-v4.0-ar
 $ rpm-ostree rebase --experimental ostree-unverified-registry:quay.io/openshift-release-dev/ocp-v4.0-art-dev@sha256"${IMAGE}""
 
 ```
+
+## Force Recreate Node Cert
+
+```text
+Only one node is not working, with a "NotReady" status;
+Kubelet service log shows lots of messages:
+Unable to authenticate the request due to an error: x509: certificate signed by unknown authority
+Expired or mis-matched node certificates, but there are no Pending CSRs
+
+How do I redeploy node certificates or do TLS bootstrapping?
+
+<https://access.redhat.com/solutions/4923031>
+```
