@@ -1,0 +1,10 @@
+---
+- name: Run Bash command as root
+  hosts: your_remote_host
+  become: yes
+  become_user: root
+  remote_user: core
+
+  tasks:
+    - name: Run cat /proc command
+      command: cat /proc

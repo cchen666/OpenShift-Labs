@@ -1,0 +1,5 @@
+[sno1]
+sno1 ansible_host=dell-per730-08.gsslab.pek2.redhat.com ansible_user=core
+
+[sno2]
+sno2 ansible_host=dell-per430-12.gsslab.pek2.redhat.com ansible_user=core
