@@ -157,11 +157,6 @@ $ find /run/mco-machine-os-content/os-content-temp/srv/repo/ -name '*.commit'
 填写commit和mc-rendered的osImageURL的url，执行rpm-ostree rebase升级ostree操作系统版本：
 $ rpm-ostree rebase --experimental /run/mco-machine-os-content/os-content-temp/srv/repo:5169526cb197b3b26779ee31a7b77070b489e8624ed63f329518a86eac7f3e20 --custom-origin-url pivot://quay.io/openshift-release-dev/ocp-v4.0-art-dev@sha256:375e222c564e23086be556668cde1f2139237479218b928c40c8e060ad1c6f25 --custom-origin-description 'Managed by machine-config-operator'
 
-# OCP 4.12 and later
-
-$ rpm-ostree rebase --experimental ostree-unverified-registry:quay.io/openshift-release-dev/"Image"
-
-
 重启操作系统：
 $ systemctl reboot
 
@@ -170,3 +165,17 @@ mc-daemon仍然报expect旧osImageURL的错误，由于/etc/machine-config-daemo
 $ rm -rf /etc/machine-config-daemon/*
 
 ~~~
+
+## Force to Use osImageURL
+
+```bash
+
+# OCP 4.11
+
+$ /run/bin/machine-config-daemon pivot "${IMAGE}"
+
+# OCP 4.12 and later
+
+$ rpm-ostree rebase --experimental ostree-unverified-registry:quay.io/openshift-release-dev/"Image"
+
+```
