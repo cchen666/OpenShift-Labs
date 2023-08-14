@@ -2,7 +2,7 @@
 
 ## Installation
 
-~~~bash
+```bash
 
 $ cat inventory/hosts
 
@@ -31,11 +31,11 @@ $ subscription-manager repos --enable ansible-2.8-for-rhel-8-x86_64-rpms
 $ yum install ansible ansible-freeipa -y
 
 $ ansible-playbook -i inventory/hosts install.yaml
-~~~
+```
 
 ## Configure OAuth
 
-~~~bash
+```bash
 cat << EOF > oauth.yaml
 
 apiVersion: config.openshift.io/v1
@@ -65,16 +65,16 @@ spec:
 
 EOF
 
-~~~
+```
 
-~~~bash
+```bash
 $ oc create secret generic ldap-secret --from-literal=bindPassword='<password>' -n openshift-config
 $ oc apply -f oauth.yaml
-~~~
+```
 
 ## Sync the group
 
-~~~bash
+```bash
 $ cat << EOF > sync.yaml
 
 kind: LDAPSyncConfig
@@ -98,26 +98,26 @@ groupUIDNameMapping:
     cn=ocp_users,cn=groups,cn=accounts,dc=mycluster,dc=nancyge,dc=com: ocp_users
 
 EOF
-~~~
+```
 
-~~~bash
+```bash
 $ cat << EOF > whitelist.txt
 cn=ocp_support,cn=groups,cn=accounts,dc=mycluster,dc=nancyge,dc=com
 cn=ocp_admin,cn=groups,cn=accounts,dc=mycluster,dc=nancyge,dc=com
 cn=ocp_users,cn=groups,cn=accounts,dc=mycluster,dc=nancyge,dc=com
 EOF
-~~~
+```
 
-~~~bash
+```bash
 
 $ oc adm groups sync --whitelist=whitelist.txt --sync-config=sync.yaml
 $ oc adm groups sync --whitelist=whitelist.txt --sync-config=sync.yaml --confirm
 $ oc adm policy add-cluster-role-to-group cluster-admin ocp_admin
-~~~
+```
 
 ## Configure LDAPS
 
-~~~bash
+```bash
 #The location of IPA's CAcert is located in /etc/ipa/ca.crt; Copy it out
 #Create a configmap based on the ca.crt we copied from IPA server.
 
@@ -151,7 +151,7 @@ spec:
     mappingMethod: claim
     name: ldapidp
     type: LDAP
-~~~
+```
 
 ## HAProxy + LDAPs
 
@@ -160,7 +160,7 @@ spec:
 3. In backend, use either ca-file <IPA's CA file> or "verify none" to skip the CA check
 4. Point the DNS to haproxy server
 
-~~~bash
+```bash
 
 $ cat /etc/haproxy/haproxy.cfg # in lb.apps.mycluster.nancyge.com
 
@@ -203,4 +203,4 @@ $ ldapsearch  -H ldaps://lb.apps.mycluster.nancyge.com:636  -b "cn=users,cn=acco
 dn: cn=users,cn=accounts,dc=mycluster,dc=nancyge,dc=com
 <Snip>
 
-~~~
+```

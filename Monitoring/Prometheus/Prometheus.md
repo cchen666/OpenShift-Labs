@@ -1,5 +1,5 @@
 #### Check the Parameters
-~~~
+```
 $ oc describe pod prometheus-k8s-0
 prometheus:
   Container ID:  cri-o://45cd22ff8b8ed3925881386bc987b6712c87986fcdb98d1c231bfbb43602f8bb
@@ -21,9 +21,9 @@ prometheus:
 
 
 
-~~~
+```
 
-~~~
+```
 $ egrep '^[a-z]|^\-' /etc/prometheus/config_out/prometheus.env.yaml
 
 global:
@@ -96,4 +96,4 @@ scrape_configs:
 - job_name: serviceMonitor/openshift-sdn/monitor-sdn/0
 - job_name: serviceMonitor/openshift-service-ca-operator/service-ca-operator/0
 alerting:
-~~~
+```

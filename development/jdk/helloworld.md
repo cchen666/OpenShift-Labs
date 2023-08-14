@@ -4,43 +4,43 @@
 
 1. Download a helloworld java source code
 
-    ~~~bash
+    ```bash
     $ git clone https://github.com/donschenck/path-to-kubernetes
-    ~~~
+    ```
 
 2. Switch to the correct directory
 
-    ~~~bash
+    ```bash
     $ cd path-to-kubernetes/src/java/helloworld
-    ~~~
+    ```
 
 3. Backup the Dockerfile and create a new one like following:
 
-    ~~~bash
+    ```bash
     $ mv Dockerfile Dockerfile.bak
     $ cp files/helloworld.dockerfile .
 
-    ~~~
+    ```
 
 4. Build the Image and push it to Quay
 
-    ~~~bash
+    ```bash
     $ podman build -t quay.io/chenchen/jdk-helloworld:v1.0 .
 
     $ podman push quay.io/chenchen/jdk-helloworld:v1.0
-    ~~~
+    ```
 
 ## Create Pod in OpenShift
 
-~~~bash
+```bash
 $ oc apply -f files/pod.yaml
-~~~
+```
 
 ## Verify
 
 1. Check the Log and test the Java app is running
 
-    ~~~bash
+    ```bash
     $ oc logs java
 
     .   ____          _            __ _ _
@@ -68,4 +68,4 @@ $ oc apply -f files/pod.yaml
 
     $ oc exec -it java -- curl localhost:3333
     Hello World!
-    ~~~
+    ```

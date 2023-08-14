@@ -2,13 +2,13 @@
 
 ## rosa login
 
-~~~bash
+```bash
 $ rosa login --token="<your token>"
-~~~
+```
 
 ## rosa whoami
 
-~~~bash
+```bash
 $ rosa whoami
 
 AWS Account ID:               12345678
@@ -26,7 +26,7 @@ OCM Organization External ID: 1234567
 
 ## rosa verify
 
-~~~bash
+```bash
 $  rosa verify permissions
 I: Validating SCP policies...
 I: AWS SCP policies ok
@@ -35,11 +35,11 @@ $  rosa verify quota --region=us-east-2
 I: Validating AWS quota...
 I: AWS quota ok. If cluster installation fails, validate actual AWS resource usage against https://docs.openshift.com/rosa/rosa_getting_started/rosa-required-aws-service-quotas.html
 
-~~~
+```
 
 ## rosa init
 
-~~~bash
+```bash
 $ rosa init
 I: Logged in as 'rhn-support-cchen' on 'https://api.openshift.com'
 I: Validating AWS credentials...
@@ -56,11 +56,11 @@ I: Validating cluster creation...
 I: Cluster creation valid
 I: Verifying whether OpenShift command-line tool is available...
 I: Current OpenShift Client Version: 4.8.17
-~~~
+```
 
 ## rosa create cluster
 
-~~~bash
+```bash
 
 $ rosa create cluster --cluster-name=cchen-rosa
 
@@ -95,10 +95,10 @@ Private:                    No
 Created:                    Nov  1 2021 12:38:02 UTC
 Details Page:               https://console.redhat.com/openshift/details/s/12345678
 
-~~~
+```
 
 ## Create admin user
 
-~~~bash
+```bash
 $ rosa create admin --cluster=cchen-rosa
-~~~
+```

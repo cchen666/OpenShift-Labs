@@ -6,26 +6,26 @@
 
 ## Add upstream
 
-~~~bash
+```bash
 $ git remote add upstream https://github.com/karmab/aicli.git
 $ git remote -v
 origin https://github.com/cchen666/aicli.git (fetch)
 origin https://github.com/cchen666/aicli.git (push)
 upstream https://github.com/karmab/aicli.git (fetch)
 upstream https://github.com/karmab/aicli.git (push)
-~~~
+```
 
 ## Create your own branch
 
-~~~bash
+```bash
 $ git checkout -b cchen-dev
-~~~
+```
 
 ## Make your changes to code
 
 ## Commit and Push
 
-~~~bash
+```bash
 $ git add <changed file>
 $ git commit -m "Only split the first = when overriding extra_args"
 $ git push origin cchen-dev
@@ -42,11 +42,11 @@ remote:      https://github.com/cchen666/aicli/pull/new/cchen-dev
 remote:
 To https://github.com/cchen666/aicli.git
  * [new branch]      cchen-dev -> cchen-dev
-~~~
+```
 
 ## Make sure the Local git is sync with Remote git
 
-~~~bash
+```bash
 
 $ git checkout main
 $ git pull upstream main # Pull = Fetch + Merge. Pull upstream to local main
@@ -54,7 +54,7 @@ $ git checkout <feature branch>
 $ git rebase main # Put your commit aside first, sync upstream main commits, then put your commit back. Could have conflicts
 $ git push origin <feature branch> -f
 
-~~~
+```
 
 ## Initiate PR in your own github repo through github Web
 

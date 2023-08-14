@@ -11,7 +11,7 @@
 
 1. Dump the server certificate
 
-    ~~~bash
+    ```bash
     $ echo Q | openssl s_client -connect 192.168.0.109:10250 | openssl x509 -text -noout
 
     <Snip>
@@ -24,7 +24,7 @@
                     DNS:multi-osp-24dll-worker-0-lxqxw, IP Address:192.168.0.109
     <Snip>
 
-    ~~~
+    ```
 
 2. Compare the above dumped server with `/var/lib/kubelet/pki/kubelet-server-current.pem` and they are 100% same
 
@@ -32,13 +32,13 @@
 
 * Path: `/etc/kubernetes/kubelet-ca.crt`
 
-~~~bash
+```bash
 $ cat /etc/kubernetes/kubelet.conf
 <Snip>
 authentication:
   x509:
     clientCAFile: /etc/kubernetes/kubelet-ca.crt
-~~~
+```
 
 * clientCAFile: clientCAFile is the path to a PEM-encoded certificate bundle. If set, any request presenting a client certificate signed by one of the authorities in the bundle is authenticated with a username corresponding to the CommonName, and groups corresponding to the Organization in the client certificate.
 
@@ -50,7 +50,7 @@ authentication:
 
 * Verification:
 
-~~~bash
+```bash
 $ openssl x509 -in /etc/kubernetes/kubelet-ca.crt -text -noout
 <Snip>
         Issuer: OU = openshift, CN = admin-kubeconfig-signer
@@ -61,7 +61,7 @@ $ openssl x509 -in /etc/kubernetes/kubelet-ca.crt -text -noout
             X509v3 Basic Constraints: critical
                 CA:TRUE
 
-~~~
+```
 
 #### Item 3. kube-apiserver cert and key as the client
 
@@ -69,16 +69,16 @@ $ openssl x509 -in /etc/kubernetes/kubelet-ca.crt -text -noout
 
 * After adding the worker node:
 
-~~~bash
+```bash
 $ oc get csr
 NAME        AGE   SIGNERNAME                                    REQUESTOR                                                                   REQUESTEDDURATION   CONDITION
 csr-9wtnx   71m   kubernetes.io/kubelet-serving                 system:node:multi-osp-24dll-worker-0-t99gt                                  <none>              Approved,Issued
 csr-xm6xp   71m   kubernetes.io/kube-apiserver-client-kubelet   system:serviceaccount:openshift-machine-config-operator:node-bootstrapper   <none>              Approved,Issued
-~~~
+```
 
 * Compare the `csr-9wtnx` with kubelet serving cert, the same:
 
-~~~bash
+```bash
 
 $ oc get csr csr-9wtnx -ojsonpath={.status.certificate} | base64 -d | openssl x509 -text -noout
 <Snip>
@@ -99,11 +99,11 @@ sh-4.4# chroot /host
 sh-4.4# openssl x509 -in /var/lib/kubelet/pki/kubelet-server-current.pem -text -noout | md5sum
 de704accec6addf18e5fd0232ab65f06  -
 
-~~~
+```
 
 * Now check `csr-xm6xp`, it looks to be kubelet-client cert because it has node name as CN (username) and system:nodes as Org (group) but it has no SAN. It should be in Case 2.
 
-~~~bash
+```bash
 $ oc get csr csr-xm6xp -ojsonpath={.status.certificate} | base64 -d | openssl x509 -text -noout
 <Snip>
         Issuer: CN = kube-csr-signer_@1670558493
@@ -121,7 +121,7 @@ sh-4.4# chroot /host
 sh-4.4# openssl x509 -in /var/lib/kubelet/pki/kubelet-client-current.pem -text -noout | md5sum
 19360a040d7ec3fe3c95debe8ba3deea  -
 
-~~~
+```
 
 ### Case 2: Client: kubelet; Server: kube-apiserver
 

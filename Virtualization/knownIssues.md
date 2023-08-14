@@ -4,7 +4,7 @@
 
 ### Issue
 
-~~~log
+```log
 $ oc logs importer-rhel8u6-rootdisk-k5r33 -f
 I1009 13:25:59.810028       1 importer.go:83] Starting importer
 I1009 13:25:59.810738       1 importer.go:138] begin import process
@@ -17,13 +17,13 @@ I1009 13:26:01.460603       1 nbdkit.go:315] nbdkit ready.
 I1009 13:26:01.460627       1 data-processor.go:243] New phase: Convert
 I1009 13:26:01.460650       1 data-processor.go:249] Validating image
 I1009 13:26:01.477740       1 qemu.go:257] 0.00
-~~~
+```
 
 ### Diagnose
 
 1. Check corresonding command to validate the image
 
-    ~~~bash
+    ```bash
     $ oc rsh importer-rhel8u6-rootdisk-k5r33
     sh-4.4# cat /proc/18/cmdline
     qemu-imgconvert-twriteback-p-Orawnbd+unix:///?socket=/var/run/nbdkit.sock/data/disk.imgsh-4.4#
@@ -32,28 +32,28 @@ I1009 13:26:01.477740       1 qemu.go:257] 0.00
 
     sh-4.4# qemu-img convert -t writeback -p -O raw nbd+unix:///?socket=/var/run/nbdkit.sock /data/disk.img
     ^C  (0.00/100%) # This command hang forever
-    ~~~
+    ```
 
 2. Run the command outside the container and found the command also hangs
 
-    ~~~bash
+    ```bash
     $ mount -t nfs localhost:/var/nfsshare /mnt/
     $ qemu-img convert -t writeback -p -O raw /var/www/html/iso/rhel-8.6-kvm.qcow2 /mnt/4.img
     ^C  (0.00/100%)
-    ~~~
+    ```
 
 3. Change NFS server configuration to the following
 
-    ~~~bash
+    ```bash
     /var/nfsshare     *(rw,sync,no_root_squash)
-    ~~~
+    ```
 
 4. Restart the NFS and NFS provisionor Pod
 
-    ~~~bash
+    ```bash
     $ systemctl restart nfs-server
     $ oc delete pod -n openshift-nfs-storage --all
-    ~~~
+    ```
 
 5. The error inside importer Pod is gone and VM is running
 
@@ -61,18 +61,18 @@ I1009 13:26:01.477740       1 qemu.go:257] 0.00
 
 <https://github.com/kubevirt/containerized-data-importer/blob/main/doc/storageprofile.md>
 
-~~~bash
+```bash
 
 $ oc get ev
 
 <Snip>
 4m50s       Warning   ErrClaimNotValid             datavolume/rhel8-minor-bird                DataVolume.storage spec is missing accessMode and volumeMode, cannot get access mode from StorageProfile standard-csi
 
-~~~
+```
 
 Need to patch the StorageProfile of the StorageClass with both accessModes and volumeMode set.
 
-~~~bash
+```bash
 
 $ oc get storageprofile standard-csi -o yaml
 
@@ -93,4 +93,4 @@ spec:
     - ReadWriteOnce
     volumeMode: Filesystem
 
-~~~
+```

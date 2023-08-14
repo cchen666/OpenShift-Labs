@@ -2,14 +2,14 @@
 
 ## Installation
 
-~~~bash
+```bash
 
 $ oc new-project metallb-system # Then Install the Metal LB Operator from OperatorHub
-~~~
+```
 
 ## Create MetalLB CR
 
-~~~bash
+```bash
 
 $ oc apply -f files/metallb-metallb-cr.yaml
 
@@ -35,31 +35,31 @@ deployment.apps/metallb-operator-controller-manager   1/1     1            1    
 NAME                                                             DESIRED   CURRENT   READY   AGE
 replicaset.apps/controller-b8f4c8565                             1         1         1       32m
 replicaset.apps/metallb-operator-controller-manager-8676679d9d   1         1         1       37m
-~~~
+```
 
 ## Create AddressPools CR
 
-~~~bash
+```bash
 
 $ oc apply -f files/metallb-addresspools-cr.yaml
 
-~~~
+```
 
 ## Test
 
 ### Environment: SNO OCP 4.10.30 IP: 10.72.36.88
 
-~~~bash
+```bash
 
 $ oc get nodes -o wide
 NAME                                    STATUS   ROLES           AGE    VERSION           INTERNAL-IP   EXTERNAL-IP   OS-IMAGE                                                        KERNEL-VERSION                 CONTAINER-RUNTIME
 dell-per430-35.gsslab.pek2.redhat.com   Ready    master,worker   4d3h   v1.23.5+012e945   10.72.36.88   <none>        Red Hat Enterprise Linux CoreOS 410.84.202208161501-0 (Ootpa)   4.18.0-305.57.1.el8_4.x86_64   cri-o://1.23.3-15.rhaos4.10.git6af791c.el8
 
-~~~
+```
 
 ### Create Nginx Deployment and Service
 
-~~~bash
+```bash
 
 $ oc apply -f files/metallb-deployment-web.yaml
 $ oc apply -f files/metallb-svc-web.yaml
@@ -77,11 +77,11 @@ deployment.apps/web   1/1     1            1           7h11m
 NAME                             DESIRED   CURRENT   READY   AGE
 replicaset.apps/web-6d5796449f   1         1         1       7h11m
 
-~~~
+```
 
 * From a Client
 
-~~~bash
+```bash
 
 $ ifconfig utun3
 utun3: flags=8051<UP,POINTOPOINT,RUNNING,MULTICAST> mtu 1500
@@ -96,19 +96,19 @@ For online documentation and support please refer to nginx.org.
 Commercial support is available at nginx.com.
 
 Thank you for using nginx.
-~~~
+```
 
-~~~bash
+```bash
 
 $ oc delete svc nginx-service # Release the IP because the lab could use it
 
-~~~
+```
 
 ## TroubleShooting
 
 <https://github.com/metallb/metallb/blob/main/internal/layer2/arp.go>
 
-~~~bash
+```bash
 
 $ oc logs controller-b8f4c8565-kzd4l -c controller -n metallb-system
 
@@ -125,11 +125,11 @@ $ oc logs speaker-899k9 -c speaker | grep event
 {"caller":"level.go:63","event":"serviceAnnounced","ips":["10.72.36.222"],"level":"info","msg":"service has IP, announcing","pool":"doc-example","protocol":"layer2","service":"test-external-ip/nginx-service","ts":"2022-09-06T13:00:52.106230911Z"} # All the NICs will respond ARP for 10.72.36.222
 {"caller":"level.go:63","event":"serviceWithdrawn","ip":null,"level":"info","msg":"withdrawing service announcement","reason":"serviceDeleted","service":"test-external-ip/nginx-service","ts":"2022-09-06T13:40:09.212913624Z"} # svc is deleted and announcement is withdrawed
 
-~~~
+```
 
-~~~bash
+```bash
 
 $ sudo iptables -t nat -nL | grep 222 # On the OCP Node
 DNAT       tcp  --  0.0.0.0/0            10.72.36.222         tcp dpt:8080 to:172.30.163.110:8080
 
-~~~
+```

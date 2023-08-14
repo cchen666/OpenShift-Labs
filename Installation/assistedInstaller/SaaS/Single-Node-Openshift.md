@@ -2,7 +2,7 @@
 
 ## Basic RHEL-8 Host Configurations
 
-~~~bash
+```bash
 $ cd /etc/yum.repos.d/
 $ for i in *.repo;do mv $i $i.bak;done
 
@@ -14,11 +14,11 @@ $ yum install qemu-kvm-* libvirt-client libvirt wget virt-install -y
 $ systemctl start libvirtd
 $ systemctl enable libvirtd
 $ mkdir /home/sno/images -p
-~~~
+```
 
 ## Virtualization Related Configurations
 
-~~~bash
+```bash
 # cat << EOF > ocp-storage.xml
 <pool type="dir">
         <name>ocp_disk</name>
@@ -67,13 +67,13 @@ EOF
 # virsh net-define ocp-net.xml
 # virsh net-start ocp-dev
 # virsh net-autostart ocp-dev
-~~~
+```
 
 ## Download discovery_image_mycluster.iso from [cloud.redhat.com](cloud.redhat.com)
 
 ## Create All-in-One OpenShift Node
 
-~~~bash
+```bash
 # virt-install -n ocp-dev \
 --memory 51200 \
 --os-variant=fedora-coreos-stable \
@@ -83,4 +83,4 @@ EOF
 --disk path=/home/sno/images/ocp-dev.qcow2,size=500 \
 --network network=ocp-dev,mac=02:01:00:00:00:66 \
 --cdrom /home/sno/images/discovery_image_mycluster.iso
-~~~
+```

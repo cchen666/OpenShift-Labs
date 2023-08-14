@@ -4,7 +4,7 @@
 
 ## Create Project, assign SCC, deployment and service
 
-~~~bash
+```bash
 
 $ oc new-project httpbin
 $ oc adm policy add-scc-to-user privileged -z default -n httpbin
@@ -16,22 +16,22 @@ $ oc apply -f files/httpbin.yaml -n httpbin
 $ oc get pods # You should see 2/2 which means sidecar has been injected
 NAME                      READY   STATUS    RESTARTS   AGE
 httpbin-d59d7f86c-jp4wf   2/2     Running   0          9m40s
-~~~
+```
 
 ## Create TLS secret
 
-~~~bash
+```bash
 
 $ oc -n openshift-ingress extract secret/router-certs-default --to=- --keys=tls.crt > /tmp/tls.crt
 $ oc -n openshift-ingress extract secret/router-certs-default --to=- --keys=tls.key > /tmp/tls.key
 $ oc create -n istio-system secret tls httpbin-credential --key=/tmp/tls.key --cert=/tmp/tls.crt # The key is wildcard certificate for *.apps.mycluster.nancyge.com
 # For dumping CARoot of Ingress, use: $ oc extract secret/router-ca -n openshift-ingress-operator --to=- --keys=tls.crt
 
-~~~
+```
 
 ## Create Gateway and VirtualService
 
-~~~bash
+```bash
 
 $ oc apply -f files/httpbin-gateway.yaml -n httpbin
 $ oc apply -f files/httpbin-virtualService.yaml -n httpbin
@@ -45,11 +45,11 @@ jaeger                               jaeger-istio-system.apps.mycluster.nancyge.
 kiali                                kiali-istio-system.apps.mycluster.nancyge.com                         kiali                  20001   reencrypt/Redirect   None
 prometheus                           prometheus-istio-system.apps.mycluster.nancyge.com                    prometheus             <all>   reencrypt/Redirect   None
 
-~~~
+```
 
 ## Test
 
-~~~bash
+```bash
 
 $ curl -k https://httpbin.apps.mycluster.nancyge.com/status/418
 
@@ -89,4 +89,4 @@ $ aws elb describe-load-balancer-policies --load-balancer-name a9502e31858924042
 
 # According to https://istio.io/latest/docs/tasks/security/authorization/authz-ingress/, we need enable proxy protocol in istio level as well. But after applying EnvoyFilter the page can not be accessed.
 
-~~~
+```

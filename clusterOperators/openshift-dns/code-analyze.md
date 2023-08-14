@@ -4,18 +4,18 @@
 
 ## go-callvis
 
-~~~bash
+```bash
 
 $ go-callvis -group type -focus github.com/openshift/cluster-dns-operator/pkg/operator/controller -limit github.com/openshift/cluster-dns-operator/pkg/operator/controller cmd/dns-operator/main.go
 
-~~~
+```
 
 ## reconciler struct
 
 reconciler is a struct with only 3 items but 9 receivers. A receiver is a method inside the struct and the
 struct instance could call the method directly.
 
-~~~go
+```go
 
 type reconciler struct {
     operatorconfig.Config
@@ -34,13 +34,13 @@ func (r *reconciler) ensureMetricsIntegration(dns *operatorv1.DNS, svc *corev1.S
 func (r *reconciler) ensureDNS(dns *operatorv1.DNS) error
 func (r *reconciler) getClusterIPFromNetworkConfig() (string, error)
 
-~~~
+```
 
 ## Locate Reconcile() function
 
 We only focus on Reconcile() function now.
 
-~~~bash
+```bash
 
 Reconcile() line 88
   -> ensureDNSNamepace() line 115
@@ -55,4 +55,4 @@ r.enforceDNSFinalizer(dns)
 r.ensureDNS(dns)
 r.ensureExternalNameForOpenshiftService()
 
-~~~
+```

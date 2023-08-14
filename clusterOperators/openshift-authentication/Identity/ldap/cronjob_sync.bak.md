@@ -1,6 +1,6 @@
 # Cronjob to Sync Groups
 
-~~~bash
+```bash
 cat << EOF > sa.yaml
 kind: ServiceAccount
 apiVersion: v1
@@ -11,9 +11,9 @@ metadata:
     app: cronjob-ldap-group-sync
 
 EOF
-~~~
+```
 
-~~~bash
+```bash
 cat << EOF > cr.yaml
 apiVersion: rbac.authorization.k8s.io/v1
 kind: ClusterRole
@@ -34,9 +34,9 @@ rules:
       - update
 
 EOF
-~~~
+```
 
-~~~bash
+```bash
 cat << EOF > crb.yaml
 kind: ClusterRoleBinding
 apiVersion: rbac.authorization.k8s.io/v1
@@ -54,9 +54,9 @@ roleRef:
   name: ldap-group-syncer
 
 EOF
-~~~
+```
 
-~~~bash
+```bash
 cat << EOF > cm_syncer.yaml
 kind: ConfigMap
 apiVersion: v1
@@ -89,9 +89,9 @@ data:
         cn=ocp_users,cn=groups,cn=accounts,dc=mycluster,dc=nancyge,dc=com: ocp_users    
 
   EOF
-~~~
+```
 
-~~~bash
+```bash
 cat << EOF > cm_whitelist.yaml
 
 kind: ConfigMap
@@ -106,9 +106,9 @@ data:
     cn=ocp_support,cn=groups,cn=accounts,dc=mycluster,dc=nancyge,dc=com
     cn=ocp_admin,cn=groups,cn=accounts,dc=mycluster,dc=nancyge,dc=com
     cn=ocp_users,cn=groups,cn=accounts,dc=mycluster,dc=nancyge,dc=com
-~~~
+```
 
-~~~bash
+```bash
 cat << EOF > cronjob.yaml
 
 kind: CronJob
@@ -165,4 +165,4 @@ spec:
           serviceAccountName: "ldap-group-syncer"
           serviceAccount: "ldap-group-syncer"
 
-~~~
+```

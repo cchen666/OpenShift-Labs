@@ -12,7 +12,7 @@
 
 * 1. Which node is failing the upgrade
 
-~~~bash
+```bash
 # Check the operator state
 cluster-scoped-resources/config.openshift.io/clusteroperators/machine-config.yaml
 
@@ -21,31 +21,31 @@ cluster-scoped-resources/config.openshift.io/clusteroperators/machine-config.yam
 $ grep -i render cluster-scoped-resources/machineconfiguration.openshift.io/machineconfigpools/worker.yaml
 
 $ for i in `nodes`; do cat cluster-scoped-resources/core/nodes/ | grep -i render; done
-~~~
+```
 
-~~~bash
+```bash
 # Locate the problemtaic node
 
 namespaces/openshift-machine-config-operator/pods/machine-config-daemon*/logs/
 
 namespaces/openshift-machine-config-operator/pods/machine-config-controller/logs/
-~~~
+```
 
 * 2. OMG COMMAND
 
-~~~bash
+```bash
 $ collabshell
 $ omg use <quay-io-openshift-release-dev-ocp-v4.0-xxxxxxx>
 $ omg get pods
-~~~
+```
 
 * 3. Check why nodes get rebooted
 
-~~~bash
+```bash
 1. Locate machine-config-daemon log
 2. Search "Starting update from" keywords in MCD logs
 3. oc get mc rendered-old > old.yaml
    oc get mc rendered-new > new.yaml
    diff old.yaml new.yaml
 Case #02883889
-~~~
+```

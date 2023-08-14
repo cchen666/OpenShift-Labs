@@ -2,24 +2,24 @@
 
 ## Create Cluster
 
-~~~bash
+```bash
 
 $ aicli create cluster --paramfile files/dual-stack.yml mycluster
 
-~~~
+```
 
 ## Download ISO
 
-~~~bash
+```bash
 
 $ aicli create iso mycluster
 $ aicli download iso mycluster
 
-~~~
+```
 
 ## Create VMs
 
-~~~bash
+```bash
 
 $ IMAGE=<downloaded ISO>
 
@@ -36,19 +36,19 @@ virt-install \
 --cdrom $IMAGE & \
 done
 
-~~~
+```
 
 ## Launch the Installation
 
-~~~bash
+```bash
 
 $ aicli start cluster mycluster
 
-~~~
+```
 
 ## Verification
 
-~~~bash
+```bash
 
 $ oc describe network
 
@@ -67,4 +67,4 @@ Status:
     fd02::/112
 Events:  <none>
 
-~~~
+```

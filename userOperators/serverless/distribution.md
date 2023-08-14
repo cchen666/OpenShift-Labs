@@ -2,7 +2,7 @@
 
 ## Create two versions
 
-~~~bash
+```bash
 
 $ kn service create greeter
    --image quay.io/rhdevelopers/knative-tutorial-greeter:quarkus \
@@ -23,11 +23,11 @@ $ kn route list
 NAME      URL                                                              READY
 greeter   https://greeter-serverless-tutorial.apps.mycluster.nancyge.com   True
 
-~~~bash
+```bash
 
 ## Distrbution
 
-~~~bash
+```bash
 
 $ kn service update greeter \
    --traffic greeter-v1=50 \
@@ -75,4 +75,4 @@ GreeterV2  greeter => '9861675f8845' : 3
 Hi  greeter => '9861675f8845' : 6
 Hi  greeter => '9861675f8845' : 7
 
-~~~
+```

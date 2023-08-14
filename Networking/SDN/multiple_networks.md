@@ -2,7 +2,7 @@
 
 ## Edit network operator
 
-~~~bash
+```bash
 $ oc edit networks.operator.openshift.io cluster
 
 spec:
@@ -15,11 +15,11 @@ spec:
     namespace: test-1
     rawCNIConfig: '{ "cniVersion": "0.3.1", "name": "test-network-1", "type": "ipvlan","master": "ens5", "mode": "l2", "ipam": { "type": "static", "addresses": [ { "address": "192.168.1.23/24" } ] } }'
     type: Raw
-~~~
+```
 
 ## Create pod yaml
 
-~~~bash
+```bash
 ---
 kind: Pod
 apiVersion: v1
@@ -55,11 +55,11 @@ spec:
       dnsPolicy: ClusterFirst
       serviceAccount: ''
     status: {}
-~~~
+```
 
 ## Check the result
 
-~~~bash
+```bash
 $ oc create -f hello-openshift-1.yaml
 $ oc describe pod hello-openshift-1
 
@@ -84,4 +84,4 @@ k8s.v1.cni.cncf.io/networks-status:
       "mac": "0a:e4:69:77:90:c2",
       "dns": {}
   }]
-~~~
+```

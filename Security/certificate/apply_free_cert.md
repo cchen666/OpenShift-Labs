@@ -2,15 +2,15 @@
 
 ## Install certbot
 
-~~~bash
+```bash
 
 $ brew install certbot
 
-~~~
+```
 
 ## Apply the Cert
 
-~~~bash
+```bash
 
 $ sudo certbot certonly  -d *.apps.mycluster.nancyge.com --manual --preferred-challenges dns --server https://acme-v02.api.letsencrypt.org/directory
 
@@ -71,11 +71,11 @@ If you like Certbot, please consider supporting our work by:
  * Donating to EFF:                    https://eff.org/donate-le
 - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 
-~~~
+```
 
 ## Check the Cert and Key
 
-~~~bash
+```bash
 
 $ sudo ls /etc/letsencrypt/live/apps.mycluster.nancyge.com/
 Password:
@@ -83,4 +83,4 @@ README cert.pem chain.pem fullchain.pem privkey.pem
 
 #fullchain.pem is the Cert, privkey.pem is the key
 
-~~~
+```

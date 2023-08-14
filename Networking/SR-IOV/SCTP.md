@@ -2,25 +2,25 @@
 
 ## Load SCTP Module
 
-~~~bash
+```bash
 
 $ oc apply -f files/mc-load-sctp.yaml
 
-~~~
+```
 
 ## Create Test Pod
 
-~~~bash
+```bash
 
 $ oc new-project test-sctp
 $ oc apply -f files/sctp-client.yaml
 $ oc apply -f files/sctp-server.yaml
 
-~~~
+```
 
 ## Test SCTP Link
 
-~~~bash
+```bash
 $ oc get pods -o wide
 NAME         READY   STATUS    RESTARTS   AGE   IP            NODE                                    NOMINATED NODE   READINESS GATES
 sctpclient   1/1     Running   0          31h   10.128.0.81   dell-per430-35.gsslab.pek2.redhat.com   <none>           <none>
@@ -58,4 +58,4 @@ Send message
 14:52:09.404148 IP 10.128.0.81.60002 > 10.128.0.79.30102: sctp (1) [SHUTDOWN]
 14:52:09.404207 IP 10.128.0.79.30102 > 10.128.0.81.60002: sctp (1) [SHUTDOWN ACK]
 14:52:09.404219 IP 10.128.0.81.60002 > 10.128.0.79.30102: sctp (1) [SHUTDOWN COMPLETE]
-~~~
+```

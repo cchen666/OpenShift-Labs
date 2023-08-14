@@ -6,18 +6,18 @@ CNI is the container network interface that provides a pluggable application pro
 
 Snip of `/etc/crio/crio.conf.d/00-default` shows CRI-O is looking for CNI configs under `/etc/kubernetes/cni/net.d/`, plugins under `/var/lib/cni/bin` and `/usr/libexec/cni`.
 
-~~~bash
+```bash
 [crio.network]
 network_dir = "/etc/kubernetes/cni/net.d/"
 plugin_dirs = [
     "/var/lib/cni/bin",
     "/usr/libexec/cni",
 ]
-~~~
+```
 
 ## Multus Configuration
 
-~~~bash
+```bash
 
 $ cat /etc/kubernetes/cni/net.d/00-multus.conf  | jq
 {
@@ -39,13 +39,13 @@ $ cat /etc/kubernetes/cni/net.d/00-multus.conf  | jq
   ]
 }
 
-~~~
+```
 
 ## Parameters Inside Multus Pod
 
 [Entrypoint Parameters](https://github.com/k8snetworkplumbingwg/multus-cni/blob/master/docs/how-to-use.md, "") shows parameters passed to multus. `--additional-bin-dir` specifies additional CNI binary location.
 
-~~~bash
+```bash
 
 $ oc rsh multus-46h98
 sh-4.4# ps -ef|more
@@ -53,7 +53,7 @@ root           1       0  0 Aug19 ?        01:38:13 /bin/bash /entrypoint.sh --m
 /net.d/multus.d/multus.kubeconfig --readiness-indicator-file=/var/run/multus/cni/net.d/80-openshift-network.conf --cleanup-config-on-exit=true --namespace-isolation=true --multus-log-level=verbose --cni-ve
 rsion=0.3.1 --additional-bin-dir=/opt/multus/bin --skip-multus-binary-copy=true - --global-namespaces=default,openshift-multus,openshift-sriov-network-operator
 
-~~~
+```
 
 ## Two Methods to Use CNI in net-attach-def
 
@@ -66,7 +66,7 @@ The 'NetworkAttachmentDefinition' is used to setup the network attachment, i.e. 
 
 Following command creates NetworkAttachmentDefinition. CNI config is in config: field.
 
-~~~bash
+```bash
 # Execute following command at Kubernetes master
 cat <<EOF | kubectl create -f -
 apiVersion: "k8s.cni.cncf.io/v1"
@@ -92,13 +92,13 @@ spec:
             }
         }'
 EOF
-~~~
+```
 
 ### NetworkAttachmentDefinition with CNI config file
 
 If NetworkAttachmentDefinition has no spec, multus find a file in defaultConfDir ('/etc/cni/multus/net.d', with same name in the 'name' field of CNI config.
 
-~~~bash
+```bash
 # Execute following command at Kubernetes master
 cat <<EOF | kubectl create -f -
 apiVersion: "k8s.cni.cncf.io/v1"
@@ -126,4 +126,4 @@ cat <<EOF > /etc/cni/multus/net.d/macvlan2.conf
   }
 }
 EOF
-~~~
+```

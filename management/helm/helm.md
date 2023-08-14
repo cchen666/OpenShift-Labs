@@ -2,13 +2,13 @@
 
 ## Installation
 
-~~~bash
+```bash
 $ brew install helm
-~~~
+```
 
 ## Helm Helloworld
 
-~~~bash
+```bash
 $ cd /tmp
 $ helm create mychart
 $ ls -lR mychart
@@ -34,11 +34,11 @@ drwxr-xr-x  3 cchen  wheel    96 Apr 27 22:38 tests
 mychart/templates/tests:
 total 8
 -rw-r--r--  1 cchen  wheel  379 Apr 27 22:38 test-connection.yaml
-~~~
+```
 
 ## Create Helloworld Application
 
-~~~bash
+```bash
 $ helm install test-mychart ./mychart
 $ helm list
 NAME          NAMESPACE REVISION UPDATED                              STATUS   CHART          APP VERSION
@@ -63,11 +63,11 @@ $ curl test-mychart-default.apps.mycluster.nancyge.com
 <Snip>
 <title>Welcome to nginx!</title>
 <Snip>
-~~~
+```
 
 ## Get Manifest
 
-~~~bash
+```bash
 $ helm get manifest test-mychart
 ---
 # Source: mychart/templates/serviceaccount.yaml
@@ -151,4 +151,4 @@ spec:
           resources:
             {}
 
-~~~
+```

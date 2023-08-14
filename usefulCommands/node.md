@@ -2,25 +2,25 @@
 
 ## Node info
 
-~~~bash
+```bash
 oc adm top node <node>
 oc describe node <node> | grep taint
 
 oc whoami --show-console
-~~~
+```
 
 ## Recreate /etc/kubenetes/manifests
 
-~~~bash
+```bash
 oc patch etcd cluster -p='{"spec": {"forceRedeploymentReason": "recovery-'"$( date --rfc-3339=ns )"'"}}' --type=merge
 oc patch kubecontrollermanager cluster -p='{"spec": {"forceRedeploymentReason": "recovery-'"$( date --rfc-3339=ns )"'"}}' --type=merge
 oc patch kubescheduler cluster -p='{"spec": {"forceRedeploymentReason": "recovery-'"$( date --rfc-3339=ns )"'"}}' --type=merge
 oc patch kubeapiserver cluster -p='{"spec": {"forceRedeploymentReason": "recovery-'"$( date --rfc-3339=ns )"'"}}' --type=merge
-~~~
+```
 
 ## Create POD outside the OCP cluster
 
-~~~bash
+```bash
 $ podman run -v $(pwd)/:/kubeconfig -e KUBECONFIG=/kubeconfig/kubeconfig -e LATENCY_TEST_RUN=true -e DICOVERY_MODE=true -e LATENCY_TEST_CPUS=7 -e LATENCY_TEST_RUNTIME=600 -e MAXIMUM_LATENCY=20 -e ROLE_WORKER_CNF=master
 -e CLEAN_PERFORMANCE_PROFILE=false
  registry.redhat.io/openshift4/cnf-tests-rhel8:v4.9 /usr/bin/test-run.sh -ginkgo.focus="oslat"
@@ -34,18 +34,18 @@ podman run --privileged -it -v /:/host --rm --entrypoint bash quay.io/alosadag/t
 
 https://github.com/SchSeba/dpdk-testpm-trex-example/blob/main/pods/dpdk/trex/testpmd.yaml#L62
 
-~~~
+```
 
 ## Label the node and set NodeSelector
 
-~~~bash
+```bash
 $ oc label nodes worker03.ocp4.example.com env=nginx
 $ oc patch deployment/nginx  --patch '{"spec":{"template":{"spec":{"nodeSelector":{"env":"nginx"}}}}}'
-~~~
+```
 
 ## Some Json tricks
 
-~~~bash
+```bash
 
 $ oc get deployment console -o jsonpath='{.spec.template.spec.containers[0].image}'
 $ oc patch smcp/basic -p='{"spec":{"general":{"logging":{"componentLevels":{"ior":"debug"}}}}}'  --type=merge
@@ -74,22 +74,22 @@ $ oc get rolebinding -o=custom-columns=USERS:.userNames,GROUPS:.groupNames
 for i in `oc get pv  -o=custom-columns=NAME:.metadata.name | grep pvc` ;
    do oc describe pv $i | grep Path |awk '{print $2}';
 done
-~~~
+```
 
 ## Regenerate IGN files
 
-~~~bash
+```bash
 
 $ oc extract -n openshift-machine-api secret/master-user-data --keys=userData --to=-
 $ oc extract -n openshift-machine-api secret/worker-user-data --keys=userData --to=-
 
-~~~
+```
 
 ## Check Namespaces Bound to Container
 
 <https://www.nginx.com/blog/what-are-namespaces-cgroups-how-do-they-work/>
 
-~~~bash
+```bash
 
 # List all the namespaces which the process 3063686 is using
 
@@ -131,19 +131,19 @@ $ nsenter -t 3063686 -n ip a
 
 $ nsenter -t 3063686 -m -p mount
 
-~~~
+```
 
 ## Check Node Log
 
-~~~bash
+```bash
 
 $ oc adm node-logs worker01.ocp4.example.com -u kubelet
 
-~~~
+```
 
 ## Flash the CoreOS with Particular Image
 
-~~~bash
+```bash
 
 $ mkdir -p /run/mco-machine-os-content/os-content-temp/
 
@@ -164,7 +164,7 @@ mc-daemon仍然报expect旧osImageURL的错误，由于/etc/machine-config-daemo
 
 $ rm -rf /etc/machine-config-daemon/*
 
-~~~
+```
 
 ## Force to Use osImageURL
 

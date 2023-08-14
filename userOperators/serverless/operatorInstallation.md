@@ -2,7 +2,7 @@
 
 ## installer.sh
 
-~~~bash
+```bash
 
 echo "Setting up Serverless..."
 
@@ -46,11 +46,11 @@ sleep 3
 #clear
 echo "Serverless Tutorial Ready!"
 
-~~~
+```
 
 ## operator-subscription.yaml
 
-~~~bash
+```bash
 apiVersion: operators.coreos.com/v1alpha1
 kind: Subscription
 metadata:
@@ -62,21 +62,21 @@ spec:
   name: serverless-operator
   source: redhat-operators
   sourceNamespace: openshift-marketplace
-~~~
+```
 
 ## knavie-serving
 
-~~~bash
+```bash
 apiVersion: operator.knative.dev/v1alpha1
 kind: KnativeServing
 metadata:
   name: knative-serving
   namespace: knative-serving
-~~~
+```
 
 ## watch-knative-serving.bash
 
-~~~bash
+```bash
 #!/usr/bin/env bash
 
 A=1
@@ -88,11 +88,11 @@ do
   A=$((A+1))
   sleep 10
 done
-~~~
+```
 
 ## watch-serverless-operator.bash
 
-~~~bash
+```bash
 #!/usr/bin/env bash
 
 function wait_for_operator_install {
@@ -127,4 +127,4 @@ function install_operator {
 
 install_operator
 wait_for_operator_install
-~~~
+```

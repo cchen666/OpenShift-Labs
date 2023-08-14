@@ -4,15 +4,15 @@
 
 <https://access.redhat.com/solutions/5127991>
 
-~~~bash
+```bash
 
 oc patch smcp basic -n istio-system --type merge -p '{"spec":{"proxy":{"accessLogging":{"file":{"name":"/dev/stdout"}}}}}'
 
-~~~
+```
 
 ## Change outboundTrafficPolicy
 
-~~~bash
+```bash
 
 $ oc edit smcp -n istio-system
 
@@ -23,4 +23,4 @@ spec:
         outbound:
           policy: REGISTRY_ONLY
 
-~~~
+```

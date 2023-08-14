@@ -2,17 +2,17 @@
 
 ## Set CoreOS kernel Args manually
 
-~~~bash
+```bash
 
 $ rpm-ostree kargs --editor
 $ rpm-ostree kargs --delete <karg1=value1> --append <karg2=value2>
 $ reboot
 
-~~~
+```
 
 ## Force to re-run the machine-config
 
-~~~bash
+```bash
 
 $ oc edit node <node>
 
@@ -31,4 +31,4 @@ to change three places:
 
 Check machine-config-daemon pod logs to locate the underlying problem and use the above steps to 
 force the machine-config re-run once
-~~~
+```

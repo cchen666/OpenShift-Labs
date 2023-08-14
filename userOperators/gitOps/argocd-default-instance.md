@@ -6,7 +6,7 @@
 
 By doing this you'll get an out-of-box ArgoCD instance under openshift-gitops namespace.
 
-~~~bash
+```bash
 $ oc get pods -n openshift-gitops
 cluster-d469b8c87-kxh8l                                       1/1     Running   0          4h52m
 kam-7f748468cd-7t62z                                          1/1     Running   0          5h33m
@@ -16,13 +16,13 @@ openshift-gitops-dex-server-d7c777869-pt2cf                   1/1     Running   
 openshift-gitops-redis-7867d74fb4-dw5st                       1/1     Running   0          5h33m
 openshift-gitops-repo-server-64f767c4b6-728wk                 1/1     Running   0          4h52m
 openshift-gitops-server-5964dbdd56-j7vkm                      1/1     Running   0          4h52m
-~~~
+```
 
 ## Configure ArgoCD Service Account Permission
 
 ### Option 1
 
-~~~bash
+```bash
 
 # We open cluster-admin permission to ArgoCD Service Account.
 
@@ -50,11 +50,11 @@ roleRef:
 EOF
 
 $ oc apply -f clusterrolebinding.yaml
-~~~
+```
 
 ### Option 2
 
-~~~bash
+```bash
 # Add precise permission to ArgoCD Service Account.
 
 # From the result of creating cert-manager Application, we know that the following 3 errors will be output.
@@ -115,19 +115,19 @@ roleRef:
 
 $ oc apply -f rolebinding.yaml
 clusterrolebinding.rbac.authorization.k8s.io/openshift-gitops-cluster-admin created
-~~~
+```
 
 ## Label cert-manager namespace
 
-~~~bash
+```bash
 $ oc edit namespace/cert-manager
   labels:
     argocd.argoproj.io/managed-by: openshift-gitops
-~~~
+```
 
 ## Create Application by using default ArgoCD instance
 
-~~~bash
+```bash
 $ cat << EOF > app.yaml
 apiVersion: argoproj.io/v1alpha1
 kind: Application
@@ -160,11 +160,11 @@ resources:
 
 # So when the Application is created, ArgoCD will run app/kustomization.yaml; As a result cert-manager
 # will be created in this example.
-~~~
+```
 
 ## Access ArgoCD UI
 
-~~~bash
+```bash
 # Get ArgoCD URL
 
 $ oc get route -n openshift-gitops
@@ -177,11 +177,11 @@ admin.password
 
 $ cat admin.password
 XXXXXXXXXX
-~~~
+```
 
 ## Use Edge TLS termination
 
-~~~bash
+```bash
 
 $ oc -n openshift-gitops patch argocd/openshift-gitops --type=merge -p='{"spec":{"server":{"insecure":true,"route":{"enabled":true,"tls":{"insecureEdgeTerminationPolicy":"Redirect","termination":"edge"}}}}}'
 
@@ -196,7 +196,7 @@ openshift-gitops-server   openshift-gitops-server-openshift-gitops.apps.mycluste
 
 # But the GitOps UI will report "Not Secure". Does it have any mixed content ? By inspecting the page I don't find any
 
-~~~
+```
 
 ## Good Sample
 

@@ -2,7 +2,7 @@
 
 ## Create Namespaces
 
-~~~bash
+```bash
 
 $ cat << EOF > namespace.yaml
 
@@ -31,11 +31,11 @@ spec:
 EOF
 
 $ oc apply -f namespace.yaml
-~~~
+```
 
 ## Create ArgoCD Instance
 
-~~~bash
+```bash
 # We can also use additional ArgoCD instance instead of the default out-of-box one
 
 $ cat << EOF > argo-instance.yaml
@@ -49,11 +49,11 @@ spec:
  server:
    route:
      enabled: true # creates an openshift route to access Argo CD UI
-~~~
+```
 
 ## Create Application
 
-~~~bash
+```bash
 
 $ cat << EOF > argo-app.yaml
 
@@ -75,7 +75,7 @@ spec:
 EOF
 
 $ oc apply -f argo-app.yaml
-~~~
+```
 
 ## More Information
 

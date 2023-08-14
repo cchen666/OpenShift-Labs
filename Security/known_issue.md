@@ -2,7 +2,7 @@
 
 ## Can't use secured route cert ?
 
-~~~bash
+```bash
 
 oc create route edge --service=openshift-flask --cert=fullchain.pem --key=privkey.pem --hostname=helloworld.nancyge.com
 
@@ -19,4 +19,4 @@ $  echo Q | openssl s_client -connect helloworld.nancyge.com:443 | openssl x509 
 
 # As the above shows, helloworld.nancyge.com still uses *.apps cert instead its own cert. So edge route can't use its own cert ?
 
-~~~
+```

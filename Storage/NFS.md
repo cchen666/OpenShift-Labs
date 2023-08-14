@@ -12,7 +12,7 @@
 
 ### Change rbac.yaml
 
-~~~bash
+```bash
 $ git clone https://github.com/kubernetes-sigs/nfs-subdir-external-provisioner.git
 
 $ oc create namespace openshift-nfs-storage
@@ -32,13 +32,13 @@ $ oc create -f deploy/rbac.yaml
 
 # and we need to update the service account with the right permissions:
 $ oc adm policy add-scc-to-user hostmount-anyuid system:serviceaccount:$NAMESPACE:nfs-client-provisioner
-~~~
+```
 
 ### Change deployment.yaml
 
 * from
 
-~~~yaml
+```yaml
           env:
             - name: PROVISIONER_NAME
               value: k8s-sigs.io/nfs-subdir-external-provisioner
@@ -51,11 +51,11 @@ $ oc adm policy add-scc-to-user hostmount-anyuid system:serviceaccount:$NAMESPAC
           nfs:
             server: 10.3.243.101
             path: /ifs/kubernetes
-~~~
+```
 
 * to:
 
-~~~yaml
+```yaml
           env:
             - name: PROVISIONER_NAME
               value: k8s-sigs.io/nfs-subdir-external-provisioner
@@ -68,11 +68,11 @@ $ oc adm policy add-scc-to-user hostmount-anyuid system:serviceaccount:$NAMESPAC
           nfs:
             server: 10.72.94.119
             path: /var/nfsshare
-~~~
+```
 
 ### class.yaml
 
-~~~ bash
+``` bash
 $ cat > deploy/class.yaml << EOF
 apiVersion: storage.k8s.io/v1
 kind: StorageClass
@@ -83,22 +83,22 @@ volumeBindingMode: Immediate
 parameters:
   archiveOnDelete: "false"
 EOF
-~~~
+```
 
 ### Create class and deployment
 
-~~~ bash
+``` bash
 $ oc create -f deploy/class.yaml
 $ oc create -f deploy/deployment.yaml
 
 $ oc get pods
 NAME                                     READY   STATUS      RESTARTS   AGE
 nfs-client-provisioner-8bdd474bb-6gl8c   1/1     Running     0          18m
-~~~
+```
 
 ### Test
 
-~~~bash
+```bash
 $ oc create -f deploy/test-claim.yaml -f deploy/test-pod.yaml
 
 # In NFS Server:
@@ -107,13 +107,13 @@ $ pwd
 /var/nfsshare/openshift-nfs-storage-test-claim-pvc-26721077-7c63-41c3-8264-9a5455073822
 $ ls
 SUCCESS
-~~~
+```
 
 ### Mark the NFS storage class as default
 
-~~~ bash
+``` bash
 $ oc patch storageclass nfs-client -p '{"metadata": {"annotations": {"storageclass.kubernetes.io/is-default-class": "true"}}}'
-~~~
+```
 
 ### Troubleshooting
 

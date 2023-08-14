@@ -56,4 +56,4 @@ spec:
     name: forward-to-remote
     outputRefs:
     - remote-elasticsearch
-~~~
+```

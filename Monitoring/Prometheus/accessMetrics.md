@@ -2,7 +2,7 @@
 
 ## Check Who Signs the Cert for Port 10250
 
-~~~bash
+```bash
 
 $ echo Q | openssl s_client -connect 10.72.36.88:10250 | openssl x509 -text
 Certificate:
@@ -13,19 +13,19 @@ Certificate:
         Signature Algorithm: sha256WithRSAEncryption
         Issuer: CN = kube-csr-signer_@1662182755
 
-~~~
+```
 
 ## Get Kubelet Root CA
 
-~~~bash
+```bash
 
 $ oc get cm kubelet-serving-ca -o yaml -n openshift-config-managed # Save the ca-bundle.crt to /tmp
 
-~~~
+```
 
 ## Create metrics-viewer ClusterRole
 
-~~~bash
+```bash
 
 $ oc get clusterrole | grep prometheus
 prometheus-adapter                                                                      2022-09-02T10:40:39Z
@@ -37,11 +37,11 @@ $ oc get clusterrole prometheus-k8s -o yaml
 
 $ oc apply -f files/metrics-viewer.yaml
 
-~~~
+```
 
 ## Create metrics-viewer SA
 
-~~~bash
+```bash
 
 $ oc project default
 $ oc create sa metrics-viewer
@@ -66,11 +66,11 @@ secrets:
 
 $ oc extract secret/metrics-viewer-token-dqfmw --keys=token  --to=/tmp --confirm
 
-~~~
+```
 
 ## Curl the Metrics
 
-~~~bash
+```bash
 
 $ curl  --cacert /tmp/ca-bundle.crt -H "Authorization: Bearer $(cat /tmp/token) " https://10.72.36.88:10250/metrics | wc -l
   % Total    % Received % Xferd  Average Speed   Time    Time     Time  Current
@@ -78,4 +78,4 @@ $ curl  --cacert /tmp/ca-bundle.crt -H "Authorization: Bearer $(cat /tmp/token) 
 100  350k    0  350k    0     0  12.6M      0 --:--:-- --:--:-- --:--:-- 12.6M
 2513
 
-~~~
+```

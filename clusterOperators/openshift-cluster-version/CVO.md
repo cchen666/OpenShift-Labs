@@ -14,7 +14,7 @@
 
 ## Get ClusterVersion and release-image
 
-~~~bash
+```bash
 $ oc get clusterversion version -o yaml | grep desired -A 10
 $ oc get clusterversion -o jsonpath='{.status.desired.image}{"\n"}' version
 
@@ -22,11 +22,11 @@ VER=$(oc get clusterversion version -o jsonpath='{.status.desired.image}')
 $ oc adm release extract --from=$VER --to=release-image
 
 $ ls release-image/*samples*
-~~~
+```
 
 ## Order of upgrade which is manifests from `release-image`
 
-~~~bash
+```bash
 $ oc project openshift-cluster-version
 $ oc get pods
 
@@ -58,7 +58,7 @@ total 4968
 -r--r--r--. 1 root root    151 Apr 15 14:34 0000_05_config-operator_02_authentication.cr.yaml
 -r--r--r--. 1 root root    142 Apr 15 14:34 0000_05_config-operator_02_build.cr.yaml
 
-~~~
+```
 
 ## Update graphical lab
 

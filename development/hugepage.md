@@ -4,7 +4,7 @@
 
 ## Check Worker Node Status
 
-~~~bash
+```bash
 $ cat /proc/meminfo | grep -i huge
 HugePages_Total:    1024
 HugePages_Free:     1024
@@ -12,11 +12,11 @@ HugePages_Rsvd:        0
 HugePages_Surp:        0
 Hugepagesize:       2048 kB
 Hugetlb:         2097152 kB
-~~~
+```
 
 ## Create Hugepage Pod and Start Application
 
-~~~bash
+```bash
 $ oc create -f files/hugepage-pod.yaml
 $ gcc hugepage.c
 $ oc cp a.out hugepage-pod-XXXXXX:/tmp
@@ -47,4 +47,4 @@ HugePages_Rsvd:        0
 HugePages_Surp:        0
 Hugepagesize:       2048 kB
 Hugetlb:         2097152 kB
-~~~
+```

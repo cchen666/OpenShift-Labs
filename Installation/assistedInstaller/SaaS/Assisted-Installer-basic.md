@@ -2,7 +2,7 @@
 
 ## Create Libvirt Network on Host
 
-~~~bash
+```bash
 $ cat << EOF > net.xml
 <network xmlns:dnsmasq='http://libvirt.org/schemas/network/dnsmasq/1.0'>
   <name>ocp-dev</name>
@@ -42,21 +42,21 @@ EOF
 
 $ virsh net-create net.xml
 $ virsh net-autostart ocp-dev
-~~~
+```
 
 ## Navigate to assited installer console
 
-~~~bash
+```bash
 https://console.redhat.com/openshift/assisted-installer/clusters/~new
 Cluster Name: mycluster
 Base Domain: ocp.com
 Next
 Generate Discovery ISO -> Copy your hosts ssh public key -> Generate Discovery ISO -> Download the ISO and save it
-~~~
+```
 
 ## Optional: Install Haproxy LoadBalancer VM
 
-~~~bash
+```bash
 
 $ virt-install -n ocp-haproxy \
 --memory 1024 \
@@ -167,11 +167,11 @@ EOF
 $ setenforce 0
 $ systemctl stop firewalld
 $ systemctl restart haproxy
-~~~
+```
 
 ## Install master and worker VMs
 
-~~~bash
+```bash
 $ IMAGE=/home/sno/images/discovery_image_mycluster.iso
 $ for i in 0 1 2; do
 virt-install -n ocp-master-$i \
@@ -209,14 +209,14 @@ virt-install -n ocp-infra-$i \
 --cdrom $IMAGE &
 done
 
-~~~
+```
 
 ## Kick off the Installation in Assited Installer Console
 
-~~~text
+```text
 The 5 hosts should be discovered and assign 3 masters + 2 workers and then press Install
 Important: Keep note of API VIP Address and Ingress VIP Address
-~~~
+```
 
 ## Post Install
 
@@ -225,7 +225,7 @@ Important: Keep note of API VIP Address and Ingress VIP Address
 * Note: If you already built a Haproxy LB VM, you don't need to do this step.
 * Update the ocp-dev to reflect API and Ingress VIP. You get these addresses in Assisted Installer Console
 
-~~~bash
+```bash
 $ virsh net-edit ocp-dev
 <Snip>
 
@@ -249,11 +249,11 @@ $ virsh net-edit ocp-dev
 $ virsh net-destroy ocp-dev
 $ virsh net-start ocp-dev
 $ systemctl restart libvirtd
-~~~
+```
 
 ### Configure Integrated Image Registry by Using Host NFS
 
-~~~bash
+```bash
 $ yum install nfs-utils -y
 
 $ mkdir /home/imagepv
@@ -310,13 +310,13 @@ $ curl openshift-flask-test-1.apps.mycluster.ocp.com
     <h1>我的第一个Flask网站</h1>
     <p> Flask是一个使用Python编写的轻量级Web应用框架。</p>
   </body>
-~~~
+```
 
 ### Dig More
 
 * The Assited Installer provides Keepalived (VIP) and Haproxy in openshift-kni-infra project and that's why we don't need to manually install an Haproxy LB VM.
 
-~~~bash
+```bash
 
 $ oc get pods -n openshift-kni-infra
 NAME                  READY   STATUS    RESTARTS   AGE
@@ -370,11 +370,11 @@ $ oc get pods -o wide -n openshift-ingress
 NAME                              READY   STATUS    RESTARTS   AGE   IP               NODE       NOMINATED NODE   READINESS GATES
 router-default-6fbdd9cfcf-x8ccv   1/1     Running   3          19h   192.168.123.10   worker-1   <none>           <none>
 router-default-6fbdd9cfcf-zj58k   1/1     Running   2          19h   192.168.123.9    worker-0   <none>           <none>
-~~~
+```
 
 ## Clean Up
 
-~~~bash
+```bash
 
 for i in 0 1 2; do
 virsh destroy ocp-master-$i
@@ -394,4 +394,4 @@ virsh undefine ocp-infra-$i
 rm -rf /home/sno/images/ocp-infra-$i.qcow2
 done
 
-~~~
+```

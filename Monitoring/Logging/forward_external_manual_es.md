@@ -2,7 +2,7 @@
 
 ## Create ES yum repo
 
-~~~bash
+```bash
 
 $ cat /etc/yum.repos.d/elastic.repo
 
@@ -17,11 +17,11 @@ type=rpm-md
 
 $ yum install --enablerepo=elasticsearch elasticsearch
 
-~~~
+```
 
 ## ES Configuration
 
-~~~bash
+```bash
 
 $ hostnamectl set-hostname node-1
 
@@ -36,11 +36,11 @@ cluster.initial_master_nodes: ["node-1"]
 
 $ systemctl start elasticsearch
 
-~~~
+```
 
 ## Create Kibana yum repo
 
-~~~bash
+```bash
 
 $ cat /etc/yum.repos.d/kibana.repo
 [kibana-7.x]
@@ -54,11 +54,11 @@ type=rpm-md
 
 $ yum install kibana
 
-~~~
+```
 
 ## Kibana Configuration
 
-~~~bash
+```bash
 
 $ grep -v ^# /etc/kibana/kibana.yml | grep -v ^$
 server.host: "10.0.8.230"
@@ -66,11 +66,11 @@ elasticsearch.hosts: ["http://10.0.8.230:9200"]
 
 $ systemctl start kibana
 
-~~~
+```
 
 ## Test
 
-~~~bash
+```bash
 
 # Configure the CLF as files/clf_es.yaml first
 
@@ -92,4 +92,4 @@ green  open   .tasks                          xDTJgpzjRY-V0lS6TS5CsQ   1   0    
 $ netstat -tunlp|grep 5601 # Kibana by default listens 5601
 tcp        0      0 10.0.8.230:5601         0.0.0.0:*               LISTEN      9027/node
 
-~~~
+```

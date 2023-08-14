@@ -11,41 +11,41 @@ To compile drivers for this kernel, you can obtain kernel-devel and other kernel
 
 Clear the channel, because we're about to head off-graph to places that do not appear in the Update Service's Cincinnati graph, so the cluster-version operator knows not to attempt to fetch the graph and find the current release:
 
-~~~bash
+```bash
   $ oc adm upgrade channel --allow-explicit-channel
-~~~
+```
 
 The channel subcommand requires a 4.9 or later oc.  For older oc, use:
 
-~~~bash
+```bash
   $ oc patch clusterversion/version -p '{"spec":{"channel":""}}' --type=merge
-~~~
+```
 
 Ask the cluster-version operator to update to the hotfix, using a by-digest @sha256 pullspec:
 
-~~~bash
+```bash
   $ oc adm upgrade --allow-explicit-upgrade --to-image "${PULLSPEC}"
-~~~
+```
 
 ## Returning to GA Releases
 
 Because the channel is clear and the hotfix does not appear in Update Service Cincinnati graphs, recommended updates must be monitored manually by cluster administrators or support.  Once a recommended update is identified, request an update using a by-digest @sha256 pullspec:
 
-~~~bash
+```bash
   $ oc adm upgrade --allow-explicit-upgrade --to-image "${PULLSPEC}"
-~~~
+```
 
 After completing the update, restore your prefered channel:
 
-~~~bash
+```bash
 $ oc adm upgrade channel "${CHANNEL}"
-~~~
+```
 
 The channel subcommand requires a 4.9 or later oc.  For older oc, use:
 
-~~~bash
+```bash
   $ oc patch clusterversion/version -p "{\"spec\":{\"channel\":\"${CHANNEL}\"}}" --type=merge
-~~~
+```
 
 ## Verified Upgrade Paths
 

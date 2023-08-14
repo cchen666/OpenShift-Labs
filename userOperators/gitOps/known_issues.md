@@ -14,10 +14,10 @@ By default GitOps uses `foreground` propagation policy to delete resources. Howe
 
 Workaround is to add following options
 
-~~~bash
+```bash
 
   syncPolicy:
     syncOptions:
     - PrunePropagationPolicy=background
 
-~~~
+```

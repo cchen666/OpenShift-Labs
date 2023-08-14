@@ -2,26 +2,26 @@
 
 ## Generate CA cert, server cert, key and client cert, key
 
-~~~bash
+```bash
 
 $ pip install trustme
 $ python cert.py
 
-~~~
+```
 
 ## Start the Server
 
-~~~bash
+```bash
 
 $ go run server.go
 
-~~~
+```
 
 ## Access the Server using mtls Way
 
 * The curl needs to specify either `--cacert` to trust server certificate CA,  or `-k` to bypass the certificate verification. The self-signed certificate doesn't work <https://unix.stackexchange.com/questions/451207/how-to-trust-self-signed-certificate-in-curl-command-line>
 
-~~~bash
+```bash
 
 $ curl --cacert ca.crt --cert client.crt --key client.key  https://localhost:8444/hello
 Hello, world!
@@ -41,4 +41,4 @@ curl failed to verify the legitimacy of the server and therefore could not
 establish a secure connection to it. To learn more about this situation and
 how to fix it, please visit the web page mentioned above.
 
-~~~
+```

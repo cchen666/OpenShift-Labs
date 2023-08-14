@@ -6,7 +6,7 @@ The Active Directory schema requires you to provide an LDAP query definition for
 
 Lookup users first and then use "memberOf" to look for groups.
 
-~~~yaml
+```yaml
 
 kind: LDAPSyncConfig
 apiVersion: v1
@@ -24,9 +24,9 @@ activeDirectory:
     userNameAttributes: [ sAMAccountName ]
     groupMembershipAttributes: [ memberOf ]
 
-~~~
+```
 
-~~~bash
+```bash
 
 $ oc adm groups sync --sync-config=adsync.yaml --loglevel=6
 
@@ -46,7 +46,7 @@ I0110 14:15:21.470388   87334 groupsyncer.go:120] Found OpenShift username "yhua
 I0110 14:15:21.470406   87334 groupsyncer.go:84] Has OpenShift users [yhuang]
 I0110 14:15:21.730069   87334 round_trippers.go:454] GET https://api.mycluster.nancyge.com:6443/apis/user.openshift.io/v1/groups/CN=support,OU=Groups,DC=bk,DC=mylab,DC=local 404 Not Found in 259 milliseconds
 
-~~~
+```
 
 ## RFC2307
 
@@ -54,7 +54,7 @@ The RFC 2307 schema requires you to provide an LDAP query definition for both us
 
 RFC 2307 will first lookup the groups and then use `member` attribute to find out users.
 
-~~~yaml
+```yaml
 
 kind: LDAPSyncConfig
 apiVersion: v1
@@ -81,9 +81,9 @@ rfc2307:
     userUIDAttribute: dn
     tolerateMemberNotFoundErrors: true
     tolerateMemberOutOfScopeErrors: true
-~~~
+```
 
-~~~bash
+```bash
 
 $ oc adm groups sync --sync-config=rfc2307.yaml --loglevel=6
 
@@ -108,7 +108,7 @@ I0110 14:10:57.900756   87291 ldapinterface.go:100] membership lookup for user "
 I0110 14:10:57.900790   87291 groupsyncer.go:120] Found OpenShift username "cchen" for LDAP user for &{CN=Chen Chen,OU=User-UAT,DC=uat,DC=mylab,DC=local [0xc000cc2000]}
 I0110 14:10:57.900844   87291 groupsyncer.go:84] Has OpenShift users [cchen]
 I0110 14:10:58.143453   87291 round_trippers.go:454] GET https://api.mycluster.nancyge.com:6443/apis/user.openshift.io/v1/groups/ocp-users 404 Not Found in 242 milliseconds
-~~~
+```
 
 ## AugmentedActiveDirectory
 
@@ -116,7 +116,7 @@ The augmented Active Directory schema requires you to provide an LDAP query defi
 
 Lookup users first and then use `memberOf` attribute to look for groups.
 
-~~~yaml
+```yaml
 
 kind: LDAPSyncConfig
 apiVersion: v1
@@ -141,9 +141,9 @@ augmentedActiveDirectory:
     userNameAttributes: [ sAMAccountName ]
     groupMembershipAttributes: [ memberOf ]
 
-~~~
+```
 
-~~~bash
+```bash
 
 $ oc adm groups sync --sync-config=augmentedad.yaml --loglevel=6
 
@@ -169,4 +169,4 @@ I0110 14:18:36.305887   87379 query.go:249] found dn="CN=support,OU=Groups,DC=bk
 I0110 14:18:36.306021   87379 query.go:198] found dn="CN=support,OU=Groups,DC=bk,DC=mylab,DC=local" for (objectClass=*)
 I0110 14:18:36.558650   87379 round_trippers.go:454] GET https://api.mycluster.nancyge.com:6443/apis/user.openshift.io/v1/groups/support 404 Not Found in 252 milliseconds
 
-~~~
+```

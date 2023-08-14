@@ -2,15 +2,15 @@
 
 ## Install openjdk 1.8
 
-~~~bash
+```bash
 
 $ yum install openjdk-1.8
 
-~~~
+```
 
 ## Download Jmeter Binary
 
-~~~bash
+```bash
 
 $ cd ~/Downloads
 $ wget https://archive.apache.org/dist/jmeter/binaries/apache-jmeter-5.5.tgz
@@ -18,15 +18,15 @@ $ wget https://archive.apache.org/dist/jmeter/binaries/apache-jmeter-5.5.tgz
 $ mkdir /usr/local/jmeter
 $ cp ~/Downloads/apache-jmeter-5.5.tgz /usr/local/jmeter
 $ tar xvf /usr/local/jmeter/apache-jmeter-5.5.tgz
-~~~
+```
 
 ## Configure Environment Variables
 
-~~~bash
+```bash
 $ tail -n 2 ~/.bashrc
 export JMETER_HOME=/usr/local/jmeter/apache-jmeter-5.5
 export PATH=${JMETER_HOME}/bin:$PATH
-~~~
+```
 
 ## Run Some Test
 
@@ -50,7 +50,7 @@ export PATH=${JMETER_HOME}/bin:$PATH
 
 * Run the test and check the result
 
-~~~bash
+```bash
 
 $ oc get pods
 NAME                               READY   STATUS      RESTARTS   AGE
@@ -60,18 +60,18 @@ openshift-flask-598b7c644f-74pzm   1/1     Running     0          3s
 openshift-flask-598b7c644f-8g54m   1/1     Running     0          2m51s
 openshift-flask-598b7c644f-tnd4r   1/1     Running     0          3m28s
 
-~~~
+```
 
 ![check_report](../images/check_report-1.png)
 
-~~~bash
+```bash
 $ oc get pods # Shrink Pods from 4 to 2
 
 NAME                               READY   STATUS      RESTARTS   AGE
 openshift-flask-2-build            0/1     Completed   0          57m
 openshift-flask-598b7c644f-2fjnj   1/1     Running     0          55m
 openshift-flask-598b7c644f-8g54m   1/1     Running     0          21m
-~~~
+```
 
 ![check_report_2](../images/check_report-2.png)
 

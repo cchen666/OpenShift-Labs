@@ -8,7 +8,7 @@ This includes not only server's BIOS, but also device BIOS.
 
 ## Enable iommu kernel args
 
-~~~bash
+```bash
 
 $ cat <<EOF > mc-iommu.yaml
 
@@ -31,11 +31,11 @@ EOF
 $ oc apply -f mc-iommu.yaml
 
 # Wait for the server reboot
-~~~
+```
 
 ## Create SR-IOV Network Operator
 
-~~~bash
+```bash
 
 $ cat << EOF > sriov-operator.yaml
 
@@ -105,11 +105,11 @@ spec:
   enableOperatorWebhook: true   <-------
   logLevel: 2
 
-~~~
+```
 
 ## Create SR-IOV Network Policy
 
-~~~bash
+```bash
 
 # First get the SriovNetworkNodeState CR to see whether the VFs have been identified by the server:
 
@@ -207,11 +207,11 @@ I1013 07:23:56.983619       1 factory.go:108] device added: [pciAddr: 0000:3b:02
 I1013 07:23:56.983623       1 factory.go:108] device added: [pciAddr: 0000:3b:02.6, vendor: 8086, device: 154c, driver: iavf]
 I1013 07:23:56.983626       1 factory.go:108] device added: [pciAddr: 0000:3b:02.7, vendor: 8086, device: 154c, driver: iavf]
 
-~~~
+```
 
 ## Create SRIOV Network CR
 
-~~~bash
+```bash
 
 $ oc new-project test-1
 
@@ -248,11 +248,11 @@ $ oc apply -f sriov-network.yaml
 $ oc get net-attach-def -n test-1
 NAME              AGE
 example-network   23m
-~~~
+```
 
 ## Create PODs using example-network
 
-~~~bash
+```bash
 
 # In metadata.annotations we specify the network we created previously
 
@@ -382,4 +382,4 @@ I1013 12:34:31.240547       1 pool_stub.go:97] GetEnvs(): for devices: [0000:3b:
 I1013 12:34:31.240554       1 pool_stub.go:113] GetMounts(): for devices: [0000:3b:02.5]
 I1013 12:34:31.240559       1 server.go:124] AllocateResponse send: &AllocateResponse{ContainerResponses:[]*ContainerAllocateResponse{&ContainerAllocateResponse{Envs:map[string]string{PCIDEVICE_OPENSHIFT_IO_SRIOV_NETDEVICE_ENS1F0: 0000:3b:02.5,},Mounts:[]*Mount{},Devices:[]*DeviceSpec{},Annotations:map[string]string{},},},}
 
-~~~
+```

@@ -4,47 +4,47 @@
 
 In Command Line:
 
-~~~bash
+```bash
 
 $ oc create -f https://download.elastic.co/downloads/eck/2.1.0/crds.yaml
 $ oc apply -f https://download.elastic.co/downloads/eck/2.1.0/operator.yaml
 
-~~~
+```
 
 ## Deploy ElasticSearch CR
 
-~~~bash
+```bash
 
 $ oc new-project test-es
 $ oc apply -f files/elasticsearch/ECK_es.yaml
 $ oc apply -f files/elasticsearch/ECK_kibana.yaml
 
-~~~
+```
 
 ## Get elastic Password
 
-~~~bash
+```bash
 
 $ PASSWORD=$(oc get secret elasticsearch-sample-es-elastic-user -o go-template='{{.data.elastic | base64decode}}')
 $ echo $PASSWORD
 
-~~~
+```
 
 ## Use Trusted Certificate for Kibana
 
 By default Kibana uses its own CA to sign the certificate. So you have to trust the self-signed CA when login to the Kibana. Here we change the self-signed certificate to the cert which is signed by publicly trusted CA.
 
-~~~bash
+```bash
 
 # Examine the files/elasticsearch/ECK_kibana_tls.yaml and replace the certificate and key with your publicly facing certificate and key
 
 $ oc apply -f files/elasticsearch/ECK_kibana_tls.yaml
 
-~~~
+```
 
 ## Validation
 
-~~~bash
+```bash
 
 $  oc get route
 NAME                   HOST/PORT                                                 PATH   SERVICES                       PORT    TERMINATION            WILDCARD
@@ -57,4 +57,4 @@ ip           heap.percent ram.percent cpu load_1m load_5m load_15m node.role   m
 10.128.2.44            50          73   3    3.05    8.07     7.62 cdfhilmrstw *      elasticsearch-sample-es-default-2
 10.128.2.45            53          71   7    3.05    8.07     7.62 cdfhilmrstw -      elasticsearch-sample-es-default-0
 
-~~~
+```

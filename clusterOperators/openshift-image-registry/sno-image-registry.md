@@ -4,7 +4,7 @@
 
 ## Create PV/VG/LV on SNO Node
 
-~~~bash
+```bash
 
 $ pvcreate /dev/sdb
 $ vgcreate ocp-vg /dev/sdb
@@ -13,11 +13,11 @@ $ lvcreate -L 100G -n ocp-lv-1
 $ lvcreate -L 100G -n ocp-lv-2
 $ lvcreate -L 100G -n ocp-lv-3
 
-~~~
+```
 
 ## Create LocalVolume CR
 
-~~~bash
+```bash
 
 $ oc apply -f files/localvolume.yaml -n openshift-local-storage
 
@@ -27,19 +27,19 @@ local-pv-49c4ebd1   100Gi      RWO            Delete           Available        
 local-pv-5c5a8a98   100Gi      RWO            Delete           Available                                                 mysc                    42m
 local-pv-908cb105   200Gi      RWO            Delete           Available                                    mysc                    6m55s
 local-pv-f89162a    100Gi      RWO            Delete           Available                                                 mysc                    42m
-~~~
+```
 
 ## Create PVC
 
-~~~bash
+```bash
 
 $ oc apply -f files/pvc-image-registry.yaml -n openshift-image-registry
 
-~~~
+```
 
 ## Edit ImageRegistry Configuration
 
-~~~bash
+```bash
 
 $ oc edit configs.imageregistry
 spec:
@@ -60,4 +60,4 @@ spec:
     managementState: Managed
     pvc:                            <========
       claim: pvc-image-registry     <========
-~~~
+```

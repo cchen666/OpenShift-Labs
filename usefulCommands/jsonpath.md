@@ -2,15 +2,15 @@
 
 ## Single Item
 
-~~~bash
+```bash
 
 $ oc get csr csr-xm6xp -ojsonpath={.status.certificate}
 
-~~~
+```
 
 ## Range
 
-~~~bash
+```bash
 $ oc get fileintegritynodestatuses -ojsonpath='{range .items[*]}{.metadata.name}{"\t"}{.results}{"\n"}{end}'
 
 example-fileintegrity-ip-10-0-133-172.us-east-2.compute.internal [{"condition":"Succeeded","lastProbeTime":"2022-10-14T06:02:54Z"}]
@@ -28,4 +28,4 @@ example-fileintegrity-ip-10-0-223-39.us-east-2.compute.internal [{"condition":"S
 # image-name:tag,
 $ oc get pods --all-namespaces -o jsonpath='{range .items[*]}{@.metadata.namespace}:{@.metadata.name}{"\n"}{range .spec.containers[*]}{.image}{","}{end}{"\n"}{end}'
 
-~~~
+```

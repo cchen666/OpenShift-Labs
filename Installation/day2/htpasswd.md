@@ -2,16 +2,16 @@
 
 ## Create htpasswd File
 
-~~~bash
+```bash
 
 $ htpasswd -bBc /tmp/htpasswd.txt cchen redhat
 $ oc create secret generic htpass-secret --from-file=htpasswd=/tmp/htpasswd.txt -n openshift-config
 
-~~~
+```
 
 ## Patch Identity Provider
 
-~~~bash
+```bash
 
 $ cat <<EOF | oc apply -f -
 apiVersion: config.openshift.io/v1
@@ -28,12 +28,12 @@ spec:
         name: htpass-secret
 
 EOF
-~~~
+```
 
 ## Bind ClusterRole
 
-~~~bash
+```bash
 
 $ oc adm policy add-cluster-role-to-user cluster-admin cchen
 
-~~~
+```

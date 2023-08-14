@@ -2,9 +2,9 @@
 
 ## Test AD connection command
 
-~~~bash
+```bash
 $ ldapsearch -h 10.0.95.91 -b "dc=titamu,dc=com" -D "CN=Chen Chen, CN=Users, DC=titamu, DC=com" -w '<password>' -x
-~~~
+```
 
 ## Get AD's CA
 
@@ -16,13 +16,13 @@ $ ldapsearch -h 10.0.95.91 -b "dc=titamu,dc=com" -D "CN=Chen Chen, CN=Users, DC=
 
 ## Create bind user's secret file
 
-~~~bash
+```bash
 $ oc create secret generic ldap-secret --from-literal=bindPassword='<password>' -n openshift-config
-~~~
+```
 
 ## Create OAuth yaml file
 
-~~~yaml
+```yaml
 
 apiVersion: config.openshift.io/v1
 kind: OAuth
@@ -48,11 +48,11 @@ spec:
         name: ldap-secret
       insecure: true
       url: "ldap://10.0.169.81/ou=openshift,ou=support,dc=titamu,dc=com?sAMAccountName"
-~~~
+```
 
 ## Group Sync
 
-~~~bash
+```bash
 $ cat << EOF > active_directory_config.yaml
 kind: LDAPSyncConfig
 apiVersion: v1
@@ -116,7 +116,7 @@ CN=admin,OU=openshift,OU=cloud,DC=titamu,DC=com     yaoli, yhuang
 CN=qe,OU=openshift,OU=cloud,DC=titamu,DC=com        wsun
 CN=support,OU=openshift,OU=cloud,DC=titamu,DC=com   yaoli, yhuang
 ocp_support                                         yaoli, yhuang  <--- Created automatically
-~~~
+```
 
 ## AD subdomain configurations
 
@@ -154,7 +154,7 @@ Global Catalog: $GC-IP:3268
 ldapsearch 可以查询到 user cchen 属于 ocp-users 这个 group（memberOf 这一行），
 但是 yaoli 没有 memberOf 这一行，即 yaoli 不属于 ocp-users 这个组
 
-~~~bash
+```bash
 $ ldapsearch -h GC-IP -p 3268 -b "OU=user-uat,dc=uat,dc=mylab,dc=local" -D "CN=rootadmin,CN=Users,DC=mylab,DC=local" -w '<password>' -x
 
 <Snip>
@@ -199,13 +199,13 @@ userPrincipalName: yaoli@uat.mylab.local
 objectCategory: CN=Person,CN=Schema,CN=Configuration,DC=mylab,DC=local
 dSCorePropagationData: 16010101000000.0Z
 lastLogonTimestamp: 132813422140541297
-~~~
+```
 
 【1. Login 部分】
 
 如果指定 url: ldap://$GC-IP:3268/dc=bk,dc=mylab,dc=local?sAMAccountName，cchen 是无法登陆的，因为 cchen 用户在 uat 域
 
-~~~yaml
+```yaml
   identityProviders:
   - ldap:
       attributes:
@@ -225,9 +225,9 @@ lastLogonTimestamp: 132813422140541297
     mappingMethod: claim
     name: ldapidp
     type: LDAP
-~~~
+```
 
-~~~bash
+```bash
 $ oc login -u cchen -p 'RedHat1!'
 Login failed (401 Unauthorized)
 Verify you have provided correct credentials.
@@ -309,11 +309,11 @@ $ oc get group
 
 NAME          USERS
 ocp-users     cchen
-~~~
+```
 
 【3. 限制特定 group 人员登陆】
 
-~~~bash
+```bash
 url: ldap://$GC-IP:3268/dc=uat,dc=mylab,dc=local?sAMAccountName，尧帝是可以登陆的
 
 $ oc login -u yaoli -p <password>
@@ -333,12 +333,12 @@ $ oc login -u yaoli -p <password>
 
 Login failed (401 Unauthorized)
 Verify you have provided correct credentials.
-~~~
+```
 
 【4. 注意点】
 
 变更 OAuth Cluster CR 之后一定要观察 oc get co | grep auth，有一个 Progressing 的过程。如果没有，强制重启 oauth PODs。
 
-~~~bash
+```bash
 $ oc delete pods -l app=oauth-openshift
-~~~
+```

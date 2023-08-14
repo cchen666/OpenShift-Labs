@@ -2,13 +2,13 @@
 
 ## Create LocalVolume CR
 
-~~~bash
+```bash
 $ oc apply files/LocalVolume.yaml
-~~~
+```
 
 ## Create Pod
 
-~~~bash
+```bash
 $ oc apply -f files/pod.yaml
 $ oc get pods
 NAME    READY   STATUS    RESTARTS   AGE
@@ -20,21 +20,21 @@ sh-4.2# ls /data/ | wc -l
 
 sh-4.2# cd /data
 sh-4.2# touch a b c d e f g
-~~~
+```
 
 ## Verify the files created in PV exists even deleting the POD
 
-~~~bash
+```bash
 $ oc delete pod rhel7
 $ oc apply files/pod.yaml
 $ oc rsh rhel7
 sh-4.2# ls /data/
 a  b  c  d  e  f  g
-~~~
+```
 
 ## Further Look
 
-~~~bash
+```bash
 
 # Kubelet Logs
 
@@ -70,4 +70,4 @@ tmpfs            16G   20K   16G   1% /run/secrets/kubernetes.io/serviceaccount
 tmpfs            16G     0   16G   0% /proc/acpi
 tmpfs            16G     0   16G   0% /proc/scsi
 tmpfs            16G     0   16G   0% /sys/firmware
-~~~
+```

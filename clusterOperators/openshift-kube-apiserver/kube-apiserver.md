@@ -2,7 +2,7 @@
 
 ## Get current revision
 
-~~~bash
+```bash
 $ oc get kubeapiserver -o=jsonpath='{range .items[0].status.conditions[?(@.type=="NodeInstallerProgressing")]}{.reason}{"\n"}{.message}{"\n"}'
 
 Updating:
@@ -12,7 +12,7 @@ Update Done:
 
 AllNodesAtLatestRevision
 1 nodes are at revision 20
-~~~
+```
 
 ## Customize audit logging
 
@@ -25,7 +25,7 @@ AllNodesAtLatestRevision
 <https://kubernetes.io/zh/docs/concepts/cluster-administration/flow-control/>
 <https://blog.csdn.net/sinat_37367944/article/details/116329588>
 
-~~~bash
+```bash
 
 $ oc get --raw /debug/api_priority_and_fairness/dump_priority_levels
 PriorityLevelName,                 ActiveQueues, IsIdle, IsQuiescing, WaitingRequests, ExecutingRequests
@@ -49,4 +49,4 @@ system                              Limited   30                         64     
 workload-high                       Limited   40                         128      6          50                 26d
 workload-low                        Limited   100                        128      6          50                 26d$
 
-~~~
+```

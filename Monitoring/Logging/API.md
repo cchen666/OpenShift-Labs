@@ -6,7 +6,7 @@
 
 * ?v - Add title of output
 
-~~~bash
+```bash
 
 GET /_cat/master?v
 
@@ -20,21 +20,21 @@ ip           heap.percent ram.percent cpu load_1m load_5m load_15m node.role mas
 10.129.3.129           57          99   8    0.76    1.03     1.35 mdi       *      elasticsearch-cdm-br1yl6pa-2
 10.131.0.133           39          98   7    2.20    1.92     2.17 mdi       -      elasticsearch-cdm-br1yl6pa-1
 
-~~~
+```
 
 * ?h - Headers
 
-~~~bash
+```bash
 
 $ es_util --query=_cat/master?v\&h=ip,node
 ip           node
 10.129.3.129 elasticsearch-cdm-br1yl6pa-2
 
-~~~
+```
 
 * ?help - Check possible columns
 
-~~~bash
+```bash
 $ es_util --query=_cat/nodes?help
 id                           | id,nodeId                      | unique node id
 pid                          | p                              | process id
@@ -61,11 +61,11 @@ ip           uptime ram.current
 10.129.3.129   3.3d       7.9gb
 10.131.0.133   3.3d       7.8gb
 
-~~~
+```
 
 ## Indices
 
-~~~bash
+```bash
 $ oc rsh elasticsearch-cdm-br1yl6pa-3-86b76c6b98-ldzm5
 
 # We can tell quickly how many shards make up an index, the number of replica, the number of docs, 
@@ -82,11 +82,11 @@ green  open   audit-000004 _OSxgKfrQtuqfVA-O7QE8Q   3   1          0            
 green  open   app-000051   YdC2g9ruSL2VIVvGQ9IRlA   3   1       3596            0      4.7mb          2.4mb
 green  open   app-000060   npASHNtWQ7y1QY1U_Olj7g   3   1       3861            0      5.1mb          2.5mb
 green  open   app-000055   6NSbM9aESyy3a-7vsGG7eA   3   1       3602            0      4.7mb          2.3mb
-~~~
+```
 
 ## ElasticSearch Version
 
-~~~bash
+```bash
 
 $ $ es_util --query=/
 {
@@ -106,11 +106,11 @@ $ $ es_util --query=/
   },
   "tagline" : "You Know, for Search"
 }
-~~~
+```
 
 ## Cluster Health Status
 
-~~~bash
+```bash
 
 $ es_util --query=_cluster/health?pretty
 {
@@ -137,11 +137,11 @@ $ es_util --query=_cluster/health?pretty
 
 # active_shards: 256. Because for every Indices we have Replica = 1, so totaly shards number = 128 * 2 = 256.
 
-~~~
+```
 
 ## Memory Usage sorted by Index
 
-~~~bash
+```bash
 
 # Pay attention to the '&' we need to add slash in front of it
 
@@ -163,4 +163,4 @@ app-000065   316.8kb
 app-000055   315.8kb
 app-000056   315.7kb
 
-~~~
+```

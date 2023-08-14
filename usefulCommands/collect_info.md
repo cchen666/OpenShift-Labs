@@ -2,13 +2,13 @@
 
 ## Namespaces
 
-~~~bash
+```bash
 oc adm inspect $(oc get co -o name) clusterversion/version ns/openshift-cluster-version $(oc get node -o name) ns/default ns/openshift ns/kube-system ns/openshift-etcd
-~~~
+```
 
 ## Alternative method
 
-~~~bash
+```bash
 gathering data via script Instead, create and execute the following script:
 
 cat <<'EOF' > collect-sriov-operator-data.sh
@@ -72,7 +72,7 @@ done
 
 EOF
 bash collect-sriov-operator-data.sh | tee collect-sriov-operator-data.txt
-~~~
+```
 
 ## Quick method to collect sosreport
 
@@ -80,7 +80,7 @@ bash collect-sriov-operator-data.sh | tee collect-sriov-operator-data.txt
 
 sos pod yaml
 
-~~~ yaml
+``` yaml
 apiVersion: v1
 kind: Pod
 metadata:
@@ -127,11 +127,11 @@ spec:
       type: Directory
   - name: sos-data
     emptyDir: {}
-~~~
+```
 
 sos pod template yaml
 
-~~~ yaml
+``` yaml
 apiVersion: v1
 kind: Template
 metadata:
@@ -191,9 +191,9 @@ parameters:
 - description: "Node Name to collect the sosreport on."
   name: NODE_NAME
   required: true
-~~~
+```
 
-~~~bash
+```bash
 $ oc get template
 NAME                 DESCRIPTION   PARAMETERS    OBJECTS
 sosreport-template   Description   1 (all set)   1
@@ -202,4 +202,4 @@ NAME                DESCRIPTION                              GENERATOR          
 NODE_NAME           Node Name to collect the sosreport on.
 $ oc process sosreport-template -p NODE_NAME=master-0 | oc apply -f -
 
-~~~
+```

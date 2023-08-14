@@ -12,24 +12,24 @@
 
 ## Deploy Quay CR
 
-~~~bash
+```bash
 
 $ oc create secret generic --from-file config.yaml=./files/config.yaml init-config-bundle-secret
 
 $ oc create -f files/quayregistry.yaml
 
-~~~
+```
 
 ## Create quayadmin password
 
-~~~bash
+```bash
 $  curl -X POST -k  https://example-registry-quay-quay-enterprise.apps.docs.quayteam.org/api/v1/user/initialize --header 'Content-Type: application/json' --data '{ "username": "quayadmin", "password":"<your password>", "email": "quayadmin@example.com", "access_token": true}'
 
-~~~
+```
 
 ## Test
 
-~~~bash
+```bash
 
 # podman images
 REPOSITORY                                                                                 TAG     IMAGE ID       CREATED        SIZE
@@ -64,4 +64,4 @@ $ oc get pv | grep noobaa
 pvc-82554c07-1ef6-4df8-9956-1953a0d01f22   300Gi      RWO            Delete           Bound    openshift-storage/noobaa-pv-backing-store-noobaa-pvc-66e12faa      gp2                     12h
 pvc-e3bc1c8e-53b3-4abf-9c4d-72ff7c9ac496   300Gi      RWO            Delete           Bound    openshift-storage/noobaa-pv-backing-store-noobaa-pvc-3cd9b132      gp2                     12h
 pvc-fb0d4aab-6f99-4be0-a405-08ef6ed0430f   50Gi       RWO            Delete           Bound    openshift-storage/db-noobaa-db-pg-0
-~~~
+```

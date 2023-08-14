@@ -2,27 +2,27 @@
 
 ## Create Cluster
 
-~~~bash
+```bash
 
 $ aicli create cluster --paramfile files/ipv4.yml mycluster
 $ aicli update cluster -P base_dns_domain=ocp.com mycluster
 $ aicli update cluster -P network_type=OpenShiftSDN mycluster
-~~~
+```
 
 ## Download ISO
 
-~~~bash
+```bash
 
 
 $ aicli create iso mycluster # Deprecated API to get ISO link but you can directly download the ISO
 $ cd /home/sno/images
 $ aicli download iso mycluster
 
-~~~
+```
 
 ## Create VMs
 
-~~~bash
+```bash
 
 $ IMAGE=<downloaded ISO>
 
@@ -39,11 +39,11 @@ virt-install \
 --cdrom $IMAGE & \
 done
 
-~~~
+```
 
 ## Launch the Installation
 
-~~~bash
+```bash
 
 # We can cannot specify api_vip when creating the cluster now but can only update the cluster later
 # Being addressed in https://github.com/openshift/assisted-service/pull/3258
@@ -54,10 +54,10 @@ $ aicli update host master-0 -P extra_args="--append-karg=ip=dhcp6"
 
 $ aicli start cluster mycluster
 
-~~~
+```
 
 ## Known Issues
 
-~~~bash
+```bash
 failed executing nsenter [--target 1 --cgroup --mount --ipc --pid -- coreos-installer install --insecure -i /opt/install-dir/master-7ab24253-9f06-470a-b26f-a83e5c382df8.ign --append-karg iommu pt --append-karg intel_iommu on --append-karg ip=enp1s0:dhcp /dev/vda], Error exit status 1, LastOutput \\\"... ument 'on' which wasn't expected, or isn't valid in this context\\n\\nUSAGE:\\n    coreos-installer install <device> --append-karg <arg>... --ignition-file <path> --insecure\\n\\nFor more information try --help\\\"\" request_id=29182758-dec4-4fbd-84d6-0159a92aff1d\n\n\nstderr:\nexit status 1\n" file="step_processor.go:102" request_id=dcf48e3d-74b8-40a8-81a4-4cca7b49fe52
-~~~
+```

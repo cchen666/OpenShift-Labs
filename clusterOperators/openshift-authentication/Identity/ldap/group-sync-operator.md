@@ -2,13 +2,13 @@
 
 ## Create Secret
 
-~~~bash
+```bash
 $ oc create secret generic ldap-group-sync --from-literal=username='uid=binduser,cn=users,cn=accounts,dc=mycluster,dc=nancyge,dc=com' --from-literal=password='<password>'
-~~~
+```
 
 ## Create GroupSync CR
 
-~~~bash
+```bash
 
 apiVersion: redhatcop.redhat.io/v1alpha1
 kind: GroupSync
@@ -46,13 +46,13 @@ spec:
 
 $ oc apply -f 
 
-~~~
+```
 
 ## Check the logs
 
-~~~bash
+```bash
 
 $ oc logs -c manager group-sync-operator-controller-manager-74fb99df47-wz59t -n group-sync-operator
 
 2021-10-19T13:54:38.441Z INFO controllers.GroupSync Sync Completed Successfully {"groupsync": "group-sync-operator/ldap-groupsync", "Provider": "ldap", "Groups Created or Updated": 7}
-~~~
+```

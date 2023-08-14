@@ -2,7 +2,7 @@
 
 ## Generate ISO
 
-~~~bash
+```bash
 
 $ ./openshift-install --dir install agent create image
 INFO The rendezvous host IP (node0 IP) is 192.168.123.80
@@ -11,11 +11,11 @@ INFO Base ISO obtained from release and cached at /root/.cache/agent/image_cache
 INFO Consuming Agent Config from target directory
 INFO Consuming Install Config from target directory
 
-~~~
+```
 
 ## Boot VM
 
-~~~bash
+```bash
 
 $ virt-install -n sno412-ipv6 \
 --memory 16384 \
@@ -26,14 +26,14 @@ $ virt-install -n sno412-ipv6 \
 --network network=ocp-dev \
 --cdrom /home/sno/agent.x86_64.iso
 
-~~~
+```
 
 ## Watch the Installation Process
 
-~~~bash
+```bash
 
 $   journalctl --field _SYSTEMD_UNIT
 $ journalctl -u assisted-service -f
 $ journalctl -u start-cluster-installation
 
-~~~
+```

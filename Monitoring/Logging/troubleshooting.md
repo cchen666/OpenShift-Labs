@@ -2,7 +2,7 @@
 
 ## Information Collection
 
-~~~bash
+```bash
 
 1) $ for i in $(oc get pods -l component=fluentd | awk '/fluentd/ { print $1 }') ; do oc exec $i -- du -sh /var/lib/fluentd  ; done
 2) $ oc exec $es-pod -c elasticsearch  -- es_util --query=_all/_settings?pretty | grep read_only_allow_delete
@@ -14,13 +14,13 @@
 8] $ oc get clusterlogging -oyaml >& clo.text
 9) $ oc adm must-gather --image=quay.io/openshift/origin-cluster-logging-operator -- /usr/bin/gather
 
-~~~
+```
 
 ## Known Issue
 
 ### The elastic-cdm is in Pending and elastic-search-im is in Error state; Fluentd is in Init:CrashLoopBackoff
 
-~~~bash
+```bash
 $ oc get pods -n openshift-logging
 NAME                                            READY   STATUS                  RESTARTS   AGE
 cluster-logging-operator-6b675d448-vhqkz        1/1     Running                 0          5d10h
@@ -41,11 +41,11 @@ fluentd-l5mxc                                   0/1     Init:CrashLoopBackOff   
 fluentd-scxsr                                   0/1     Init:CrashLoopBackOff   1144       4d20h
 fluentd-x2lv4                                   0/1     Init:0/1                1144       4d20h
 kibana-696fb4fb8b-779cd                         2/2     Running                 0          4d20h
-~~~
+```
 
 * Since fluentd needs ES to work first, we can focus on ES. The following logs show we don't have enough memory.
 
-~~~bash
+```bash
 $ oc get ev -n openshift-logging
 LAST SEEN   TYPE      REASON                 OBJECT                                              MESSAGE
 175m        Normal    Scheduled              pod/curator-1615779000-6q5xr                        Successfully assigned openshift-logging/curator-1615779000-6q5xr to ip-10-0-183-117.us-east-2.compute.internal
@@ -166,9 +166,9 @@ LAST SEEN   TYPE      REASON                 OBJECT                             
 85m         Normal    SuccessfulCreate       cronjob/elasticsearch-im-app                        Created job elasticsearch-im-app-1615784400
 84m         Normal    SawCompletedJob        cronjob/elasticsearch-im-app                        Saw completed job: elasticsearch-im-app-1615784400, status: Failed
 84m         Normal    SuccessfulDelete       cronjob/elasticsearch-im-app                        Deleted job elasticsearch-im-app-1615783500
-~~~
+```
 
-~~~yaml
+```yaml
 apiVersion: "logging.openshift.io/v1"
 kind: "ClusterLogging"
 metadata:
@@ -212,11 +212,11 @@ spec:
     logs:
       type: "fluentd"
       fluentd: {}
-~~~
+```
 
 * Increase the node's memory solves the issue
 
-~~~bash
+```bash
 $ oc get pods -n openshift-logging
 NAME                                            READY   STATUS    RESTARTS   AGE
 cluster-logging-operator-6b675d448-v2wgp        1/1     Running   0          10m
@@ -233,4 +233,4 @@ fluentd-lnvxq                                   1/1     Running   0          51s
 fluentd-qk9kc                                   1/1     Running   0          51s
 fluentd-zfszl                                   1/1     Running   0          51s
 kibana-696fb4fb8b-gfqtj                         2/2     Running   0          21s
-~~~
+```

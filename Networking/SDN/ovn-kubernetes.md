@@ -4,7 +4,7 @@
 
 * Basic call order of OVN
 
-~~~text
+```text
 
 North Bound -> ovn-northd -> South Bound -> ovn-controller -> ovs DB -> vswitchd
 
@@ -40,11 +40,11 @@ North Bound -> ovn-northd -> South Bound -> ovn-controller -> ovs DB -> vswitchd
        |  ovs-vswitchd   ovsdb-server  |     |  ovs-vswitchd   ovsdb-server  |
        |                               |     |                               |
        +-------------------------------+     +-------------------------------+
-~~~
+```
 
 * Check Pods:
 
-~~~bash
+```bash
 
 $ oc get pods -n openshift-ovn-kubernetes
 ovnkube-master-fcfpg   6/6     Running   3          4d4h
@@ -56,13 +56,13 @@ ovnkube-node-c76xv     4/4     Running   0          4d4h
 ovnkube-node-h4sgh     4/4     Running   1          4d4h
 ovnkube-node-m7gjl     4/4     Running   0          4d4h
 ovnkube-node-v6v7p     4/4     Running   0          4d4h
-~~~
+```
 
 ## Useful Commands to Troubleshoot
 
 * Check NB
 
-~~~bash
+```bash
 $ oc exec -it ovnkube-master-fcfpg -c ovnkube-master -- ovs-appctl -t /var/run/ovn/ovnnb_db.ctl cluster/status OVN_Northbound
 
 300b
@@ -88,20 +88,20 @@ Servers:
     7a8c (7a8c at ssl:10.0.199.196:9643) next_index=52994 match_index=52993 last msg 2488 ms ago
     3886 (3886 at ssl:10.0.175.92:9643) next_index=52994 match_index=52993 last msg 2488 ms ago
     300b (300b at ssl:10.0.128.218:9643) (self) next_index=2 match_index=52993
-~~~
+```
 
-~~~bash
+```bash
 
 $ oc exec -it ovnkube-master-fcfpg -c northd -- ovn-nbctl show
 $ oc exec -it ovnkube-master-fcfpg -c northd -- ovn-nbctl lr-list
 $ oc exec -it ovnkube-master-fcfpg -c northd -- ovn-nbctl ls-list
 $ oc exec -it ovnkube-master-fcfpg -c northd -- ovn-nbctl lb-list ### cchen: lb is the service
 
-~~~
+```
 
 * Check logical flows in SB
 
-~~~bash
+```bash
 
 $ oc rsh ovnkube-master-fcfpg
 
@@ -137,13 +137,13 @@ Subsets:
 sh-4.4# ovn-nbctl --db ssl:10.0.128.218:9641 -p /ovn-cert/tls.key -c /ovn-cert/tls.crt -C /ovn-ca/ca-bundle.crt show
 
 sh-4.4# ovn-sbctl --db ssl:10.0.128.218:9642 -p /ovn-cert/tls.key -c /ovn-cert/tls.crt -C /ovn-ca/ca-bundle.crt lflow-list
-~~~
+```
 
 * Simulate Sending Packet
 
 1. ovnkube-trace - Recommended
 
-    ~~~bash
+    ```bash
 
     $ POD=`oc get pods -n openshift-ovn-kubernetes -l app=ovnkube-master |grep -v NAME | awk '{print $1}' | head -n1`
     $ oc cp -n openshift-ovn-kubernetes $POD:/usr/bin/ovnkube-trace ovnkube-trace ### cchen: You need to find a Linux bastion host to run ovnkube-trace
@@ -152,13 +152,13 @@ sh-4.4# ovn-sbctl --db ssl:10.0.128.218:9642 -p /ovn-cert/tls.key -c /ovn-cert/t
     # More verbose:
 
     ./ovnkube-trace  -src image-registry-75fb8db769-5bvmt -src-namespace openshift-image-registry -dst dns-default-pxj4t -dst-namespace openshift-dns -udp -dst-port 53 -loglevel 2
-    ~~~
+    ```
 
-    ~~~bash
+    ```bash
 
 2. ovn-trace
 
-    ~~~bash
+    ```bash
     $ oc get pods -n test-sctp -o wide
     NAME         READY   STATUS    RESTARTS   AGE   IP            NODE                                    NOMINATED NODE   READINESS GATES
     sctpclient   1/1     Running   0          31h   10.128.0.81   dell-per430-35.gsslab.pek2.redhat.com   <none>           <none>
@@ -248,4 +248,4 @@ sh-4.4# ovn-sbctl --db ssl:10.0.128.218:9642 -p /ovn-cert/tls.key -c /ovn-cert/t
     3. ls_out_port_sec_l2 (northd.c:5609): outport == "test-sctp_sctpclient" && eth.dst == {0a:58:0a:80:00:51}, priority 50, uuid ce99ea0f
         output;
         /* output to "test-sctp_sctpclient", type "" */
-    ~~~
+    ```

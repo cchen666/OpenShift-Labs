@@ -2,42 +2,42 @@
 
 ## Create PerformanceProfile CR
 
-~~~bash
+```bash
 
 $ oc apply -f files/dpdk/pp.yaml
 
-~~~
+```
 
 ## Create SR-IOV Network Node Policy
 
-~~~bash
+```bash
 
 $ oc apply -f sriov-network-node-policy.yaml # Pay attention for Intel NIC, in order to use DPDK, the deviceType needs to be vfio-pci
 
 $ ip link show ens4f0
 
-~~~
+```
 
 ## Create SR-IOV Network or NAD
 
 Create the NAD either through SriovNetwork CR or pure NAD CR
 
-~~~bash
+```bash
 
 $ oc apply -f files/dpdk/dpdk-nad.yaml
 
 # Or
 # oc apply -f files/dpdk/dpdk-sriov-network.yaml
 
-~~~
+```
 
 Check NAD CR has been created:
 
-~~~bash
+```bash
 
 $ oc get net-attach-def -n dpdk-test
 
-~~~
+```
 
 ## Create TestPMD Pod
 
@@ -45,7 +45,7 @@ We specify `needVhostNet: true` in the sriovnetworknodepolicy CR, thus we could 
 
 ![virtio-user and vhost-net](files/images/virtio-user_vhost-net.png)
 
-~~~bash
+```bash
 
 $ oc apply -f files/dpdk/dpdk-pod.yaml
 
@@ -106,13 +106,13 @@ Logical Core 11 (socket 1) forwards packets on 2 streams:
       TX offloads=0x0 - TX RS bit threshold=0
 Press enter to exit
 
-~~~
+```
 
 ## Test tap0 is Pingable through VLAN
 
 We spanwed another SR-IOV Pod, whose VF is in the same PF of dpdk. We configured vlan 545 for two Pods and see whether they are connected when `promisc` is off and `spoofchk` is on for VF.
 
-~~~bash
+```bash
 
 $ cat configure.sh
 pod1=sriovpod1
@@ -137,11 +137,11 @@ oc exec -it $pod2 -- ip addr add $ip2 dev f1
 sleep 2
 
 oc exec -it $pod1 -- ping -W1 -c 5 `echo $ip2 | cut -d/ -f1`
-~~~
+```
 
 Run the Test:
 
-~~~bash
+```bash
 
 $ bash -x configure.sh
 + pod1=sriovpod1
@@ -175,4 +175,4 @@ PING 192.168.1.22 (192.168.1.22) 56(84) bytes of data.
 5 packets transmitted, 5 received, 0% packet loss, time 4076ms
 rtt min/avg/max/mdev = 0.042/0.056/0.101/0.024 ms
 
-~~~
+```

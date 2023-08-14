@@ -6,7 +6,7 @@
 
 ## Install mirror-registry
 
-~~~bash
+```bash
 
 $ ./mirror-registry install --quayHostname quay-server.nancyge.com --quayRoot /var/mirror-registry --initPassword <password>
 
@@ -14,20 +14,20 @@ $ ./mirror-registry install --quayHostname quay-server.nancyge.com --quayRoot /v
 # The credential is init:<password>
 # The rootCA is under /var/mirror-registry/quay-rootCA
 
-~~~
+```
 
 ## Add Quay's rootCA to OpenShift image for Build
 
-~~~bash
+```bash
 
 $ oc create configmap registry-cas -n openshift-config --from-file=quay-server.nancyge.com..8443=/tmp/rootCA.pem
 $ oc patch image.config.openshift.io/cluster --patch '{"spec":{"additionalTrustedCA":{"name":"registry-cas"}}}' --type=merge
 
-~~~
+```
 
 ## Create Secret which Contains Quay Credential
 
-~~~bash
+```bash
 
 $ cat /tmp/config.json
 {
@@ -40,11 +40,11 @@ $ cat /tmp/config.json
 
 $ oc create secret generic dockerhub --from-file=.dockerconfigjson=/tmp/config.json --type=kubernetes.io/dockerconfigjson
 
-~~~
+```
 
 ## Edit BuildConfig to use your own Quay
 
-~~~bash
+```bash
 
 $ oc edit bc <BuildConfig>
 
@@ -58,11 +58,11 @@ spec:
       kind: DockerImage
       name: quay-server.nancyge.com:8443/rhn_support_cchen/test-s2i:latest
 
-~~~
+```
 
 ## Test the Build
 
-~~~bash
+```bash
 $ oc new-app https://github.com/cchen666/openshift-flask
 $ oc start-build openshift-flask
 $ oc logs openshift-flask-4-build -f
@@ -97,4 +97,4 @@ Storing signatures
 Successfully pushed quay-server.nancyge.com:8443/rhn_support_cchen/test-s2i@sha256:f35764bb4c7dab311c9d32491d04064c10b61c04cc88f5449b47d8af30b2f7b2
 Push successful
 
-~~~
+```

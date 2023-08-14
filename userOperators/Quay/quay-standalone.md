@@ -2,7 +2,7 @@
 
 ## Installation
 
-~~~bash
+```bash
 $ sudo yum install -y podman conmon
 $ sudo podman login registry.redhat.io
 Username: <username>
@@ -13,11 +13,11 @@ $ firewall-cmd --permanent --add-port=5432/tcp
 $ firewall-cmd --permanent --add-port=5433/tcp
 $ firewall-cmd --permanent --add-port=6379/tcp
 $ firewall-cmd --reload
-~~~
+```
 
 ## Start postgres
 
-~~~bash
+```bash
 $ mkdir /root/quay
 $ export QUAY=/root/quay
 $ mkdir -p $QUAY/postgres-quay
@@ -33,29 +33,29 @@ $ sudo podman run -d --rm --name postgresql-quay \
   registry.redhat.io/rhel8/postgresql-10:1
 
 $ sudo podman exec -it postgresql-quay /bin/bash -c 'echo "CREATE EXTENSION IF NOT EXISTS pg_trgm" | psql -d quay -U postgres'
-~~~
+```
 
 ## Start Redis
 
-~~~bash
+```bash
 $ sudo podman run -d --rm --name redis \
   -p 6379:6379 \
   -e REDIS_PASSWORD=strongpassword \
   registry.redhat.io/rhel8/redis-5:1
-~~~
+```
 
 ## Configure Quay and Download the config.yaml
 
-~~~bash
+```bash
 $ sudo podman run --rm -it --name quay_config -p 80:8080 -p 443:8443 registry.redhat.io/quay/quay-rhel8:v3.6.6 config secret
-~~~
+```
 
 ## Start Quay
 
-~~~bash
+```bash
 $
 $ podman run -d --rm -p 80:8080 -p 443:8443     --name=quay    -v /root/quay/config:/conf/stack:Z    -v /root/quay/storage:/datastorage:Z    registry.redhat.io/quay/quay-rhel8:v3.6.6
-~~~
+```
 
 openssl req -new -sha256 \
     -key /etc/crts/cert.key \

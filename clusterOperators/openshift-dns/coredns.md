@@ -2,7 +2,7 @@
 
 ## pods
 
-~~~bash
+```bash
 $ oc get pods -o wide -n openshift-dns
 $ oc rsh dns-default-6bsrz
 Defaulting container name to dns.
@@ -31,11 +31,11 @@ sh-4.4# cat /etc/coredns/Corefile
 # cat /etc/resolv.conf
 search us-east-2.compute.internal
 nameserver 10.0.0.2
-~~~
+```
 
 ## How the flow works
 
-~~~bash
+```bash
 $ oc get svc
 NAME          TYPE        CLUSTER-IP    EXTERNAL-IP   PORT(S)                  AGE
 dns-default   ClusterIP   172.30.0.10   <none>        53/UDP,53/TCP,9154/TCP   20d
@@ -50,16 +50,16 @@ cchens-MacBook-Pro-2:~ cchen$ oc rsh deploy-python-openshift-tutorial-fc74868f5-
 search myproject.svc.cluster.local svc.cluster.local cluster.local us-east-2.compute.internal
 nameserver 172.30.0.10
 
-~~~
+```
 
 ## Static entries for image-registry when launching coreDNS
 
-~~~bash
+```bash
 # cat /etc/hosts
 127.0.0.1   localhost localhost.localdomain localhost4 localhost4.localdomain4
 ::1         localhost localhost.localdomain localhost6 localhost6.localdomain6
 172.30.146.132 image-registry.openshift-image-registry.svc image-registry.openshift-image-registry.svc.cluster.local # openshift-generated-node-resolver
-~~~
+```
 
 ## CoreDNS k8s plugin
 
@@ -79,7 +79,7 @@ nameserver 172.30.0.10
 
 ## Test the query
 
-~~~bash
+```bash
 //Internal query
 
 $ for dnspod in `oc get pods -n openshift-dns -o name --no-headers`; do echo "Testing $dnspod"; for dnsip in `oc get pods -n openshift-dns -o go-template='{{ range .items }} {{index .status.podIP }} {{end}}'`; do echo -e "\t Making query to $dnsip"; oc exec -n openshift-dns $dnspod -- dig @$dnsip kubernetes.default.svc.cluster.local -p 5353 +short 2>/dev/null; done; done
@@ -87,4 +87,4 @@ $ for dnspod in `oc get pods -n openshift-dns -o name --no-headers`; do echo "Te
 //External query
 
 $ for dnspod in `oc get pods -n openshift-dns -o name --no-headers`; do echo "Testing $dnspod"; for dnsip in `oc get pods -n openshift-dns -o go-template='{{ range .items }} {{index .status.podIP }} {{end}}'`; do echo -e "\t Making query to $dnsip"; oc exec -n openshift-dns $dnspod -- dig @$dnsip www.baidu.com -p 5353 +short 2>/dev/null; done; done
-~~~
+```

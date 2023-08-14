@@ -6,7 +6,7 @@
 * From: 4.6
 * To: 5.1
 
-~~~bash
+```bash
 # oc project openshift-logging
 Now using project "openshift-logging" on server "https://api.mycluster.nancyge.com:6443".
 [root@ip-10-0-40-92 manifests-redhat-operator-index-1631010012]# oc get csv
@@ -15,11 +15,11 @@ argocd-operator.v0.0.15                     Argo CD                            0
 cert-utils-operator.v1.0.7                  Cert Utils Operator                1.0.7                                          Succeeded
 clusterlogging.4.6.0-202106021513           Cluster Logging                    4.6.0-202106021513                             Succeeded
 elasticsearch-operator.4.6.0-202106021513   OpenShift Elasticsearch Operator   4.6.0-202106021513                             Succeeded
-~~~
+```
 
 ## Optional: Update the OperatorHub if it is disconnected environment
 
-~~~bash
+```bash
 # Specify related environments first
 $ opm index prune     -f registry.redhat.io/redhat/redhat-operator-index:v4.8     -p cluster-logging,elasticsearch-operator     -t $REGISTRY_IP:5000/$NAMESPACE/redhat-operator-index:v4.8
 
@@ -29,24 +29,24 @@ $ oc adm catalog mirror     $REGISTRY_HOST:5000/$NAMESPACE/redhat-operator-index
 
 $ oc apply -f catalogSource.yaml
 $ oc apply -f imageContentSourcePolicy.yaml
-~~~
+```
 
 ## Update ElasticSearch Operator First to 5.1
 
  Navigate to console Operators -> Installed Operators -> ElasticSearch operator -> Edit Subscription Channel from 4.6 to 5.1 and operator will begin to upgrade automatically
 
-~~~bash
+```bash
 # oc get csv
 NAME                                DISPLAY                            VERSION              REPLACES                                    PHASE
 argocd-operator.v0.0.15             Argo CD                            0.0.15               argocd-operator.v0.0.14                     Succeeded
 cert-utils-operator.v1.0.7          Cert Utils Operator                1.0.7                                                            Succeeded
 clusterlogging.4.6.0-202106021513   Cluster Logging                    4.6.0-202106021513                                               Succeeded
 elasticsearch-operator.5.1.1-36     OpenShift Elasticsearch Operator   5.1.1-36             elasticsearch-operator.4.6.0-202106021513
-~~~
+```
 
 ## Update Cluster Logging Operator to 5.1: the same steps with ElasticSearch Operator
 
-~~~bash
+```bash
 # oc get csv -n openshift-logging
 NAME                                DISPLAY                            VERSION              REPLACES                                    PHASE
 argocd-operator.v0.0.15             Argo CD                            0.0.15               argocd-operator.v0.0.14                     Succeeded
@@ -96,4 +96,4 @@ fluentd-gz7rm                                   1/1     Running     0          8
 fluentd-nghjp                                   1/1     Running     0          6m33s
 fluentd-wdxfk                                   1/1     Running     0          8m27s
 kibana-bd46c7c9-bjpxj                           2/2     Running     0          12m
-~~~
+```

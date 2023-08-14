@@ -2,23 +2,23 @@
 
 ## Ansible
 
-~~~bash
+```bash
 # ansible > 2.9
 $ pip install --upgrade ansible
-~~~
+```
 
 ## k8s plugins
 
-~~~bash
+```bash
 
 $ ansible-galaxy collection install community.kubernetes
 $ ansible-galaxy collection install kubernetes.core
 
-~~~
+```
 
 ## Python Modules
 
-~~~bash
+```bash
 
 python >= 2.7
 openshift >= 0.6
@@ -26,11 +26,11 @@ PyYAML >= 3.11
 
 $ pip install openshift --user
 
-~~~
+```
 
 ## Test
 
-~~~bash
+```bash
 
 $ ./01-playbook.yaml --tags apply-01 -vv
 
@@ -63,4 +63,4 @@ spec:
   tokenConfig:
     accessTokenMaxAgeSeconds: 31104000
 
-~~~
+```

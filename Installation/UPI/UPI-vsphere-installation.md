@@ -2,7 +2,7 @@
 
 ## Create Manifests
 
-~~~bash
+```bash
 
 $ openshift-install create manifests --dir=install
 
@@ -19,19 +19,19 @@ EOF
 
 $ rm -f install/openshift/99_openshift-cluster-api_master-machines-*.yaml openshift/99_openshift-cluster-api_worker-machineset-*.yaml
 
-~~~
+```
 
 ## Generate Ignition Files
 
-~~~bash
+```bash
 
 $ openshift-install create ignition-configs --dir=install
 
-~~~
+```
 
 ## Generate base64 Ignition Files
 
-~~~bash
+```bash
 
 $ cat <<EOF > install/merge-bootstrap.ign
 
@@ -65,11 +65,11 @@ $ cp install/bootstrap.ign /var/www/html/openshift/
 $ chmod 777 /var/www/html/openshift
 $ chmod 777 /var/www/html/openshift/bootstrap.ign
 
-~~~
+```
 
 ## Install govc Tool
 
-~~~bash
+```bash
 
 $ curl -L -o - "https://github.com/vmware/govmomi/releases/latest/download/govc_$(uname -s)_$(uname -m).tar.gz" | tar -C /usr/local/bin -xvzf - govc
 
@@ -79,7 +79,7 @@ $ export GOVC_PASSWORD=<OpenShift>
 $ export GOVC_DATACENTER=Datacenter
 $ export GOVC_INSECURE=true
 
-~~~
+```
 
 ## Create VM in VSphere
 
@@ -87,7 +87,7 @@ $ export GOVC_INSECURE=true
 2. Deploy OVA File to a template
 3. Clone template to Virtual Machine - bootstrap, master-[0-2], worker-[0-1]
 
-~~~bash
+```bash
 $ Folder=4.10.3
 $ Template=template-rhcos-4.10.3
 $ DNS=10.72.94.119
@@ -115,21 +115,21 @@ do
   -ds=datastore`expr $i + 2` \
   worker$i &
 done
-~~~
+```
 
 ## Inject guestinfo to Nodes Static IPs
 
-~~~bash
+```bash
 
 $ MASTER_IGN=`cat install/master.64`
 $ WORKER_IGN=`cat install/worker.64`
 $ BOOTSTRAP_IGN=`cat install/merge-bootstrap.64`
 
-~~~
+```
 
 ### Static IP
 
-~~~bash
+```bash
 
 # Bootstrap; Add it to a loop to make copy easier
 for i in 0; do
@@ -163,11 +163,11 @@ do
   govc vm.change -vm worker$i -e "disk.EnableUUID=TRUE"
 done
 
-~~~
+```
 
 ### DHCP
 
-~~~bash
+```bash
 
 # Bootstrap
 govc vm.change -vm bootstrap -e "guestinfo.ignition.config.data=${BOOTSTRAP_IGN}"
@@ -191,17 +191,17 @@ govc vm.change -vm worker$i -e "guestinfo.hostname=worker$i"
 govc vm.change -vm worker$i -e "disk.EnableUUID=TRUE"
 done
 
-~~~
+```
 
 ## Start the Nodes
 
-~~~bash
+```bash
 $ govc vm.power -on bootstrap master0 master1 master2
-~~~
+```
 
 ## Stop and Delete Nodes
 
-~~~bash
+```bash
 govc vm.power -off bootstrap master0 master1 master2 worker0 worker1
 govc vm.destroy bootstrap
 
@@ -214,11 +214,11 @@ for i in 0 1
 do
 govc vm.destroy worker$i
 done
-~~~
+```
 
 ## Remove CD-ROM
 
-~~~bash
+```bash
 $  govc device.ls -vm=cchen-mirror-registry
 ide-200       VirtualIDEController       IDE 0
 ide-201       VirtualIDEController       IDE 1
@@ -236,4 +236,4 @@ ethernet-1    VirtualVmxnet3             VM Network
 disk-1000-1   VirtualDisk                104,857,600 KB
 
 $ govc device.remove -vm=cchen-mirror-registry cdrom-3000
-~~~
+```

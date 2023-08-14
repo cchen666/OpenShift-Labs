@@ -2,7 +2,7 @@
 
 ## Troubleshooting
 
-~~~bash
+```bash
 
 # Merge all the request to a single node so that it is easier to check logs
 
@@ -14,4 +14,4 @@ spec:
   nodePlacement:
     nodeSelector:
       test-dns: "true"
-~~~
+```

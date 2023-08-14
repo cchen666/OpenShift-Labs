@@ -6,7 +6,7 @@ The SR-IOV device is enp130s0f0 and it connects to vlan 183 with 10.72.51.0/27 s
 
 ## Ansible Playbook
 
-~~~bash
+```bash
 
 $ cat vars.yaml
 
@@ -54,11 +54,11 @@ $ ./playbook.yaml --tags apply02
 $ ./playbook.yaml --tags apply03
 $ ./playbook.yaml --tags apply04
 
-~~~
+```
 
 ## Create SR-IOV Network
 
-~~~bash
+```bash
 
 $ cat sriovnetwork.yaml
 apiVersion: sriovnetwork.openshift.io/v1
@@ -87,11 +87,11 @@ $ oc apply -f sriovnetwork.yaml
 
 $ oc get net-attach-def -n default
 
-~~~
+```
 
 ## Create POD
 
-~~~bash
+```bash
 
 $ cat pod.yaml
 apiVersion: v1
@@ -155,4 +155,4 @@ PING 8.8.8.8 (8.8.8.8) 56(84) bytes of data.
 64 bytes from 8.8.8.8: icmp_seq=1 ttl=48 time=50.0 ms
 64 bytes from 8.8.8.8: icmp_seq=2 ttl=48 time=50.4 ms
 
-~~~
+```

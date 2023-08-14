@@ -2,13 +2,13 @@
 
 ## go-callvis
 
-~~~bash
+```bash
 go-callvis -focus github.com/openshift/cluster-version-operator/pkg/cvo -limit github.com/openshift/cluster-version-operator/pkg/cvo -group pkg,type main.go
-~~~
+```
 
 ## Hack the main.go (copy from start.go)
 
-~~~go
+```go
 package main
 
 import (
@@ -70,4 +70,4 @@ func main() {
                 klog.Exitf("Error executing mcc: %v", err)
         }
 }
-~~~
+```

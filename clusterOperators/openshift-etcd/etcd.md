@@ -24,7 +24,7 @@ $ etcdctl get / --prefix --keys-only | sed '/^$/d' | cut -d/ -f3 | sort | uniq -
 * <https://access.redhat.com/solutions/4770281>
 * Command
 
-~~~bash
+```bash
 $ oc rsh etcd-ip-10-0-130-137.us-east-2.compute.internal
 Defaulting container name to etcdctl.
 Use 'oc describe pod/etcd-ip-10-0-130-137.us-east-2.compute.internal -n openshift-etcd' to see all of the containers in this pod.
@@ -33,21 +33,21 @@ PASS: Throughput is 150 writes/s
 PASS: Slowest request took 0.319075s
 PASS: Stddev is 0.011896s
 PASS
-~~~
+```
 
 ## Check health
 
-~~~bash
+```bash
 etcdctl member list
 etcdctl endpoint health -w table
 etcdctl endpint status -w table
-~~~
+```
 
 ## Recover etcd cluster
 
 * Senario 1: only 1 etcd node is down
 
-~~~bash
+```bash
 /etc/kubernetes/manifests/etcd-pod.yaml
 /var/lib/etcd/*
 Rsh to healthy etcd pod and remove the unhealthy member.
@@ -61,11 +61,11 @@ $ oc patch etcd cluster -p='{"spec": {"forceRedeploymentReason": "single-master-
 oc patch kubescheduler cluster -p='{"spec": {"forceRedeploymentReason": "recovery-'"$( date --rfc-3339=ns )"'"}}' --type=merge
 
 
-~~~
+```
 
 * Senario 2: 2 of 3 nodes are down
 
-~~~bash
+```bash
 To reproduce this scenario I just moved the /var/lib/etcd/member on two masters so that two etcd pods will go down and etcd cluster will be read only as quorum is lost. No oc commands will work here.
 Interesting point to note here is that etcd on masters came up after some time. How ?
 The master on which etcd container was working fine sent the database snapshot to etcd on other two masters.
@@ -81,11 +81,11 @@ I think this happens when quorum is lost in the etcd cluster.
 
 If database snapshot is not sent by working etcd and cluster does not come back on its own then we need restore the etcd from snapshot.
 
-~~~
+```
 
 * Senario 2-1: Restore from snapshot
 
-~~~bash
+```bash
 
 Choose a master as recovery host and put the etcd backup in /home/core/
 
@@ -105,11 +105,11 @@ Even if we do not force start etcd on masters, the single member etcd does send 
 
 Once etcd is updated with latest version, we need to force a new rollout of kubeapiserver, kubecontrollermanager and kubescheduler.
 
-~~~
+```
 
 * Senario 3: Replace 1 master node
 
-~~~bash
+```bash
 
 https://docs.openshift.com/container-platform/4.7/backup_and_restore/replacing-unhealthy-etcd-member.html#restore-replace-crashlooping-etcd-member_replacing-unhealthy-etcd-member
 
@@ -130,11 +130,11 @@ Update DNS and haproxy with correct entries for new master, if IP and hostnames 
 Approve CSRs for new master.
 In case if api or controller or scheduler pod does not come up then we can force the redeploy it.
 
-~~~
+```
 
 * Senario 4: Replace 2 masters
 
-~~~bash
+```bash
 Here two masters are down or not running at all and we need to replace them.
 Etcd cluster will be in read only mode and no oc commands will work.
 Api and controller will also be down on the remaining master.
@@ -145,4 +145,4 @@ For IPI, make use of machine objects and create two new machines for master node
 We must create two new machines first and then delete the old ones.
 With this new revision is forced and etcd will scale up automatically on new masters.
 
-~~~
+```

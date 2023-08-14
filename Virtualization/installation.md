@@ -2,10 +2,10 @@
 
 ## Installation
 
-~~~bash
+```bash
 $ oc apply -f files/operator.yaml
 $ oc apply -f files/hyperConverged.yaml
-~~~
+```
 
 ## NodePlacement
 
