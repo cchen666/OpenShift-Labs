@@ -8,6 +8,7 @@ $ for i in *.repo;do mv $i $i.bak;done
 
 $ subscription-manager register --username rhn-support-cchen --force
 $ subscription-manager attach --pool=8a85f9833e1404a9013e3cddf95a0599
+# 2c94a891848d39ce0184d8a891805070
 
 $ yum update
 $ yum install qemu-kvm-* libvirt-client libvirt wget virt-install -y

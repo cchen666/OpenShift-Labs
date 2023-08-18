@@ -1,0 +1,13 @@
+kind: ImageSetConfiguration
+apiVersion: mirror.openshift.io/v1alpha2
+storageConfig:
+  registry:
+    imageURL: quay.cchen.work/mirror
+    skipTLS: true
+mirror:
+  platform:
+    channels:
+    - name: fast-4.13
+      type: ocp
+      maxVersion: 4.13.8
+      minVersion: 4.13.8
