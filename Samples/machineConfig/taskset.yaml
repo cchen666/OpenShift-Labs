@@ -1,0 +1,24 @@
+apiVersion: machineconfiguration.openshift.io/v1
+kind: MachineConfig
+metadata:
+  name: taskset-workaround
+  labels:
+    machineconfiguration.openshift.io/role: worker
+spec:
+  config:
+    ignition:
+      version: 3.2.0
+    systemd:
+      units:
+        - contents: |
+            [Unit]
+            Description=Set SELinux chcon on hostpath for exporting coredumps to pod
+            Before=kubelet.service
+
+            [Service]
+            ExecStart=
+
+            [Install]
+            WantedBy=multi-user.target
+          enabled: true
+          name: taskset-workaround.service

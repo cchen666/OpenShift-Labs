@@ -1,0 +1,43 @@
+apiVersion: tuned.openshift.io/v1
+kind: Tuned
+metadata:
+  name: configuration-master
+  namespace: openshift-cluster-node-tuning-operator
+spec:
+  profile:
+  - data: |
+      "[main]
+      summary=Configuration changes profile inherited from performance created tuned
+      include=openshift-node-performance-performance
+      [sysctl]
+      net.core.somaxconn=32768
+      fs.inotify.max_user_instances=12800
+      net.core.wmem_max = 41299200
+      net.core.rmem_max = 41299200
+      net.core.wmem_default = 212992
+      net.core.rmem_default = 212992
+      net.ipv4.neigh.default.gc_thresh1 = 5120
+      net.ipv4.neigh.default.gc_thresh2 = 20480
+      net.ipv4.neigh.default.gc_thresh3 = 40960
+      net.netfilter.nf_conntrack_tcp_timeout_close = 10
+      net.netfilter.nf_conntrack_max = 2621440
+      net.netfilter.nf_conntrack_buckets = 65536
+      net.ipv4.tcp_keepalive_time=600
+      net.ipv4.tcp_max_syn_backlog=8096
+      net.ipv4.tcp_max_tw_buckets=5000
+      fs.inotify.max_user_instances=12800
+      fs.inotify.max_user_watches=819200
+      net.core.netdev_max_backlog=16384
+      net.ipv6.neigh.default.gc_thresh1=5120
+      net.ipv6.neigh.default.gc_thresh2=20480
+      net.ipv6.neigh.default.gc_thresh3=40960"
+    name: openshift-configuration-netsocket-std-g4
+  recommend:
+  - machineConfigLabels:
+      machineconfiguration.openshift.io/role: master
+    operand:
+      debug: true
+      tunedConfig:
+        reapply_sysctl: true
+    priority: 19
+    profile: openshift-configuration-master
