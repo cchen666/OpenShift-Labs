@@ -1,0 +1,39 @@
+#$ oc get pods | grep my-app
+#my-app-0                 1/1     Running   0                 6m25s
+#my-app-1                 1/1     Running   0                 3m49s
+#
+#$ oc get pvc | grep data-volume
+#data-volume-my-app-0   Bound    pvc-a676d288-e5e7-43c2-8026-43a6253cf0d9   1Gi        RWO            ocs-external-storagecluster-ceph-rbd   13m
+#data-volume-my-app-1   Bound    pvc-cd31d57b-4170-4e6e-bd3d-e618ccfa7447   1Gi        RWO            ocs-external-storagecluster-ceph-rbd   3m59s
+
+apiVersion: apps/v1
+kind: StatefulSet
+metadata:
+  name: my-app
+spec:
+  replicas: 2
+  serviceName: my-app
+  selector:
+    matchLabels:
+      app: my-app
+  template:
+    metadata:
+      labels:
+        app: my-app
+    spec:
+      containers:
+        - name: my-app-container
+          image: quay.io/rhn_support_cchen/toolbox:v1.0
+          volumeMounts:
+            - name: data-volume
+              mountPath: /data
+  volumeClaimTemplates:
+    - metadata:
+        name: data-volume
+      spec:
+        storageClassName: ocs-external-storagecluster-ceph-rbd
+        accessModes:
+          - ReadWriteOnce
+        resources:
+          requests:
+            storage: 1Gi
