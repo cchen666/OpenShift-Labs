@@ -1,0 +1,29 @@
+apiVersion: machineconfiguration.openshift.io/v1
+kind: MachineConfig
+metadata:
+  labels:
+    machineconfiguration.openshift.io/role: worker
+  name: 99-worker-set-core-passwd
+spec:
+  config:
+    ignition:
+      version: 3.2.0
+    storage:
+      files:
+      - contents:
+          source: data:text/plain;charset=utf-8;base64,$MYBASE64STRING
+        mode: 420
+        overwrite: true
+        path: /etc/core.passwd
+    systemd:
+      units:
+      - name: set-core-passwd.service
+        enabled: true
+        contents: |
+          [Unit]
+          Description=Set 'core' user password for out-of-band login
+          [Service]
+          Type=oneshot
+          ExecStart=/bin/sh -c 'chpasswd -e < /etc/core.passwd'
+          [Install]
+          WantedBy=multi-user.target
