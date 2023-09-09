@@ -62,6 +62,14 @@ $ git push origin <feature branch> -f
 
 <https://www.zhihu.com/question/28676261>
 
+## Check Remote Branch Code
+
+```bash
+
+$ git checkout -b feature/interactive origin/feature/interactive
+
+```
+
 ## Ref
 
 <https://blog.csdn.net/qq_33429968/article/details/62219783>
