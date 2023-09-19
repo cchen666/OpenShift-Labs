@@ -96,6 +96,7 @@ $ oc exec -it ovnkube-master-fcfpg -c northd -- ovn-nbctl show
 $ oc exec -it ovnkube-master-fcfpg -c northd -- ovn-nbctl lr-list
 $ oc exec -it ovnkube-master-fcfpg -c northd -- ovn-nbctl ls-list
 $ oc exec -it ovnkube-master-fcfpg -c northd -- ovn-nbctl lb-list ### cchen: lb is the service
+$ ovn-nbctl lsp-list <Logical Switch>
 
 ```
 
