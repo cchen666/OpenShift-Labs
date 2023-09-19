@@ -1,43 +1,81 @@
-apiVersion: tuned.openshift.io/v1
-kind: Tuned
+apiVersion: performance.openshift.io/v2
+kind: PerformanceProfile
 metadata:
-  name: configuration-master
-  namespace: openshift-cluster-node-tuning-operator
+  name: worker-ht-performance-profile
+  annotations:
+    kubeletconfig.experimental: |
+      '{
+        "allowedUnsafeSysctls": [
+          "net.unix.max_dgram_qlen",
+          "net.core.somaxconn"
+        ],
+        "systemReserved": {
+          "memory": "24Gi"
+        },
+        "protectKernelDefaults": true,
+        "eventRecordQPS": 50,
+        "evictionSoft": {
+          "memory.available": "500Mi",
+          "nodefs.available": "10%",
+          "nodefs.inodesFree": "5%",
+          "imagefs.available": "15%",
+          "imagefs.inodesFree": "10%"
+        },
+        "evictionSoftGracePeriod": {
+          "memory.available": "1m30s",
+          "nodefs.available": "1m30s",
+          "nodefs.inodesFree": "1m30s",
+          "imagefs.available": "1m30s",
+          "imagefs.inodesFree": "1m30s"
+        },
+        "evictionHard": {
+          "memory.available": "200Mi",
+          "nodefs.available": "5%",
+          "nodefs.inodesFree": "4%",
+          "imagefs.available": "10%",
+          "imagefs.inodesFree": "5%"
+        },
+        "evictionPressureTransitionPeriod": "0s",
+        "imageMinimumGCAge": "5m",
+        "imageGCHighThresholdPercent": 80,
+        "imageGCLowThresholdPercent": 75,
+        "makeIPTablesUtilChains": true,
+        "tlsCipherSuites": [
+          "TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384",
+          "TLS_ECDHE_ECDSA_WITH_AES_256_GCM_SHA384",
+          "TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256",
+          "TLS_ECDHE_ECDSA_WITH_AES_128_GCM_SHA256"
+        ]
+      }'
 spec:
-  profile:
-  - data: |
-      "[main]
-      summary=Configuration changes profile inherited from performance created tuned
-      include=openshift-node-performance-performance
-      [sysctl]
-      net.core.somaxconn=32768
-      fs.inotify.max_user_instances=12800
-      net.core.wmem_max = 41299200
-      net.core.rmem_max = 41299200
-      net.core.wmem_default = 212992
-      net.core.rmem_default = 212992
-      net.ipv4.neigh.default.gc_thresh1 = 5120
-      net.ipv4.neigh.default.gc_thresh2 = 20480
-      net.ipv4.neigh.default.gc_thresh3 = 40960
-      net.netfilter.nf_conntrack_tcp_timeout_close = 10
-      net.netfilter.nf_conntrack_max = 2621440
-      net.netfilter.nf_conntrack_buckets = 65536
-      net.ipv4.tcp_keepalive_time=600
-      net.ipv4.tcp_max_syn_backlog=8096
-      net.ipv4.tcp_max_tw_buckets=5000
-      fs.inotify.max_user_instances=12800
-      fs.inotify.max_user_watches=819200
-      net.core.netdev_max_backlog=16384
-      net.ipv6.neigh.default.gc_thresh1=5120
-      net.ipv6.neigh.default.gc_thresh2=20480
-      net.ipv6.neigh.default.gc_thresh3=40960"
-    name: openshift-configuration-netsocket-std-g4
-  recommend:
-  - machineConfigLabels:
-      machineconfiguration.openshift.io/role: master
-    operand:
-      debug: true
-      tunedConfig:
-        reapply_sysctl: true
-    priority: 19
-    profile: openshift-configuration-master
+  globallyDisableIrqLoadBalancing: true
+  net:
+    userLevelNetworking: true
+    devices:
+      - interfaceName: ens4f*
+  cpu:
+    isolated: 2-27,30-55,58-83,86-111
+    reserved: 0-1,28-29,56-57,84-85
+  hugepages:
+    defaultHugepagesSize: "1G"
+    pages:
+      - size: "1G"
+        node: 0
+        count: 120
+      - size: "1G"
+        node: 1
+        count: 120
+  machineConfigPoolSelector:
+    machineconfiguration.openshift.io/role: worker-ht
+  nodeSelector:
+    node-role.kubernetes.io/worker-ht: ""
+  numa:
+    topologyPolicy: restricted
+  realTimeKernel:
+    enabled: false
+  workloadHints:
+    highPowerConsumption: false
+    realTime: false
+  kubeletConfig:
+    cpuManagerPolicy: static
+    cpuManagerReconcilePeriod: 5s
