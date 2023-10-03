@@ -1,8 +1,10 @@
 # Output MAC and PCI inside the Pod
 
-## Download dpdk and compile
+## Download DPDK and Compile
 
 ```bash
+
+# Download the source code of dpdk
 
 $ curl -o dpdk.tar.xz https://fast.dpdk.org/rel/dpdk-21.11.tar.xz
 $ tar -xf dpdk.tar.xz
@@ -11,9 +13,17 @@ $ cd dpdk-21.11
 $ meson -Dplatform=generic build
 $ cd build
 $ mkdir ../example/mac
-$ cp files/pci_mac.c ../examples/main.c
+
+# Create Makefile, config file
+
 $ cp ../examples/vdpa/Makefile ../examples/mac/
 $ cp ../examples/vdpa/meson.build ../examples/mac
+
+# Copy the sample code
+
+$ cp <files>/pci_mac.c ../examples/main.c
+
+# Build
 
 $ meson configure -Dexamples=mac
 $ ninja
