@@ -1,0 +1,24 @@
+# Use the official Python image as the base image
+FROM registry.access.redhat.com/ubi8/python-38:1-131
+
+# Set the working directory inside the container
+WORKDIR /app
+
+# Copy the Python application code into the container
+COPY . /app
+
+# Install required Python packages
+RUN pip3 install flask Flask-OAuthlib==0.9.6 Werkzeug==2.0.1
+
+# Expose the port your Flask app will run on
+EXPOSE 5000
+
+# Define environment variables for OpenShift OAuth settings
+ENV OAUTH_CLIENT_ID 'reverse-words'
+ENV OAUTH_CLIENT_SECRET 'aaa'
+ENV OAUTH_AUTHORIZE_URL 'https://oauth-openshift.apps.gcg-shift.cchen.work/oauth/authorize'
+ENV OAUTH_TOKEN_URL 'https://oauth-openshift.apps.gcg-shift.cchen.work/oauth/token'
+ENV OAUTH_REDIRECT_URI 'https://oauth-openshift.apps.gcg-shift.cchen.work/callback'
+
+# Start the Flask app
+CMD ["python3", "app.py"]
