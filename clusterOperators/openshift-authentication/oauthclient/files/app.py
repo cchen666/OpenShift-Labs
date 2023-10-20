@@ -6,8 +6,8 @@ app = Flask(__name__)
 app.secret_key = os.urandom(24)
 
 # Replace these with your OpenShift OAuth settings
-OAUTH_CLIENT_ID = 'reverse-words'
-OAUTH_CLIENT_SECRET = 'aaa'
+OAUTH_CLIENT_ID = 'reverse-words' # It is the same with the metadata.name of oauthclient object
+OAUTH_CLIENT_SECRET = 'aaa' # It is the same with secret of oauthclient object
 OAUTH_AUTHORIZE_URL = 'https://oauth-openshift.apps.gcg-shift.cchen.work/oauth/authorize'
 OAUTH_TOKEN_URL = 'https://oauth-openshift.apps.gcg-shift.cchen.work/oauth/token'
 OAUTH_REDIRECT_URI = 'http://oauthclient-app-reverse-words.apps.gcg-shift.cchen.work/callback'

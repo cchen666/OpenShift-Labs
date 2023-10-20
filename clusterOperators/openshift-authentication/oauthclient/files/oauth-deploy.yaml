@@ -36,7 +36,7 @@ apiVersion: route.openshift.io/v1
 kind: Route
 metadata:
   name: oauthclient-app
- spec:
+spec:
   host: oauthclient-app-reverse-words.apps.gcg-shift.cchen.work
   port:
     targetPort: 5000

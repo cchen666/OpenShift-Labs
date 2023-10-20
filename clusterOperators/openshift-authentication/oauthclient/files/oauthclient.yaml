@@ -1,0 +1,8 @@
+apiVersion: oauth.openshift.io/v1
+grantMethod: prompt
+kind: OAuthClient
+metadata:
+  name: reverse-words
+secret: "aaa"
+redirectURIs:
+- https://oauthclient-app-reverse-words.apps.gcg-shift.cchen.work/callback
