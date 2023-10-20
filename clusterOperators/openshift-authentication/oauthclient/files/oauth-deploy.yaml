@@ -6,14 +6,14 @@ spec:
   replicas: 1 # Number of desired replicas (adjust as needed)
   selector:
     matchLabels:
-      app: your-app
+      app: oauthclient
   template:
     metadata:
       labels:
-        app: your-app
+        app: oauthclient
     spec:
       containers:
-      - name: your-app-container
+      - name: oauthclient-container
         image: quay.io/rhn_support_cchen/oauthclient-app:v1.1
         imagePullPolicy: Always
         ports:
@@ -22,11 +22,29 @@ spec:
 apiVersion: v1
 kind: Service
 metadata:
-  name: your-app-service
+  name: oauthclient-service
 spec:
   selector:
-    app: your-app
+    app: oauthclient
   ports:
     - protocol: TCP
       port: 5000
       targetPort: 5000 # The port your pods are listening on
+
+---
+apiVersion: route.openshift.io/v1
+kind: Route
+metadata:
+  name: oauthclient-app
+ spec:
+  host: oauthclient-app-reverse-words.apps.gcg-shift.cchen.work
+  port:
+    targetPort: 5000
+  tls:
+    insecureEdgeTerminationPolicy: Redirect
+    termination: edge
+  to:
+    kind: Service
+    name: oauthclient-service
+    weight: 100
+  wildcardPolicy: None
