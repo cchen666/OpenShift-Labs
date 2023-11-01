@@ -1,0 +1,10 @@
+            - echo -e '\n---\nCreate etcd backup local to master\n' && chroot /host
+              /usr/local/bin/cluster-backup.sh /home/core/backup && echo -e '\n\n---\nCleanup
+              old local etcd backups\n' && chroot /host find /home/core/backup/ -type
+              f -mmin +"2" -delete && echo -e '\n\n---\nCopy etcd backup to persistent
+              volume\n' && BACKUP_DIR=/mnt/backup/$(date "+%F_%H%M%S") && mkdir -pv
+              ${BACKUP_DIR} && cp -v /host/home/core/backup/* ${BACKUP_DIR} && echo
+              -e "\n\n---\nDelete persistent ETCD backups older than ${DAYS_TO_KEEP_PERSISTENT_ETCD_BACKUPS}
+              days\n" && find /mnt/backup/* -type d -mtime +${DAYS_TO_KEEP_PERSISTENT_ETCD_BACKUPS}
+              -exec rm -rv {} \; && echo -e "\n\n---\nList all etcd backups\n" &&
+              ls -al /mnt/backup/*
