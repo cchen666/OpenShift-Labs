@@ -32,3 +32,7 @@ etcd-guard-gcg-shift-98bcz-master-2   1/1     Running   1          69d
 ```
 
 The etcd-guard Pod only has a readinessProbe to detect port 9980 is healthy or not, where port 9980 is a readyz server started by etcd container
+
+The guardController will pickup operandPodLabelSelector as the Pod which it will guard. In the example of etcd, it will pick up the Pods with label etcd=true.
+
+<https://github.com/openshift/cluster-etcd-operator/blob/release-4.12/pkg/operator/starter.go#L241C31-L255>
