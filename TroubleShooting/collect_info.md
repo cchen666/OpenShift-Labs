@@ -65,7 +65,7 @@ echo "=== Collecting node info ==="
 oc get nodes -o yaml
 
 echo "=== Collecting logs ==="
-for pod in $(oc get pods -n $NAMESPACE -o name); do 
+for pod in $(oc get pods -n $NAMESPACE -o name); do
   echo "+++ logs for pod $pod +++"
   oc logs -n $NAMESPACE $pod
 done
@@ -201,5 +201,15 @@ $ oc process --parameters sosreport-template
 NAME                DESCRIPTION                              GENERATOR           VALUE
 NODE_NAME           Node Name to collect the sosreport on.
 $ oc process sosreport-template -p NODE_NAME=master-0 | oc apply -f -
+
+```
+
+## Big Cluster
+
+Only collect last 3 hours logs to make must-gather smaller
+
+```bash
+
+$ oc adm must-gather -- "sed 's#oc adm inspect#oc adm inspect --since=3h#g' /usr/bin/gather | bash"
 
 ```
