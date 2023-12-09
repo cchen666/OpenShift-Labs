@@ -1,0 +1,1 @@
+$ ./openshift-install destroy cluster --dir=install
