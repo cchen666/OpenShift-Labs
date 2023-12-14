@@ -1,0 +1,12 @@
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: gobot-cm
+data:
+  SLACK_AUTH_TOKEN: xoxb-1927235134881-XXX
+  SLACK_APP_TOKEN: xapp-1-A04GLHURY1L-XXX
+  GOBOT_TOKEN: abc
+  GOBOT_SSO_USER: XXX
+  REAL_SSO_USER: XXX
+  GOBOT_SSO_PASSWORD: XXX
+  REAL_SSO_PASSWORD: XXX

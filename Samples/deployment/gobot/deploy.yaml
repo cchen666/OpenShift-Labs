@@ -1,0 +1,75 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: gobot-api-local-deployment
+spec:
+  replicas: 1  # Adjust the number of replicas as needed
+  selector:
+    matchLabels:
+      app: gobot-api-local
+  template:
+    metadata:
+      labels:
+        app: gobot-api-local
+    spec:
+      containers:
+      - name: api
+        env:
+        - name: SLACK_AUTH_TOKEN
+          valueFrom:
+            configMapKeyRef:
+              name: gobot-cm
+              key: SLACK_AUTH_TOKEN
+        - name: SLACK_APP_TOKEN
+          valueFrom:
+            configMapKeyRef:
+              name: gobot-cm
+              key: SLACK_APP_TOKEN
+        - name: GOBOT_TOKEN
+          valueFrom:
+            configMapKeyRef:
+              name: gobot-cm
+              key: GOBOT_TOKEN
+        - name: GOBOT_SSO_USER
+          valueFrom:
+            configMapKeyRef:
+              name: gobot-cm
+              key: GOBOT_SSO_USER
+        - name: GOBOT_SSO_PASSWORD
+          valueFrom:
+            configMapKeyRef:
+              name: gobot-cm
+              key: GOBOT_SSO_PASSWORD
+        - name: REAL_SSO_USER
+          valueFrom:
+            configMapKeyRef:
+              name: gobot-cm
+              key: GOBOT_SSO_PASSWORD
+        - name: REAL_SSO_PASSWORD
+          valueFrom:
+            configMapKeyRef:
+              name: gobot-cm
+              key: REAL_SSO_PASSWORD
+        image: gobot.lab.eng.rdu2.redhat.com:5000/gobot-api/api:20231207
+        imagePullPolicy: Always
+        resources: {}
+        workingDir: /
+      - name: db
+        env:
+        - name: MYSQL_ROOT_PASSWORD
+          value: redhat
+        - name: MYSQL_USER
+          value: gobot
+        - name: MYSQL_PASSWORD
+          value: redhat
+        - name: MYSQL_DATABASE
+          value: gobot
+        image: gobot.lab.eng.rdu2.redhat.com:5000/gobot-api/db:20231207
+        imagePullPolicy: Always
+        resources: {}
+        securityContext:
+          runAsUser: 999
+          capabilities: {}
+          privileged: false
+          readOnlyRootFilesystem: false
+        workingDir: /

@@ -1,0 +1,16 @@
+# The type is LB but need to manually associate the floating IP otherwise will encounter
+# in ShiftonStack environment. No idea why the OSP is looking for a wrong external network
+# 45m         Warning   SyncLoadBalancerFailed   service/gobot-api-service                          Error syncing load balancer: failed to ensure load balancer: error creating LB floatingip: Resource not found: [POST https://api.rhos-01.prod.psi.rdu2.redhat.com:13696/v2.0/floatingips], error message: {"NeutronError": {"type": "ExternalGatewayForFloatingIPNotFound", "message": "External network 0ac88691-d42e-4b85-8195-1b1206b30318 is not reachable from subnet 6de3d84f-7794-474c-89f6-24bb361c1b5d.  Therefore, cannot associate Port 23ba58cd-5893-42f1-8d23-a4fa0a79031f with a Floating IP.", "detail": ""}}: {"NeutronError": {"type": "ExternalGatewayForFloatingIPNotFound", "message": "External network 0ac88691-d42e-4b85-8195-1b1206b30318 is not reachable from subnet 6de3d84f-7794-474c-89f6-24bb361c1b5d.  Therefore, cannot associate Port 23ba58cd-5893-42f1-8d23-a4fa0a79031f with a Floating IP.", "detail": ""}}
+
+apiVersion: v1
+kind: Service
+metadata:
+  name: gobot-api-service
+spec:
+  type: LoadBalancer
+  selector:
+    app: gobot-api-local  # This should match the label of your gobot-api-local pods.
+  ports:
+    - protocol: TCP
+      port: 8443             # The port the service is exposed on.
+      targetPort: 8443
