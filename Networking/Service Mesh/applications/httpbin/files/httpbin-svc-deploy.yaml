@@ -44,14 +44,3 @@ spec:
         name: httpbin
         ports:
         - containerPort: 80
-
-existing_netns=(`ip netns | awk '{print $1}'`)
-
-for i in $(seq 1 1000);
-do
-current_netns=`ip netns | awk '{print $1}'`
-for netns in $current_netns;
-do
-if [[ " ${existing_netns[*]} " != *" $netns "* ]]; then
-do ip netns exec $netns ip a | egrep -e "net1|net2|net3";done
-done
