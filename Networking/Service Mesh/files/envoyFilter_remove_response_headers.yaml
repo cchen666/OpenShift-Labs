@@ -21,6 +21,8 @@
 # access-control-allow-credentials: true
 # content-length: 135
 
+# Very good article about removing headers in istio https://janine.pcfe.net/posts/2022-10-10-istio-envoyfilter-strip-headers/
+
 apiVersion: networking.istio.io/v1alpha3
 kind: EnvoyFilter
 metadata:
