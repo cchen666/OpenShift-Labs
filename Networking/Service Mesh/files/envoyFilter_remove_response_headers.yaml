@@ -1,0 +1,55 @@
+# This envoyFilter removes "server" and "x-envoy-upstream-service-time" header
+# Before:
+
+# $ curl -I -k https://httpbin.apps.gcg-shift.cchen.work/status/418
+# HTTP/2 418
+# date: Thu, 28 Dec 2023 09:04:27 GMT
+# x-more-info: http://tools.ietf.org/html/rfc2324
+# access-control-allow-origin: *
+# access-control-allow-credentials: true
+# content-length: 135
+# x-envoy-upstream-service-time: 4
+# server: istio-envoy
+
+# After:
+
+# $ curl -I -k https://httpbin.apps.gcg-shift.cchen.work/status/418
+# HTTP/2 418
+# date: Thu, 28 Dec 2023 09:06:06 GMT
+# x-more-info: http://tools.ietf.org/html/rfc2324
+# access-control-allow-origin: *
+# access-control-allow-credentials: true
+# content-length: 135
+
+apiVersion: networking.istio.io/v1alpha3
+kind: EnvoyFilter
+metadata:
+  name: gateway-response-remove-headers
+  namespace: istio-system
+spec:
+  workloadSelector:
+    labels:
+      istio: ingressgateway
+  configPatches:
+  - applyTo: NETWORK_FILTER
+    match:
+      context: GATEWAY
+      listener:
+        filterChain:
+          filter:
+            name: "envoy.filters.network.http_connection_manager"
+    patch:
+      operation: MERGE
+      value:
+        typed_config:
+          "@type": "type.googleapis.com/envoy.extensions.filters.network.http_connection_manager.v3.HttpConnectionManager"
+          server_header_transformation: PASS_THROUGH
+  - applyTo: ROUTE_CONFIGURATION
+    match:
+      context: GATEWAY
+    patch:
+      operation: MERGE
+      value:
+        response_headers_to_remove:
+        - "x-envoy-upstream-service-time"
+        - "server"
