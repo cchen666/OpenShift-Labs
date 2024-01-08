@@ -5,6 +5,7 @@ metadata:
   labels:
     app: cchen-test
 spec:
+  replicas: 3
   selector:
     matchLabels:
       app: cchen-test
