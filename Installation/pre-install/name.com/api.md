@@ -52,7 +52,11 @@ $ curl -s -u $NAME_USER:$NAME_TOKEN 'https://api.name.com/v4/domains/cchen.work/
 ## Create the Record
 
 ```bash
-$ curl -u $NAME_USER:$NAME_TOKEN 'https://api.name.com/v4/domains/cchen.work/records' -X POST -H 'Content-Type: application/json' --data '{"host":"www","type":"A","answer":"10.0.0.1","ttl":300}'
+$ curl -u $NAME_USER:$NAME_TOKEN 'https://api.name.com/v4/domains/cchen.work/records' -X POST -H 'Content-Type: application/json' --data '{"host":"api.cchen414","type":"A","answer":"10.0.109.164","ttl":300}'
+{"id":239593693,"domainName":"cchen.work","host":"api.cchen414","fqdn":"api.cchen414.cchen.work.","type":"A","answer":"10.0.109.164","ttl":300}
+
+$ curl -u $NAME_USER:$NAME_TOKEN 'https://api.name.com/v4/domains/cchen.work/records' -X POST -H 'Content-Type: application/json' --data '{"host":"*.apps.cchen414","type":"A","answer":"10.0.109.183","ttl":300}'
+{"id":239593694,"domainName":"cchen.work","host":"*.apps.cchen414","fqdn":"*.apps.cchen414.cchen.work.","type":"A","answer":"10.0.109.183","ttl":300}
 ```
 
 ## Delete the Record

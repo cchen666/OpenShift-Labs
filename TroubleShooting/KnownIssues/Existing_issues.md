@@ -2,8 +2,6 @@ DO380 Page 30 what is
 
 oc rollout status -n openshift-authentication deployment/oauth-openshift \ --timeout 90s and oc wait
 
-oc get proxy/cluster -o yaml What is proxy?
-
 combined-cert.pem
 
 configmap ca.crt ldap
