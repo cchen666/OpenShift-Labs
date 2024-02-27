@@ -43,7 +43,7 @@ func main() {
 		}
 		userInput = strings.TrimSpace(userInput) // Remove the newline character
 
-		url := "http://10.72.36.88:11434/api/generate"
+		url := "http://10.0.111.25:11434/api/generate"
 		requestBody := RequestPayload{
 			Model:  "gemma:2b",
 			Prompt: userInput,
