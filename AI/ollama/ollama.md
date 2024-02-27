@@ -110,4 +110,4 @@ AI: *OpenShift* is an open-source platform for building, running, and managing c
 * *OpenShift website:* openshift.com
 * *OpenShift documentation:* docs.openshift.com
 * *OpenShift tutorials:* openshift.com/ tutorials
-```
+``
