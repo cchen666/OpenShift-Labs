@@ -1,19 +1,20 @@
 spec:
   identityProviders:
   - mappingMethod: claim
-    name: oidc
+    name: openid
     openID:
       ca:
-        name: idpdemo-oidc-client-ca-cert
+        name: openid-ca-mf2k9
       claims:
         email:
-          - email
+        - email
         name:
-          - name
+        - name
         preferredUsername:
-          - preferred_username
+        - preferred_username
       clientID: openshift-demo
-      clientSecret: yZ3avgRwSjg800rBR3DZao2NzzFxF1Hd
+      clientSecret:
+        name: openid-client-secret-52dff
       extraScopes: []
-      issuer: 'https://keycloak-idp-demo.apps.gcg-shift.cchen.work/auth/realms/openshift-demo'
+      issuer: https://keycloak-idpdemo.apps.cchen414.cchen.work/auth/realms/openshift-demo
     type: OpenID
