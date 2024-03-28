@@ -40,7 +40,8 @@ spec:
       clientID: openshift-demo
       clientSecret:
         name: openid-client-secret-52dff # Automatically created
-      extraScopes: []
+      extraScopes:
+        - email
       issuer: https://keycloak-idpdemo.apps.cchen414.cchen.work/auth/realms/openshift-demo
     type: OpenID
 ```
