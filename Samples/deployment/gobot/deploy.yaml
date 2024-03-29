@@ -50,7 +50,7 @@ spec:
             configMapKeyRef:
               name: gobot-cm
               key: REAL_SSO_PASSWORD
-        image: gobot.lab.eng.rdu2.redhat.com:5000/gobot-api/api:20231207
+        image: image-registry.openshift-image-registry.svc:5000/gobot/gobot-api:latest
         imagePullPolicy: Always
         resources: {}
         workingDir: /
@@ -64,7 +64,7 @@ spec:
           value: redhat
         - name: MYSQL_DATABASE
           value: gobot
-        image: gobot.lab.eng.rdu2.redhat.com:5000/gobot-api/db:20231207
+        image: image-registry.openshift-image-registry.svc:5000/gobot/gobot-db:latest
         imagePullPolicy: Always
         resources: {}
         securityContext:

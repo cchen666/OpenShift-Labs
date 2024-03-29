@@ -1,0 +1,41 @@
+apiVersion: build.openshift.io/v1
+kind: BuildConfig
+metadata:
+  name: my-gobot-db-build
+spec:
+  source:
+    type: Git
+    git:
+      uri: "git@gitlab.cee.redhat.com:cchen/gobot-s2i-db.git"
+    sourceSecret:
+      name: gitlab-ssh-key
+  strategy:
+    type: Docker
+    dockerStrategy:
+      dockerfilePath: Dockerfile
+  output:
+    to:
+      kind: ImageStreamTag
+      name: 'gobot-db:latest'
+
+---
+
+apiVersion: build.openshift.io/v1
+kind: BuildConfig
+metadata:
+  name: my-gobot-api-build
+spec:
+  source:
+    type: Git
+    git:
+      uri: "git@gitlab.cee.redhat.com:cchen/gobot-s2i-api.git"
+    sourceSecret:
+      name: gitlab-ssh-key
+  strategy:
+    type: Docker
+    dockerStrategy:
+      dockerfilePath: Dockerfile
+  output:
+    to:
+      kind: ImageStreamTag
+      name: 'gobot-api:latest'
