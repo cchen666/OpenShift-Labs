@@ -42,6 +42,8 @@ North Bound -> ovn-northd -> South Bound -> ovn-controller -> ovs DB -> vswitchd
        +-------------------------------+     +-------------------------------+
 ```
 
+![OVN Call Order](files/ovn-call.png)
+
 * Check Pods:
 
 ```bash
