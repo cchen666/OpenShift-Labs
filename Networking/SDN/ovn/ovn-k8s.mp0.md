@@ -133,7 +133,8 @@ In other words, it won't be used in the following scenarios:
    ```
 
 3. OVN DB explore - the source of everything
-   * NBDB shows as follows. So ovn-k8s-mp0 is a virtual port on node logical switch
+
+* NBDB shows as follows. So ovn-k8s-mp0 is a virtual port on node logical switch
 
    ```bash
    $ ovn-nbctl show
@@ -143,15 +144,68 @@ In other words, it won't be used in the following scenarios:
         addresses: ["52:7f:8b:03:90:26 10.131.0.2"]
    ```
 
-   * SBDB logical flows
+* SBDB logical flows
 
   ```bash
   $ ovn-sbctl lflow-list
 
        714   table=21(ls_in_arp_rsp      ), priority=100  , match=(arp.tpa == 10.131.0.2 && arp.op == 1 && inport == "k8s-cchen414-fzb7j-worker-0-nvmxn"),         action=(next;)
 
-       787   table=27(ls_in_l2_lkup      ), priority=50   , match=(eth.dst == 52:7f:8b:03:90:26), action=(outport = "k8s-cchen414-fzb7j-worker-0-nvmxn"; ou        tput;)
+       787   table=27(ls_in_l2_lkup      ), priority=50   , match=(eth.dst == 52:7f:8b:03:90:26), action=(outport = "k8s-cchen414-fzb7j-worker-0-nvmxn"; output;)
 
 
    # 52:7f:8b:03:90:26 is the MAC of ovn-k8s-mp0
   ```
+
+* Checking ovn-trace. It specifies the src from the Pod and dst as the node IP
+
+    ```bash
+    $ ovn-trace --no-leader-only  --db unix:/var/run/ovn/ovnsb_db.sock cchen414-fzb7j-worker-0-nvmxn 'inport=="test-dc_busybox-deployment-5-np57c" && eth.src==0a:58:0a:83:00:93 && eth.dst==0a:58:0a:83:00:01 && ip4.src==10.131.0.147 && ip4.dst==192.168.2.82 && ip.ttl==64 && tcp.dst==80 && tcp.src==52888'
+
+    ```
+
+    The datapath order that passes:
+
+    ```txt
+    ingress(dp="cchen414-fzb7j-worker-0-nvmxn", inport="test-dc_busybox-deployment-5-np57c") [1]
+    egress(dp="cchen414-fzb7j-worker-0-nvmxn", inport="test-dc_busybox-deployment-5-np57c",  outport="stor-cchen414-fzb7j-worker-0-nvmxn") [2]
+    ingress(dp="ovn_cluster_router", inport="rtos-cchen414-fzb7j-worker-0-nvmxn")[3]
+    egress(dp="ovn_cluster_router", inport="rtos-cchen414-fzb7j-worker-0-nvmxn", outport="rtos-cchen414-fzb7j-worker-0-nvmxn") [4]
+    ingress(dp="cchen414-fzb7j-worker-0-nvmxn", inport="stor-cchen414-fzb7j-worker-0-nvmxn")[5]
+    egress(dp="cchen414-fzb7j-worker-0-nvmxn", inport="stor-cchen414-fzb7j-worker-0-nvmxn", outport="k8s-cchen414-fzb7j-worker-0-nvmxn")[6]
+
+    ```
+
+    So in short, the packet left from the Pod and reached to LS [1], then leave the LS and reache
+    to LR [2]. The LR receives the packet in [3], and send the packet back to LS [4]. The packet
+    reached to LS again in [5], and then finally sent through k8s-cchen414-fzb7j-worker-0-nvmxn
+    (ovn-k8s-mp0) port in [6].
+
+* Where the key
+
+  The LR has a table 15, where to determine the destination IP address. If the dst is the node
+  itself, it will set reg0 to the `ovn-k8s-mp0` IP address, outport and flags.loopback = 1.
+
+  ```txt
+  Datapath: "ovn_cluster_router" (1dd6ab62-b915-44ee-94fc-d89a1f03644a)  Pipeline: egress
+    table=15(lr_in_policy       ), priority=1004 , match=(inport == "rtos-cchen414-fzb7j-worker-0-nvmxn" && ip4.dst == 192.168.2.82 /* cchen414-fzb7j-worker-0-nvmxn */), action=(reg0 = 10.131.0.2; reg1 = 10.131.0.1; eth.src = 0a:58:0a:83:00:01; outport = "rtos-cchen414-fzb7j-worker-0-nvmxn"; flags.loopback = 1; reg8[0..15] = 0; next;)
+  ```
+
+   Further in table 17:
+
+   ```txt
+
+     table=17(lr_in_arp_resolve  ), priority=100  , match=(outport == "rtos-cchen414-fzb7j-worker-0-nvmxn" && reg0 == 10.131.0.2), action=(eth.dst = 52:7f:8b:03:90:26; next;)
+
+   ```
+
+   Then the node LS receives the packets and matches table 27 of LS, which sets the outport
+   to k8s-cchen414-fzb7j-worker-0-nvmxn, aka `ovn-k8s-mp0`
+
+   ```txt
+
+   ingress(dp="cchen414-fzb7j-worker-0-nvmxn", inport="stor-cchen414-fzb7j-worker-0-nvmxn")
+     27. ls_in_l2_lkup (northd.c:10542): eth.dst == 52:7f:8b:03:90:26, priority 50, uuid 462957d9
+     outport = "k8s-cchen414-fzb7j-worker-0-nvmxn";
+
+   ```
