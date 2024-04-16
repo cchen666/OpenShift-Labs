@@ -209,3 +209,22 @@ In other words, it won't be used in the following scenarios:
      outport = "k8s-cchen414-fzb7j-worker-0-nvmxn";
 
    ```
+
+* Routing Table for ovn_cluster_router
+
+  ```bash
+  sh-5.1# ovn-nbctl lr-route-list ovn_cluster_router
+  IPv4 Routes
+  Route Table <main>:
+                100.64.0.2                100.88.0.2 dst-ip
+                100.64.0.3                100.88.0.3 dst-ip
+                100.64.0.4                100.88.0.4 dst-ip
+                100.64.0.5                100.64.0.5 dst-ip
+                100.64.0.6                100.88.0.6 dst-ip
+              10.128.0.0/23                100.88.0.2 dst-ip
+              10.128.2.0/23                100.88.0.6 dst-ip
+              10.129.0.0/23                100.88.0.3 dst-ip
+              10.130.0.0/23                100.88.0.4 dst-ip
+              10.131.0.0/23                100.64.0.5 src-ip
+              10.128.0.0/14                100.64.0.5 src-ip
+  ```
