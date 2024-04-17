@@ -2,8 +2,6 @@ apiVersion: v1
 kind: Service
 metadata:
   name: httpbin
-  annotations:
-    "service.beta.kubernetes.io/aws-load-balancer-proxy-protocol": "*"
   labels:
     app: httpbin
     service: httpbin
@@ -38,7 +36,7 @@ spec:
       securityContext:
         runAsUser: 0
       containers:
-      - image: docker.io/kennethreitz/httpbin
+      - image: quay.io/rhn_support_cchen/httpbin:latest
         imagePullPolicy: IfNotPresent
 #        command: ['sh', '-c', '/usr/bin/python3 usr/local/bin/gunicorn -b 0.0.0.0:8000 httpbin:app -k gevent']
         name: httpbin
