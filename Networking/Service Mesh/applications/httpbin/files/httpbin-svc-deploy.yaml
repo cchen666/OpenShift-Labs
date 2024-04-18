@@ -1,6 +1,9 @@
 apiVersion: v1
 kind: Service
 metadata:
+  annotations:
+    kubernetes.io/ingress.class: "openstack"
+    loadbalancer.openstack.org/floating-network-id: "316eeb47-1498-46b4-b39e-00ddf73bd2a5"
   name: httpbin
   labels:
     app: httpbin
