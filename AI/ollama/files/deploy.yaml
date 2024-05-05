@@ -28,7 +28,7 @@ spec:
           - /bin/sh
           - -c
           - >
-            ollama run gemma:2b &&
+            ollama run llama3 &&
             sleep infinity
 
 ---
