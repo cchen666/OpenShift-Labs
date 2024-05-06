@@ -33,12 +33,41 @@ spec:
       labels:
         app: httpd
     spec:
+      securityContext:
+        runAsUser: 0  # Note: Prefer setting proper permissions in your Dockerfile rather than running as root.
       containers:
-      - name: httpd
-        image: registry.access.redhat.com/ubi8/ubi
-        command: ["sh", "-c", "echo 'The app is running' > /var/www/html/index.html; httpd -f -p 8080 -h /var/www/html"]
+        - name: httpd
+          image: quay.io/rhn_support_cchen/toolbox:v1.3
+          command: ["sh", "-c"]
+          # If the image already contains httpd, it will listen on 8080 with this command.
+          args: ["echo 'The app is running' > /var/www/html/index.html && httpd -D FOREGROUND -c 'Listen 8080' -c 'DocumentRoot /var/www/html'"]
+---
+
+
+apiVersion: v1
+kind: Service
+metadata:
+  name: httpd-service
+spec:
+  selector:
+    app: httpd
+  ports:
+    - protocol: TCP
+      port: 80
+      targetPort: 8080
 
 ---
+
+apiVersion: route.openshift.io/v1
+kind: Route
+metadata:
+  name: httpd-route
+spec:
+  to:
+    kind: Service
+    name: httpd-service
+  port:
+    targetPort: 8080
 
 apiVersion: apps/v1
 kind: Deployment
