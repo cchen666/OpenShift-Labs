@@ -54,74 +54,74 @@ image.config.openshift.io/cluster patched
 
 1. Check where the test.cchen.work..5000 will be created inside the node. Login to one of the nodes
 
-```bash
-$
+    ```bash
+    $
 
-$ find / 2>/dev/null | grep test.cchen
+    $ find / 2>/dev/null | grep test.cchen
 
-# Pods will use this CA
+    # Pods will use this CA
 
-/sysroot/ostree/deploy/rhcos/var/lib/kubelet/pods/ee73918a-c16c-48be-9dfd-ba0d4577badf/volumes/kubernetes.io~configmap/serviceca/..2023_06_02_02_53_07.3903481854/test.cchen.work..5000
-/sysroot/ostree/deploy/rhcos/var/lib/kubelet/pods/ee73918a-c16c-48be-9dfd-ba0d4577badf/volumes/kubernetes.io~configmap/serviceca/test.cchen.work..5000
-/sysroot/ostree/deploy/rhcos/var/lib/kubelet/pods/86894834-929d-4a24-8889-2c37a27194a0/volumes/kubernetes.io~configmap/registry-certificates/..2023_06_02_02_53_55.962570959/test.cchen.work..5000
-/sysroot/ostree/deploy/rhcos/var/lib/kubelet/pods/86894834-929d-4a24-8889-2c37a27194a0/volumes/kubernetes.io~configmap/registry-certificates/test.cchen.work..5000
-/var/lib/kubelet/pods/ee73918a-c16c-48be-9dfd-ba0d4577badf/volumes/kubernetes.io~configmap/serviceca/..2023_06_02_02_53_07.3903481854/test.cchen.work..5000
-/var/lib/kubelet/pods/ee73918a-c16c-48be-9dfd-ba0d4577badf/volumes/kubernetes.io~configmap/serviceca/test.cchen.work..5000
-/var/lib/kubelet/pods/86894834-929d-4a24-8889-2c37a27194a0/volumes/kubernetes.io~configmap/registry-certificates/..2023_06_02_02_53_55.962570959/test.cchen.work..5000
-/var/lib/kubelet/pods/86894834-929d-4a24-8889-2c37a27194a0/volumes/kubernetes.io~configmap/registry-certificates/test.cchen.work..5000
+    /sysroot/ostree/deploy/rhcos/var/lib/kubelet/pods/ee73918a-c16c-48be-9dfd-ba0d4577badf/volumes/kubernetes.io~configmap/serviceca/..2023_06_02_02_53_07.3903481854/test.cchen.work..5000
+    /sysroot/ostree/deploy/rhcos/var/lib/kubelet/pods/ee73918a-c16c-48be-9dfd-ba0d4577badf/volumes/kubernetes.io~configmap/serviceca/test.cchen.work..5000
+    /sysroot/ostree/deploy/rhcos/var/lib/kubelet/pods/86894834-929d-4a24-8889-2c37a27194a0/volumes/kubernetes.io~configmap/registry-certificates/..2023_06_02_02_53_55.962570959/test.cchen.work..5000
+    /sysroot/ostree/deploy/rhcos/var/lib/kubelet/pods/86894834-929d-4a24-8889-2c37a27194a0/volumes/kubernetes.io~configmap/registry-certificates/test.cchen.work..5000
+    /var/lib/kubelet/pods/ee73918a-c16c-48be-9dfd-ba0d4577badf/volumes/kubernetes.io~configmap/serviceca/..2023_06_02_02_53_07.3903481854/test.cchen.work..5000
+    /var/lib/kubelet/pods/ee73918a-c16c-48be-9dfd-ba0d4577badf/volumes/kubernetes.io~configmap/serviceca/test.cchen.work..5000
+    /var/lib/kubelet/pods/86894834-929d-4a24-8889-2c37a27194a0/volumes/kubernetes.io~configmap/registry-certificates/..2023_06_02_02_53_55.962570959/test.cchen.work..5000
+    /var/lib/kubelet/pods/86894834-929d-4a24-8889-2c37a27194a0/volumes/kubernetes.io~configmap/registry-certificates/test.cchen.work..5000
 
-# This CA will be written to docker/certs.d
+    # This CA will be written to docker/certs.d
 
-/etc/docker/certs.d/test.cchen.work:5000
-/etc/docker/certs.d/test.cchen.work:5000/ca.crt
-```
+    /etc/docker/certs.d/test.cchen.work:5000
+    /etc/docker/certs.d/test.cchen.work:5000/ca.crt
+    ```
 
-So two Pods will be using the test.cchen.work..5000. See who are they:
+    So two Pods will be using the test.cchen.work..5000. See who are they:
 
-```bash
-$ oc get pod -A -o json | jq '.items[] | select(.metadata.uid == "ee73918a-c16c-48be-9dfd-ba0d4577badf") | .metadata.name'
-node-ca-pkrp6
+    ```bash
+    $ oc get pod -A -o json | jq '.items[] | select(.metadata.uid == "ee73918a-c16c-48be-9dfd-ba0d4577badf") | .metadata.name'
+    node-ca-pkrp6
 
-$ oc get pods node-ca-pkrp6 -o yaml | grep config -A4
+    $ oc get pods node-ca-pkrp6 -o yaml | grep config -A4
 
-  - configMap:
-      defaultMode: 420
-      name: image-registry-certificates
-    name: serviceca
+      - configMap:
+          defaultMode: 420
+          name: image-registry-certificates
+        name: serviceca
 
-$ oc get pods node-ca-pkrp6 -o yaml | grep serviceca -B2
+    $ oc get pods node-ca-pkrp6 -o yaml | grep serviceca -B2
 
-    - mountPath: /tmp/serviceca
-      name: serviceca
+        - mountPath: /tmp/serviceca
+          name: serviceca
 
-$ oc rsh node-ca-pkrp6
-sh-4.4$ cd /tmp/serviceca/
-sh-4.4$ ls
-image-registry.openshift-image-registry.svc..5000  image-registry.openshift-image-registry.svc.cluster.local..5000  test.cchen.work..5000
+    $ oc rsh node-ca-pkrp6
+    sh-4.4$ cd /tmp/serviceca/
+    sh-4.4$ ls
+    image-registry.openshift-image-registry.svc..5000  image-registry.openshift-image-registry.svc.cluster.local..5000  test.cchen.work..5000
 
-```
+    ```
 
-```bash
-$ oc get pod -A -o json | jq '.items[] | select(.metadata.uid == "86894834-929d-4a24-8889-2c37a27194a0") | .metadata.name'
-image-registry-6fcf9c8c5f-7dg8n
+    ```bash
+    $ oc get pod -A -o json | jq '.items[] | select(.metadata.uid == "86894834-929d-4a24-8889-2c37a27194a0") | .metadata.name'
+    image-registry-6fcf9c8c5f-7dg8n
 
-$ oc get pods image-registry-6fcf9c8c5f-7dg8n -o yaml | grep config -A4
+    $ oc get pods image-registry-6fcf9c8c5f-7dg8n -o yaml | grep config -A4
 
-  - configMap:
-      defaultMode: 420
-      name: image-registry-certificates
-    name: registry-certificates
+      - configMap:
+          defaultMode: 420
+          name: image-registry-certificates
+        name: registry-certificates
 
-$ oc get pods image-registry-6fcf9c8c5f-7dg8n -o yaml | grep registry-certificates -B2
+    $ oc get pods image-registry-6fcf9c8c5f-7dg8n -o yaml | grep registry-certificates -B2
 
-    - mountPath: /etc/pki/ca-trust/source/anchors
-      name: registry-certificates
+        - mountPath: /etc/pki/ca-trust/source/anchors
+          name: registry-certificates
 
-$ oc rsh image-registry-6fcf9c8c5f-7dg8n
-sh-4.4$ cat /etc/pki/ca-trust/source/anchors/test.cchen.work..5000
-<The CA that we created>
+    $ oc rsh image-registry-6fcf9c8c5f-7dg8n
+    sh-4.4$ cat /etc/pki/ca-trust/source/anchors/test.cchen.work..5000
+    <The CA that we created>
 
-```
+    ```
 
    2. What's the point to set /etc/docker/certs.d/ if crio doesn't look at it?
 <https://github.com/cri-o/cri-o/issues/4941>

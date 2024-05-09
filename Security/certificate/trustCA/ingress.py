@@ -1,3 +1,4 @@
+# Recommend to create python venv 3.10 first and install trustme package
 import trustme
 import datetime
 
@@ -6,7 +7,7 @@ import datetime
 ca = trustme.CA()
 
 # CA issues the certificate
-expires=datetime.datetime(2025, 12, 1, 8, 10, 10)
+expires=datetime.datetime(2035, 12, 1, 8, 10, 10)
 
 server_cert = ca.issue_cert(u"*.apps.gcg-shift.cchen.work", not_after=expires)
 
