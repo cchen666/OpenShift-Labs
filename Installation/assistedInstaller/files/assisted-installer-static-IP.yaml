@@ -1,0 +1,26 @@
+interfaces:
+  - ipv4:
+      address:
+        - ip: 192.168.122.80
+          prefix-length: 24
+      dhcp: false
+      enabled: true
+    ipv6:
+      enabled: false
+    link-aggregation:
+      mode: active-backup
+      ports:
+        - ens3
+        - ens4
+    name: bond0
+    state: up
+    type: bond
+routes:
+  config:
+    - destination: 0.0.0.0/0
+      next-hop-address: 192.168.122.1
+      next-hop-interface: bond0
+dns-resolver:
+  config:
+    servers:
+      - 192.168.122.1
