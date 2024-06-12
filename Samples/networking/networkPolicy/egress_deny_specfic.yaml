@@ -1,0 +1,41 @@
+apiVersion: networking.k8s.io/v1
+kind: NetworkPolicy
+metadata:
+  name: deny-specific-ips
+spec:
+  podSelector:
+    matchLabels:
+      app: toolbox
+  policyTypes:
+  - Egress
+  egress:
+  - to:
+    - ipBlock:
+        cidr: 0.0.0.0/0
+        except:
+          - 10.72.48.42/32
+          - 10.72.48.43/32
+
+
+---
+
+apiVersion: networking.k8s.io/v1
+kind: NetworkPolicy
+metadata:
+  name: deny-specific-ports
+spec:
+  podSelector:
+    matchLabels:
+      app: toolbox
+  policyTypes:
+  - Egress
+  egress:
+  - ports:
+    - endPort: 6442
+      port: 1
+      protocol: TCP
+    - endPort: 65535
+      port: 6444
+      protocol: TCP
+  policyTypes:
+  - Egress
