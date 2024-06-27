@@ -1,0 +1,25 @@
+default:
+ client: myopenstack
+
+myopenstack:
+ type: openstack
+ user: psi-gcg-jp
+ password: XXXXXXX
+ project: sbr-shift-psi-lab
+ domain: redhat.com
+ auth_url: https://rhos-d.infra.prod.upshift.rdu2.redhat.com:13000
+ #auth_url: https://api.rhos-01.prod.psi.rdu2.redhat.com:13000
+
+myopenstack1:
+ type: openstack
+ user: psi-gcg-jp
+ password: XXXXXX
+ project: sbr-shift-psi-lab
+ domain: redhat.com
+ #auth_url: https://rhos-d.infra.prod.upshift.rdu2.redhat.com:13000
+ auth_url: https://api.rhos-01.prod.psi.rdu2.redhat.com:13000
+
+baremetal:
+ type: kvm
+ host: dell-per320-05.gsslab.pek2.redhat.com
+ pool: images

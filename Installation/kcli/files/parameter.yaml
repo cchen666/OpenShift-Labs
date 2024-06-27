@@ -1,0 +1,14 @@
+version: stable
+tag: 4.14
+cluster: ocp4143620591
+domain: cchen.work
+pull_secret: openshift_pull.json
+api_ip: 192.168.122.252
+ctlplanes: 1
+workers: 0
+memory: 32768
+pool: images
+disk_size: 120
+extra_worker_disks:
+- 10
+network: default
