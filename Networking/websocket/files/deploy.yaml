@@ -1,0 +1,53 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: websocket-demo
+  labels:
+    app: websocket-demo
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: websocket-demo
+  template:
+    metadata:
+      labels:
+        app: websocket-demo
+    spec:
+      containers:
+      - name: websocket-demo
+        image: elegantmonkeys/websockets-demo
+        ports:
+        - containerPort: 3000
+
+---
+
+apiVersion: v1
+kind: Service
+metadata:
+  name: websocket-demo
+  labels:
+    app: websocket-demo
+spec:
+  selector:
+    app: websocket-demo
+  ports:
+  - name: 3000-tcp
+    protocol: TCP
+    port: 8000
+    targetPort: 3000
+
+---
+
+apiVersion: route.openshift.io/v1
+kind: Route
+metadata:
+  name: websocket-demo
+  labels:
+    app: websocket-demo
+  annotations:
+    haproxy.router.openshift.io/timeout: 5m  # Adjust as needed
+spec:
+  to:
+    kind: Service
+    name: websocket-demo
