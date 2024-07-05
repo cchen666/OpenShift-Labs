@@ -33,6 +33,7 @@ spec:
           containerName: example
           resource: requests.hugepages-2Mi
             volumes:
+  volumes:
   - name: hugepage
     emptyDir:
       medium: HugePages
