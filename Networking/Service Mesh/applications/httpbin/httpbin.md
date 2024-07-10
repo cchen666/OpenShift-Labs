@@ -37,13 +37,14 @@ $ oc apply -f files/httpbin-gateway.yaml -n httpbin
 $ oc apply -f files/httpbin-virtualService.yaml -n httpbin
 
 $ oc get route -n istio-system
-NAME                                 HOST/PORT                                                      PATH   SERVICES               PORT    TERMINATION          WILDCARD
-grafana                              grafana-istio-system.apps.mycluster.nancyge.com                       grafana                <all>   reencrypt/Redirect   None
-httpbin-mygateway-52594eff2b877cde   httpbin.apps.mycluster.nancyge.com                                    istio-ingressgateway   https   passthrough          None
-istio-ingressgateway                 istio-ingressgateway-istio-system.apps.mycluster.nancyge.com          istio-ingressgateway   8080    edge                 None
-jaeger                               jaeger-istio-system.apps.mycluster.nancyge.com                        jaeger-query           <all>   reencrypt            None
-kiali                                kiali-istio-system.apps.mycluster.nancyge.com                         kiali                  20001   reencrypt/Redirect   None
-prometheus                           prometheus-istio-system.apps.mycluster.nancyge.com                    prometheus             <all>   reencrypt/Redirect   None
+NAME                                          HOST/PORT                                                                           PATH   SERVICES               PORT          TERMINATION          WILDCARD
+bookinfo2-bookinfo-gateway-684888c0ebb17f37   bookinfo2-bookinfo-gateway-684888c0ebb17f37-istio-system.apps.cchen414.cchen.work          istio-ingressgateway   http2                              None
+grafana                                       grafana-istio-system.apps.cchen414.cchen.work                                              grafana                <all>         reencrypt/Redirect   None
+httpbin-mygateway-7643a192f6a757e8            httpbin.apps.cchen414.cchen.work                                                           istio-ingressgateway   https         passthrough          None
+istio-ingressgateway                          istio-ingressgateway-istio-system.apps.cchen414.cchen.work                                 istio-ingressgateway   8080                               None
+jaeger                                        jaeger-istio-system.apps.cchen414.cchen.work                                               jaeger-query           https-query   reencrypt            None
+kiali                                         kiali-istio-system.apps.cchen414.cchen.work                                                kiali                  20001         reencrypt/Redirect   None
+prometheus                                    prometheus-istio-system.apps.cchen414.cchen.work                                           prometheus             <all>         reencrypt/Redirect   None
 
 ```
 
@@ -51,7 +52,7 @@ prometheus                           prometheus-istio-system.apps.mycluster.nanc
 
 ```bash
 
-$ curl -k https://httpbin.apps.mycluster.nancyge.com/status/418
+$ curl -k https://httpbin.apps.cchen414.cchen.work/status/418
 
     -=[ teapot ]=-
 
@@ -62,7 +63,7 @@ $ curl -k https://httpbin.apps.mycluster.nancyge.com/status/418
       |       ;/
       \_     _/
         `"""`
-
+# The host doesn't match cchen.work so don't have to worry about that as it was captured in old domains
 $ oc logs -f istio-ingressgateway-b45c9d54d-2pqzc -n istio-system # We don't see Client IP here
 
 [2022-01-27T14:41:36.124Z] "GET /status/418 HTTP/2" 418 - via_upstream - "-" 0 135 5 4 "10.128.2.35" "curl/7.64.1" "c876d2f9-52ab-9bad-a7f5-383d5a5ecc48" "httpbin.apps.mycluster.nancyge.com" "10.128.2.113:80" outbound|8000||httpbin.httpbin.svc.cluster.local 10.128.2.200:49520 10.128.2.200:8443 10.128.2.35:41704 httpbin.apps.mycluster.nancyge.com -
