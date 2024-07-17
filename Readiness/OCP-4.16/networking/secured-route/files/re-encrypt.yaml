@@ -1,0 +1,81 @@
+---
+apiVersion: route.openshift.io/v1
+kind: Route
+metadata:
+  name: tls-web-server
+  labels:
+    app: tls-web-server
+spec:
+  host: tls-web-server.apps.cchen416.cchen.work  # Replace with your desired hostname
+  to:
+    kind: Service
+    name: tls-web-server
+  port:
+    targetPort: 30888
+  tls:
+    termination: reencrypt
+    key: ""
+    certificate: ""
+    destinationCACertificate: |
+      -----BEGIN CERTIFICATE-----
+      MIIBxzCCAW2gAwIBAgIUWMwQ6PjiJAYzgglM3nxPwq2ALCUwCgYIKoZIzj0EAwIw
+      QDEXMBUGA1UECgwOdHJ1c3RtZSB2MS4xLjAxJTAjBgNVBAsMHFRlc3RpbmcgQ0Eg
+      I1YzZlQ2QzhtXzJ1T3V0c3gwHhcNMDAwMTAxMDAwMDAwWhcNMzgwMTAxMDAwMDAw
+      WjBAMRcwFQYDVQQKDA50cnVzdG1lIHYxLjEuMDElMCMGA1UECwwcVGVzdGluZyBD
+      QSAjVjNmVDZDOG1fMnVPdXRzeDBZMBMGByqGSM49AgEGCCqGSM49AwEHA0IABLyl
+      lkQfZ3CrrUpx5/m3XSlb69nZQgHb9Igxttd2v3XbSZMdVJxal6cVRzx8EpSEgeo6
+      zc7zX1X6fOHDc9mf4SejRTBDMB0GA1UdDgQWBBTmfurEG2TaqrlKXv4kO0Me5khi
+      pTASBgNVHRMBAf8ECDAGAQH/AgEJMA4GA1UdDwEB/wQEAwIBhjAKBggqhkjOPQQD
+      AgNIADBFAiEAhcEggwIWxIpu6RmN6ZLAv00dwWmeBk/md8Wzr0HSHgECIHALqydH
+      toZncC2YTXVt/tbzX4t/lCnr5IDThVzkOX3i
+      -----END CERTIFICATE-----
+    insecureEdgeTerminationPolicy: Redirect
+
+---
+
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: tls-web-server
+  labels:
+    app: tls-web-server
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: tls-web-server
+  template:
+    metadata:
+      labels:
+        app: tls-web-server
+    spec:
+      containers:
+      - name: tls-web-server
+        image: quay.io/rhn_support_cchen/tls-web-server:v1.0
+        command: ["/tls-web-server"]
+        ports:
+        - containerPort: 30888
+        volumeMounts:
+        - name: tls-cert
+          mountPath: "/etc/tls"
+          readOnly: true
+      volumes:
+      - name: tls-cert
+        secret:
+          secretName: myapp-tls
+
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: tls-web-server
+  labels:
+    app: tls-web-server
+spec:
+  selector:
+    app: tls-web-server
+  ports:
+  - protocol: TCP
+    port: 80
+    targetPort: 30888
+---

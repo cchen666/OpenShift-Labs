@@ -1,0 +1,64 @@
+apiVersion: route.openshift.io/v1
+kind: Route
+metadata:
+  name: myedge
+  namespace: test
+spec:
+  host: myedge-test.apps.cchen416.cchen.work
+  to:
+    kind: Service
+    name: web-server
+  tls:
+    externalCertificate:
+      name: myapp-tls
+    termination: edge
+
+---
+
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: web-server
+  labels:
+    app: web-server
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: web-server
+  template:
+    metadata:
+      labels:
+        app: web-server
+    spec:
+      containers:
+      - name: web-server
+        image: quay.io/rhn_support_cchen/tls-web-server:v1.0
+        command: ["/tls-web-server"]
+        args: ["--insecure"]
+        ports:
+        - containerPort: 30888
+        volumeMounts:
+        - name: tls-cert
+          mountPath: "/etc/tls"
+          readOnly: true
+      volumes:
+      - name: tls-cert
+        secret:
+          secretName: myapp-tls
+
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: web-server
+  labels:
+    app: web-server
+spec:
+  selector:
+    app: web-server
+  ports:
+  - protocol: TCP
+    port: 80
+    targetPort: 30888
+---

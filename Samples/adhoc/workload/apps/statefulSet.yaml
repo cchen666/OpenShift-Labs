@@ -70,8 +70,8 @@ metadata:
   name: mysql-1
 spec:
   clusterIP: None
-    selector:
-      statefulset.kubernetes.io/pod-name: mysql-1
+  selector:
+    statefulset.kubernetes.io/pod-name: mysql-1
   ports:
   - name: tcp
     port: 3306
