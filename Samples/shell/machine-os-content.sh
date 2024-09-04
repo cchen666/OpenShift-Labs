@@ -1,14 +1,15 @@
 #!/bin/bash
 
-if [ $# -ne 1 ]; then
-    echo "Usage: $0 <OCP_VERSION>"
+if [ $# -ne 2 ]; then
+    echo "Usage: $0 <OCP_VERSION> <PACKAGE_NAME>"
     exit 1
 fi
 
-packageList='kernel,cri-o,runc'
+OCP_VERSION=$1
+PACKAGE_NAME=$2
 
-image=`curl -s -N https://mirror.openshift.com/pub/openshift-v4/clients/ocp/$1/release.txt | grep machine-os-content | awk '{print $2}'`
-podman run --rm --authfile /tmp/config.json -it --entrypoint $image /bin/cat /etc/redhat-release
-for package in "${packageList[@]}"; do
-    podman run --rm --authfile /tmp/config.json -it --entrypoint $image /bin/cat /pkglist.txt | grep $package
-done
+sudo cp /var/lib/kubelet/config.json /tmp/
+sudo chmod 755 /tmp/config.json
+
+image=`curl -s -N https://mirror.openshift.com/pub/openshift-v4/clients/ocp/$OCP_VERSION/release.txt | grep machine-os-content | awk '{print $2}'`
+podman run --rm --authfile /tmp/config.json -it --entrypoint /bin/cat $image /pkglist.txt | grep $PACKAGE_NAME
