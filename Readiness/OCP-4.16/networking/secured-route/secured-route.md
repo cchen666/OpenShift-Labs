@@ -13,4 +13,3 @@ $ oc create secret tls myapp-tls --cert=server.crt --key=server.key
 $ oc apply -f files/deploy.yaml
 
 ```
-
