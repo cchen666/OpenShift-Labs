@@ -3,9 +3,8 @@
 ## Label the Nodes
 
 ```bash
-$ for i in cchen414-fzb7j-worker-0-nvmxn cchen414-fzb7j-worker-0-qrmvn;
-do
-  oc label node $i k8s.ovn.org/egress-assignable=true
+$ for i in cchen414-fzb7j-worker-0-nvmxn cchen414-fzb7j-worker-0-qrmvn; do
+    oc label node $i k8s.ovn.org/egress-assignable=true
 done
 
 ```
