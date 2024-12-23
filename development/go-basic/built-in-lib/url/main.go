@@ -15,4 +15,5 @@ func main() {
 	fmt.Printf("url2 host is %v\n", url2.Host)
 	fmt.Printf("url2 scheme is %v\n", url2.Scheme)
 	fmt.Printf("url2 path is %v\n", url2.Path)
+
 }
