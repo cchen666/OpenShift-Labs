@@ -1,6 +1,34 @@
 # Masquerade
 
+## Create metalLB and loadBalancer type svc
+
+## Access the VM
+
+```bash
+$ ssh cloud-user@192.168.50.23
+cloud-user@192.168.50.23's password:
+Register this system with Red Hat Insights: insights-client --register
+Create an account or view all your systems at https://red.ht/insights-dashboard
+Last login: Mon Dec 23 01:22:56 2024 from 100.64.0.2
+[cloud-user@rhel9-rose-bee-59 ~]$ ip a
+1: lo: <LOOPBACK,UP,LOWER_UP> mtu 65536 qdisc noqueue state UNKNOWN group default qlen 1000
+    link/loopback 00:00:00:00:00:00 brd 00:00:00:00:00:00
+    inet 127.0.0.1/8 scope host lo
+       valid_lft forever preferred_lft forever
+    inet6 ::1/128 scope host
+       valid_lft forever preferred_lft forever
+2: eth0: <BROADCAST,MULTICAST,UP,LOWER_UP> mtu 1400 qdisc fq_codel state UP group default qlen 1000
+    link/ether 02:9e:ed:00:00:00 brd ff:ff:ff:ff:ff:ff
+    altname enp1s0
+    inet 10.0.2.2/24 brd 10.0.2.255 scope global dynamic noprefixroute eth0
+       valid_lft 86293383sec preferred_lft 86293383sec
+    inet6 fe80::9e:edff:fe00:0/64 scope link noprefixroute
+       valid_lft forever preferred_lft forever
+```
+
 ## Inspect the VM and see how Masqeuade works
+
+* First we login to the VM and check the interfaces:
 
 ```bash
 
@@ -38,7 +66,17 @@ default via 10.10.0.1 dev eth0
 
 ```
 
+* k6t-eth0 is a bridge and tap0 is one of the sub interface of that bridge.
+
+```bash
+sh-5.1$ cat /sys/class/net/k6t-eth0/brif/tap0/
+
+sh-5.1$ cat /sys/class/net/k6t-eth0/brif/tap0/
 ```
+
+* The tap0 is the interface that is connected to the VM. Checking the VM domain definition:
+
+```bash
 sh-5.1$ virsh list
 Authorization not available. Check if polkit service is running or see debug message for more information.
  Id   Name                        State
@@ -57,21 +95,16 @@ virsh dumpxml 1 | more
       <rom enabled='no'/>
       <address type='pci' domain='0x0000' bus='0x01' slot='0x00' function='0x0'/>
     </interface>
-
-
-sh-5.1$ cat /sys/class/net/k6t-eth0/brif/tap0/
-
-sh-5.1$ cat /sys/class/net/k6t-eth0/brif/tap0/
 ```
 
-Node:
+* On the Node, we switch to the netns and confirm how the DNAT happens inside the Pod. As it shows, as long as the traffic enters the Pod, DNAT will happen and the traffic will be forwarded to 10.0.2.2, which is the IP of the VM.
 
 ```bash
 sh-5.1# ip netns exec $netns /bin/bash
 [systemd]
 Failed Units: 1
   NetworkManager-wait-online.service
-[root@master03 /]# nft list table nat
+sh-5.1# nft list table nat
 table ip nat {
         chain prerouting {
                 type nat hook prerouting priority dstnat; policy accept;
@@ -102,5 +135,7 @@ table ip nat {
         }
 }
 ```
+
+## Summary
 
 So the traffic should be: Client -> external IP (Loadbalancer type service) -> Node -> service -> virt-launcher Pod -> VM

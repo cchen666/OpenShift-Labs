@@ -1,0 +1,22 @@
+$ oc get svc testssh -o yaml
+apiVersion: v1
+kind: Service
+metadata:
+  name: testssh
+  namespace: default
+spec:
+  allocateLoadBalancerNodePorts: true
+  externalTrafficPolicy: Cluster
+  internalTrafficPolicy: Cluster
+  ipFamilies:
+  - IPv4
+  ipFamilyPolicy: SingleStack
+  ports:
+  - nodePort: 32619
+    port: 22
+    protocol: TCP
+    targetPort: 22
+  selector:
+    kubevirt.io/domain: rhel9-rose-bee-59
+  sessionAffinity: None
+  type: LoadBalancer
