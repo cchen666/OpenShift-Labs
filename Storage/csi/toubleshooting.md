@@ -32,3 +32,7 @@ Symptom: 1. PVC will be in Bound status
          2.  The Pod will be stuck in ContainerCreating status
          3.  attachdetach-controller complains "Attach timeout for volume"
          4.  kubelet complains "Unable to attach or mount volumes: unmounted volumes=[xxxx], unattached volumes=[xxxx]: timed out waiting for the condition"
+
+## Who creates volumeAttachment CR
+
+When the workload uses the PV, attachdetach-controller will create volumeAttachment CR to show which node needs the PV. Node plugin keeps monitoring volumeAttachment CR and attach the volume to the node.
