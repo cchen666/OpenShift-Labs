@@ -32,27 +32,3 @@ spec:
 
 
 
-apiVersion: v1
-kind: Service
-metadata:
-  name: nginx-service
-  namespace: test-external-ip
-spec:
-  allocateLoadBalancerNodePorts: true
-  clusterIP: 172.30.163.110
-  clusterIPs:
-  - 172.30.163.110
-  externalTrafficPolicy: Cluster
-  internalTrafficPolicy: Cluster
-  ipFamilies:
-  - IPv4
-  ipFamilyPolicy: SingleStack
-  ports:
-  - nodePort: 31903
-    port: 8080
-    protocol: TCP
-    targetPort: 8080
-  selector:
-    app: nginx
-  sessionAffinity: None
-  type: LoadBalancer

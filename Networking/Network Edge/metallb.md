@@ -13,47 +13,31 @@ $ oc new-project metallb-system # Then Install the Metal LB Operator from Operat
 
 $ oc apply -f files/metallb-metallb-cr.yaml
 
-$ oc get all -n metallb-system
-NAME                                                       READY   STATUS    RESTARTS   AGE
-pod/controller-b8f4c8565-kzd4l                             2/2     Running   0          32m
-pod/metallb-operator-controller-manager-8676679d9d-tvvcs   1/1     Running   0          37m
-pod/speaker-899k9                                          6/6     Running   0          32m
-
-NAME                                                  TYPE        CLUSTER-IP      EXTERNAL-IP   PORT(S)               AGE
-service/metallb-controller-monitor-service            ClusterIP   None            <none>        29150/TCP             32m
-service/metallb-operator-controller-manager-service   ClusterIP   172.30.246.20   <none>        443/TCP               37m
-service/metallb-speaker-monitor-service               ClusterIP   None            <none>        29150/TCP,29151/TCP   32m
-service/webhook-service                               ClusterIP   172.30.252.58   <none>        443/TCP               37m
-
-NAME                     DESIRED   CURRENT   READY   UP-TO-DATE   AVAILABLE   NODE SELECTOR            AGE
-daemonset.apps/speaker   1         1         1       1            1           kubernetes.io/os=linux   32m
-
-NAME                                                  READY   UP-TO-DATE   AVAILABLE   AGE
-deployment.apps/controller                            1/1     1            1           32m
-deployment.apps/metallb-operator-controller-manager   1/1     1            1           37m
-
-NAME                                                             DESIRED   CURRENT   READY   AGE
-replicaset.apps/controller-b8f4c8565                             1         1         1       32m
-replicaset.apps/metallb-operator-controller-manager-8676679d9d   1         1         1       37m
-```
-
-## Create AddressPools CR
-
-```bash
-
-$ oc apply -f files/metallb-addresspools-cr.yaml
-
+$ oc get pods -n metallb-system
+NAME                                                  READY   STATUS    RESTARTS   AGE
+controller-7b68d765dc-krfqn                           2/2     Running   0          7m56s
+frr-k8s-jsr6x                                         6/6     Running   0          7m56s
+frr-k8s-lm6fs                                         6/6     Running   0          7m56s
+frr-k8s-rnxcw                                         6/6     Running   0          7m56s
+frr-k8s-webhook-server-6699cdcd8f-28pjw               1/1     Running   0          7m56s
+metallb-operator-controller-manager-54c44df8b-pznhq   1/1     Running   0          30m
+metallb-operator-webhook-server-69bbb94fb5-fhqr2      1/1     Running   0          30m
+speaker-82swb                                         2/2     Running   0          7m56s
+speaker-9768c                                         2/2     Running   0          7m56s
+speaker-m97jj                                         2/2     Running   0          7m56s
 ```
 
 ## Test
 
-### Environment: SNO OCP 4.10.30 IP: 10.72.36.88
+### Environment: 1 Master + 2 Workers
 
 ```bash
 
 $ oc get nodes -o wide
-NAME                                    STATUS   ROLES           AGE    VERSION           INTERNAL-IP   EXTERNAL-IP   OS-IMAGE                                                        KERNEL-VERSION                 CONTAINER-RUNTIME
-dell-per430-35.gsslab.pek2.redhat.com   Ready    master,worker   4d3h   v1.23.5+012e945   10.72.36.88   <none>        Red Hat Enterprise Linux CoreOS 410.84.202208161501-0 (Ootpa)   4.18.0-305.57.1.el8_4.x86_64   cri-o://1.23.3-15.rhaos4.10.git6af791c.el8
+NAME       STATUS   ROLES                         AGE   VERSION   INTERNAL-IP    EXTERNAL-IP   OS-IMAGE                                                KERNEL-VERSION                 CONTAINER-RUNTIME
+master-0   Ready    control-plane,master,worker   22h   v1.31.6   172.16.0.101   <none>        Red Hat Enterprise Linux CoreOS 418.94.202503102036-0   5.14.0-427.60.1.el9_4.x86_64   cri-o://1.31.6-2.rhaos4.18.gitda737c9.el9
+worker-0   Ready    worker                        48m   v1.31.6   172.16.0.104   <none>        Red Hat Enterprise Linux CoreOS 418.94.202503102036-0   5.14.0-427.60.1.el9_4.x86_64   cri-o://1.31.6-2.rhaos4.18.gitda737c9.el9
+worker-1   Ready    worker                        47m   v1.31.6   172.16.0.105   <none>        Red Hat Enterprise Linux CoreOS 418.94.202503102036-0   5.14.0-427.60.1.el9_4.x86_64   cri-o://1.31.6-2.rhaos4.18.gitda737c9.el9
 
 ```
 
@@ -62,24 +46,25 @@ dell-per430-35.gsslab.pek2.redhat.com   Ready    master,worker   4d3h   v1.23.5+
 ```bash
 
 $ oc apply -f files/metallb-deployment-web.yaml
-$ oc apply -f files/metallb-svc-web.yaml
 
 $ oc get all
+Warning: apps.openshift.io/v1 DeploymentConfig is deprecated in v4.14+, unavailable in v4.10000+
 NAME                       READY   STATUS    RESTARTS   AGE
-pod/web-6d5796449f-8vskh   1/1     Running   0          7h11m
+pod/web-76dbd897d6-x2l6g   1/1     Running   0          7m2s
 
 NAME                    TYPE           CLUSTER-IP       EXTERNAL-IP    PORT(S)          AGE
-service/nginx-service   LoadBalancer   172.30.163.110   10.72.36.222   8080:31903/TCP   7h11m # Pay attention to EXTERNAL-IP = 10.72.36.222 while the addressPools = 10.72.36.222 - 10.72.36.225
+service/nginx-service   LoadBalancer   172.30.153.221   172.16.0.120   8080:31903/TCP   7m2s
 
 NAME                  READY   UP-TO-DATE   AVAILABLE   AGE
-deployment.apps/web   1/1     1            1           7h11m
+deployment.apps/web   1/1     1            1           7m2s
 
 NAME                             DESIRED   CURRENT   READY   AGE
+replicaset.apps/web-76dbd897d6   1         1         1       7m2s
 replicaset.apps/web-6d5796449f   1         1         1       7h11m
 
 ```
 
-* From a Client
+* From the KVM Host
 
 ```bash
 
@@ -98,12 +83,6 @@ Commercial support is available at nginx.com.
 Thank you for using nginx.
 ```
 
-```bash
-
-$ oc delete svc nginx-service # Release the IP because the lab could use it
-
-```
-
 ## TroubleShooting
 
 <https://github.com/metallb/metallb/blob/main/internal/layer2/arp.go>
@@ -112,18 +91,28 @@ $ oc delete svc nginx-service # Release the IP because the lab could use it
 
 $ oc logs controller-b8f4c8565-kzd4l -c controller -n metallb-system
 
-{"caller":"level.go:63","event":"ipAllocated","ip":["10.72.36.222"],"level":"info","msg":"IP address assigned by controller","service":"test-external-ip/nginx-service","ts":"2022-09-06T13:00:52.098786622Z"}
-{"caller":"level.go:63","event":"serviceUpdated","level":"info","msg":"updated service object","service":"test-external-ip/nginx-service","ts":"2022-09-06T13:00:52.105525249Z"} # svc is created and 10.72.36.222 is allocated
-{"caller":"level.go:63","event":"serviceDeleted","level":"info","msg":"service deleted","service":"test-external-ip/nginx-service","ts":"2022-09-06T13:40:09.213370924Z"} # We deleted the svc and the IP is released
+{"caller":"service.go:158","event":"ipAllocated","ip":["172.16.0.120"],"level":"info","msg":"IP address assigned by controller","ts":"2025-04-09T05:47:30Z"}
+{"caller":"main.go:127","event":"serviceUpdated","level":"info","msg":"updated service object","ts":"2025-04-09T05:47:30Z"} # svc is created
+
+$ oc describe svc -n test-external-ip # To check which node holds the LB IP, in this case master-0
+<Snip>
+Events:
+  Type    Reason        Age    From                Message
+  ----    ------        ----   ----                -------
+  Normal  IPAllocated   9m32s  metallb-controller  Assigned IP ["172.16.0.120"]
+  Normal  nodeAssigned  8m6s   metallb-speaker     announcing from node "master-0" with protocol "layer2"
 
 $ oc logs speaker-899k9 -c speaker | grep event
-{"caller":"level.go:63","event":"createARPResponder","interface":"eno2","level":"info","msg":"created ARP responder for interface","ts":"2022-09-06T12:57:25.427608889Z"}
-{"caller":"level.go:63","event":"createARPResponder","interface":"eno3","level":"info","msg":"created ARP responder for interface","ts":"2022-09-06T12:57:25.428799326Z"}
-{"caller":"level.go:63","event":"createARPResponder","interface":"eno4","level":"info","msg":"created ARP responder for interface","ts":"2022-09-06T12:57:25.429860382Z"}
-{"caller":"level.go:63","event":"createARPResponder","interface":"br-ex","level":"info","msg":"created ARP responder for interface","ts":"2022-09-06T12:57:25.431026362Z"} # It creates APR responder on all the interfaces so that it could responde ARP broadcast back to the ARP requester
-{"caller":"level.go:63","level":"info","msg":"node event - forcing sync","node addr":"10.72.36.88","node event":"NodeJoin","node name":"dell-per430-35.gsslab.pek2.redhat.com","ts":"2022-09-06T12:57:25.443214464Z"}
-{"caller":"level.go:63","event":"serviceAnnounced","ips":["10.72.36.222"],"level":"info","msg":"service has IP, announcing","pool":"doc-example","protocol":"layer2","service":"test-external-ip/nginx-service","ts":"2022-09-06T13:00:52.106230911Z"} # All the NICs will respond ARP for 10.72.36.222
-{"caller":"level.go:63","event":"serviceWithdrawn","ip":null,"level":"info","msg":"withdrawing service announcement","reason":"serviceDeleted","service":"test-external-ip/nginx-service","ts":"2022-09-06T13:40:09.212913624Z"} # svc is deleted and announcement is withdrawed
+{"caller":"announcer.go:126","event":"createARPResponder","interface":"br-ex","level":"info","msg":"created ARP responder for interface","ts":"2025-04-09T05:48:18Z"}
+{"caller":"announcer.go:135","event":"createNDPResponder","interface":"br-ex","level":"info","msg":"created NDP responder for interface","ts":"2025-04-09T05:48:18Z"}
+{"caller":"announcer.go:126","event":"createARPResponder","interface":"ovn-k8s-mp0","level":"info","msg":"created ARP responder for interface","ts":"2025-04-09T05:48:18Z"}
+{"caller":"announcer.go:135","event":"createNDPResponder","interface":"ovn-k8s-mp0","level":"info","msg":"created NDP responder for interface","ts":"2025-04-09T05:48:18Z"} # It creates APR responder on all the interfaces so that it could responde ARP broadcast back to the ARP requester
+{"caller":"main.go:420","event":"serviceAnnounced","ips":["172.16.0.120"],"level":"info","msg":"service has IP, announcing","pool":"example","protocol":"layer2","ts":"2025-04-09T05:48:56Z"} # All the NICs will respond ARP for 172.16.0.120
+
+# Delete
+
+{"caller":"service_controller.go:64","controller":"ServiceReconciler","level":"info","start reconcile":"test-external-ip/nginx-service","ts":"2025-04-09T06:02:02Z"}
+{"caller":"main.go:464","event":"serviceWithdrawn","ip":["172.16.0.120"],"level":"info","msg":"withdrawing service announcement","reason":"serviceDeleted","ts":"2025-04-09T06:02:02Z"} # announcement is withdrawed if I manually delete the svc
 
 ```
 
