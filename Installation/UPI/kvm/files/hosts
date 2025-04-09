@@ -1,0 +1,13 @@
+[base]
+127.0.0.1 ansible_connection=local
+
+[kvm_host]
+# Input IP addr
+#   remote kvm host:
+#     192.168.0.100
+#   local kvm:
+#     127.0.0.1 ansible_connection=local
+10.72.36.88 ansible_connection=local
+
+[kvm_host:vars]
+ansible_user=root

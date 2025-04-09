@@ -1,0 +1,61 @@
+---
+# KVM host IP and name of NIC
+# e.g. 192.168.0.100 (do not input 127.0.0.1), enp2s0f0
+kvm_host:
+  ip: 10.72.36.88
+  if: eno1
+
+# OpenShift environment settings
+#  dist:            Select the distribution to deploy "ocp", "okd" or "pre-release"(pre-release of ocp).
+#  install_version: openshift-install and openshift-client version.
+#    ocp: https://mirror.openshift.com/pub/openshift-v4/clients/ocp/
+#    okd: https://github.com/openshift/okd/releases
+#  coreos_version:  CoreOS version
+#    ocp: https://mirror.openshift.com/pub/openshift-v4/dependencies/rhcos/
+#    okd: https://getfedora.org/en/coreos/download?tab=metal_virtualized&stream=stable
+# --- e.g OCO 4.5 -------------
+#  install_version: 4.5.2
+#  coreos_version:  4.5.2
+# --- e.g OKD 4 ---------------
+#  * The sha256sum of OCP4, oc client and openshift-install is automatically detected
+#  * by sha256sum.txt. but FOCS does not provide sha256sum.txt, so you have to
+#  * check and input it yourself from the website.
+#  * https://getfedora.org/en/coreos/download?tab=metal_virtualized&stream=stable
+#  install_version:      4.5.0-0.okd-2020-07-14-153706-ga
+#  coreos_version:       32.20200629.3.0
+#  okd_kenrel_sha256:    e58b29e5394b4167f0573c89c23b3b9bfe577c527ef160898cd6e0882a3ed8e8
+#  okd_initramfs_sha256: 8384393ba7a53a301db9a6c3e2a7c0ca38fb23a2af428517af1e9deccc7d921e
+#  okd_raw_sha256:       5718209c6c5ba019847184f5fad5964ac972524e9ffe8b00f653ad3e9c702de9
+# -----------------------------
+# use_rootfs:       RHCOS 4.6+ requires rootfs. (true|false)
+openshift:
+  dist: ocp
+  install_version: 4.18.5
+  coreos_version:  4.18.1
+  use_rootfs:      true
+
+#  dist: okd
+#  install_version:      4.5.0-0.okd-2020-07-14-153706-ga
+#  coreos_version:       32.20200629.3.0
+#  okd_kenrel_sha256:    e58b29e5394b4167f0573c89c23b3b9bfe577c527ef160898cd6e0882a3ed8e8
+#  okd_initramfs_sha256: 8384393ba7a53a301db9a6c3e2a7c0ca38fb23a2af428517af1e9deccc7d921e
+#  okd_raw_sha256:       5718209c6c5ba019847184f5fad5964ac972524e9ffe8b00f653ad3e9c702de9
+
+# pullsecret: '{"auths":{"cloud.openshift.com"......}}'
+# sshkey: 'ssh-rsa AAAABBB.....'
+key:
+  pullsecret: '{"auths":}
+  sshkey: 'ssh-rsa AAAAB
+
+# You can stay the configurations and binaries on the kvm host when you run the cleanup.
+#  conf: configuration files. e.g. dnsmasq, install-config.yaml, etc...
+#  bin:  binary files. e.g. initramfs, oc client, etc ...
+#    true:  remove old files
+#    false: stay old files
+cleanup:
+  conf: true
+  bin:  false
+
+# DNS hack for libvirt
+# Hack for internet connection issues with tricky DNS provided by libvirt+dnsmasq
+use_ext_dns: false
