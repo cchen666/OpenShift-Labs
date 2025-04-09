@@ -44,6 +44,8 @@ $ ansible-playbook ./main.yml
 
 ## Access the env through CLI
 
+In my case I am using RHEL8 kvm host and OCP 4.18 oc is based on RHEL9. So I have to use podman container to run the oc. In my case I put all the openshift yamls under /root/ocp. When applying the yamls, I have to use the full path of the yaml file, like `oc apply -f /root/ocp/metallb/metallb.yaml`, otherwise the oc will complain no such file.
+
 ```bash
 $ alias oc='podman run --rm -it -v ${HOME}/ocp:/root/ocp:Z -v ${HOME}/.kube:/root/.kube:Z registry.redhat.io/openshift4/ose-cli-rhel9:v4.18.0-202503210101.p0.geb9bc9b.assembly.stream.el9 oc'
 ```
