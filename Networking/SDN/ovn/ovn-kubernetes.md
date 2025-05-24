@@ -2,6 +2,14 @@
 
 ## Architecture
 
+```text
+Think of it like this:
+
+NBDB: This is like the architectural blueprint for a house. It defines rooms, windows, doors, etc. (high-level, logical).
+SBDB: This is like the detailed construction plans for each section of the house (e.g., plumbing schematics, electrical wiring diagrams). It's more granular and specifies how to implement the blueprint, but it's still a plan, not the actual pipes or wires. northd is the general contractor translating the blueprint into these detailed plans.
+OVS OpenFlows: These are the actual pipes, wires, and structural beams that are installed in the house. ovn-controller is the specialized worker (plumber, electrician) who reads the detailed plans and installs the physical components.
+```
+
 * Basic call order of OVN
 
 ```text
