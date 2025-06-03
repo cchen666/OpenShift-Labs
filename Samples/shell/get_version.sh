@@ -29,7 +29,7 @@ case $OCP_MAJOR in
     4.13)
         OCP_VERSION="4.13-9.2"
         ;;
-    *)
+    *) # 4.9 - 4.12
         OCP_VERSION=${OCP_MAJOR}
         ;;
 esac
