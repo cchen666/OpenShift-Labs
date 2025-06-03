@@ -1,0 +1,1 @@
+https://docs.okd.io/latest/networking/ovn_kubernetes_network_provider/configuring-secondary-external-gateway.html#example-secondary-external-gateway-configurations_configuring-secondary-external-gateway
