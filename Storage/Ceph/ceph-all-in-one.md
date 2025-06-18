@@ -12,10 +12,11 @@
 
 ```bash
 
+$ ip=a.b.c.d
 $ sudo subscription-manager repos --enable=rhceph-5-tools-for-rhel-8-x86_64-rpms
 $ sudo dnf install podman cephadm ceph-common ceph-base -y
 $ sudo cephadm bootstrap --cluster-network 10.0.169.0/24 \
---mon-ip 10.0.169.5 \
+--mon-ip $ip \
 --registry-url registry.redhat.io \
 --registry-username 'rhn-support-cchen' \
 --registry-password 'XXXXXX' \
@@ -23,6 +24,14 @@ $ sudo cephadm bootstrap --cluster-network 10.0.169.0/24 \
 --initial-dashboard-user admin \
 --initial-dashboard-password redhat \
 --allow-fqdn-hostname --single-host-defaults
+
+```
+
+## Add Disks to Ceph
+
+```bash
+
+$ sudo ceph orch apply osd --all-available-devices
 
 ```
 
