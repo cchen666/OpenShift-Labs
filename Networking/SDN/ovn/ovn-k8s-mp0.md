@@ -1,4 +1,4 @@
-# [DRAFT] What does ovn-k8s-mp0 do
+# What does ovn-k8s-mp0 do
 
 ovn-k8s-mp0 is a management port with .2 IP. It is a port attached to br-int. It will be used
 in the following scenarios:
