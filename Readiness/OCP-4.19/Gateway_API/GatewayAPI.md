@@ -31,7 +31,7 @@ ca = trustme.CA()
 # CA issues the certificate
 expires=datetime.datetime(2035, 12, 1, 8, 10, 10)
 
-server_cert = ca.issue_cert(u"*.gwapi.apps.hackathon-419-cchen.apacshift.support", not_after=expires)
+server_cert = ca.issue_cert(u"*.gwapi.apps.hackathon-419-cchen.test.dev", not_after=expires)
 
 # Save the CA cert
 
@@ -111,7 +111,7 @@ gateway.gateway.networking.k8s.io/example-gateway condition met
 
 ```bash
 
-$ curl  --cacert ca.crt https://example.gwapi.apps.hackathon-419-cchen.apacshift.support:443
+$ curl  --cacert ca.crt https://example.gwapi.apps.hackathon-419-cchen.test.dev:443
 Hello from your Red Hat image!
 
 ```

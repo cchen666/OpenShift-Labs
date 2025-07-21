@@ -7,7 +7,7 @@ spec:
   parentRefs:
   - name: example-gateway
     namespace: openshift-ingress
-  hostnames: ["example.gwapi.apps.hackathon-419-cchen.apacshift.support"]
+  hostnames: ["example.gwapi.apps.hackathon-419-cchen.test.dev"]
   rules:
   - backendRefs:
     - name: example-app

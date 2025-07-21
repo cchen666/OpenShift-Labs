@@ -7,7 +7,7 @@ spec:
   gatewayClassName: openshift-default
   listeners:
   - name: https
-    hostname: "*.gwapi.apps.hackathon-419-cchen.apacshift.support"
+    hostname: "*.gwapi.apps.hackathon-419-cchen.test.dev"
     port: 443
     protocol: HTTPS
     tls:
