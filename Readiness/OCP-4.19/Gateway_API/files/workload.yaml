@@ -1,0 +1,48 @@
+apiVersion: v1
+kind: Namespace
+metadata:
+  name: example-app-ns
+
+---
+
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: example-app-deployment
+  namespace: example-app-ns
+  labels:
+    app: example-app
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: example-app
+  template:
+    metadata:
+      labels:
+        app: example-app
+    spec:
+      containers:
+      - name: example-app-container
+        image: registry.access.redhat.com/ubi9/ubi
+        command: ["sh", "-c"]
+        args:
+          - echo "Hello from your Red Hat image!" > /tmp/index.html && python3 -m http.server 8443 --bind 0.0.0.0 --directory /tmp
+        ports:
+        - containerPort: 8443
+
+---
+
+apiVersion: v1
+kind: Service
+metadata:
+  name: example-app
+  namespace: example-app-ns
+spec:
+  type: ClusterIP
+  selector:
+    app: example-app
+  ports:
+  - protocol: TCP
+    port: 8443
+    targetPort: 8443

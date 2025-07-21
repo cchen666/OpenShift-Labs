@@ -16,7 +16,7 @@ cchen414-fzb7j-worker-0-qrmvn   Ready    worker                 53d   v1.27.10+2
 
 ## ovn_cluster_router
 
-* Check the routing table first
+* Check the routing table first and 
 
     ```bash
     sh-5.1# ovn-nbctl lr-route-list ovn_cluster_router

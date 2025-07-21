@@ -19,3 +19,8 @@ $ oc get route
 
 ## Create bucket at minio webUI
 
+```bash
+
+
+
+```
