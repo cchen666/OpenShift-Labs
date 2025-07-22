@@ -1,6 +1,14 @@
 # resourceInjectorMatchCondition
 
-## Install SR-IOV Operator
+## Install SR-IOV Operator through webUI
+
+## Label the node to be SR-IOV capable
+
+```bash
+
+$ oc label node worker-0 feature.node.kubernetes.io/network-sriov.capable=true
+
+```
 
 ## Create SR-IOV Operator Config
 
@@ -9,14 +17,8 @@
 apiVersion: sriovnetwork.openshift.io/v1
 kind: SriovOperatorConfig
 metadata:
-  creationTimestamp: "2025-07-21T10:19:24Z"
-  finalizers:
-  - operatorconfig.finalizers.sriovnetwork.openshift.io
-  generation: 2
   name: default
   namespace: openshift-sriov-network-operator
-  resourceVersion: "139338"
-  uid: d3603400-52c8-42d3-9830-78c7422757b1
 spec:
   configurationMode: daemon
   disableDrain: false
