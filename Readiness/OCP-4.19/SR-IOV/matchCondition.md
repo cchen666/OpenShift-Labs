@@ -85,3 +85,22 @@ spec:
   logLevel: 2
 
 ```
+
+## Confirm the resourceInjectorMatchCondition is enabled in logs
+
+```bash
+
+$ oc logs -n openshift-sriov-network-operator -l name=sriov-network-operator
+
+2025-07-22T02:29:46.860422227Z  INFO    controller/controller.go:118    enabled featureGates    {"controller": "sriovoperatorconfig", "controllerGroup":
+ "sriovnetwork.openshift.io", "controllerKind": "SriovOperatorConfig", "SriovOperatorConfig": {"name":"default","namespace":"openshift-sriov-network-ope
+rator"}, "namespace": "openshift-sriov-network-operator", "name": "default", "reconcileID": "f70298e7-3e4c-412a-b474-2146e129e8ab", "sriovoperatorconfig
+": {"name":"default","namespace":"openshift-sriov-network-operator"}, "featureGates": ""}
+
+2025-07-22T02:34:35.815551107Z  INFO    controller/controller.go:118    Reconciling SriovOperatorConfig {"controller": "sriovoperatorconfig", "controlle
+rGroup": "sriovnetwork.openshift.io", "controllerKind": "SriovOperatorConfig", "SriovOperatorConfig": {"name":"default","namespace":"openshift-sriov-net
+work-operator"}, "namespace": "openshift-sriov-network-operator", "name": "default", "reconcileID": "28256715-2fe3-48e2-b6ef-980c46316247", "sriovoperat
+orconfig": {"name":"default","namespace":"openshift-sriov-network-operator"}}
+2025-07-22T02:34:35.815894546Z  INFO    controller/controller.go:118    enabled featureGates    {"controller": "sriovoperatorconfig", "controllerGroup": "sriovnetwork.openshift.io", "controllerKind": "SriovOperatorConfig", "SriovOperatorConfig": {"name":"default","namespace":"openshift-sriov-network-operator"}, "namespace": "openshift-sriov-network-operator", "name": "default", "reconcileID": "28256715-2fe3-48e2-b6ef-980c46316247", "sriovoperatorconfig": {"name":"default","namespace":"openshift-sriov-network-operator"}, "featureGates": "resourceInjectorMatchCondition:true"}
+
+```
