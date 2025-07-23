@@ -1,5 +1,7 @@
 # resourceInjectorMatchCondition
 
+<https://docs.redhat.com/en/documentation/openshift_container_platform/4.19/html-single/networking/index#about-network-resource-injector_configuring-sriov-operator>
+
 ## Install SR-IOV Operator through webUI
 
 ## Label the node to be SR-IOV capable

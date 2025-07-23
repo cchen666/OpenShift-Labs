@@ -1,0 +1,12 @@
+apiVersion: nmstate.io/v1
+kind: NodeNetworkConfigurationPolicy
+metadata:
+  name: set-dns-worker
+spec:
+  nodeSelector:
+    node-role.kubernetes.io/worker: ""
+  desiredState:
+    dns-resolver:
+      config:
+        server:
+          - 8.8.8.8
