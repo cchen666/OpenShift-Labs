@@ -1,0 +1,11 @@
+apiVersion: v1
+kind: Pod
+metadata:
+  name: fastipam-pod
+  annotations:
+    k8s.v1.cni.cncf.io/networks: openshift-multus/wb-ipam
+spec:
+  containers:
+  - name: fastipam-pod
+    command: ["/bin/bash", "-c", "trap : TERM INT; sleep infinity & wait"]
+    image: quay.io/rhn_support_cchen/toolbox:v1.3

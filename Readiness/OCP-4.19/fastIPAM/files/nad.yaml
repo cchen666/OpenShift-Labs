@@ -1,0 +1,19 @@
+apiVersion: "k8s.cni.cncf.io/v1"
+kind: NetworkAttachmentDefinition
+metadata:
+  name: wb-ipam
+  namespace: openshift-multus
+spec:
+  config: '{
+    "cniVersion": "0.3.0",
+    "name": "wb-ipam-cni-name",
+    "type": "bridge",
+    "bridge": "cni0",
+    "ipam": {
+      "type": "whereabouts",
+      "network_name": "wb-ipam-cni-name",
+      "range": "10.5.0.0/20",
+      "node_slice_size": "/24"
+    }
+  }'
+
