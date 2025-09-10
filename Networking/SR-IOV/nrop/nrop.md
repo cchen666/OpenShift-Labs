@@ -1,5 +1,48 @@
 # Topo Aware Scheduler
 
+Quote from Martin:
+
+```text
+
+The scheduler itself treats all resources as generic pools. The NUMA aware secondary scheduler uses a side channel to get the per-NUMA resource information. The SR-IOV device plugin can expose the topology hints and the Resource topology exporter then can populate the side channel.
+
++---------------------------------------------------------------------------------+
+|                                 CONTROL PLANE                                   |
+|                                                                                 |
+|       +-------------------+     4. READS NODE      +------------------------+   |
+|       |   NUMA-aware      | <-- TOPOLOGY DATA -----|  Topology Info         |   |
+|       | Scheduler Plugin  |                        | (via CRD/Annotations)  |   |
+|       +--------^----------+                        +------------^-----------+   |
+|                | 3. Pod is sent for scheduling                  | 2. POPULATES  |
+|                |                                                | "SIDE CHANNEL"|
+|       +--------+----------+                                     |               |
+|       | kube-scheduler    |                                     |               |
+|       +-------------------+                                     |               |
++-----------------------------------------------------------------|---------------+
+                                                                  |
+                                                                  |
++-----------------------------------------------------------------|---------------+
+|                                  WORKER NODE                    |               |
+|                                                                 |               |
+|                               +---------------------------------+               |
+|                               |   Resource Topology Exporter    |               +
+|                               +---------------------------------+               |
+|                                       ^        ^                                |
+|                 1. DISCOVERS          |        | 1. DISCOVERS                   |
+|               CPU/MEMORY TOPOLOGY     |        |   DEVICE TOPOLOGY HINTS        |
+|                                       |        |                                |
+|   +-----------------------+   +-------+--------+-------+   +----------------+   |
+|   |  Node CPUs & Memory   |   |   SR-IOV Device Plugin  |   | SR-IOV NIC     |  |
+|   |                       |   |                         |   | (Physical)     |  |
+|   | [NUMA 0]   [NUMA 1]   |   |   [VF on NUMA 0]        |   |    /      \    |  |
+|   |   CPU        CPU      |   |   [VF on NUMA 1]        |   | [VF]      [VF] |  |
+|   |   Mem        Mem      |   +-------------------------+   +----------------+  |
+|   +-----------------------+                                                     |
+|                                                                                 |
++---------------------------------------------------------------------------------+
+
+```
+
 ## Install NROP Operator
 
 ```bash
