@@ -5,12 +5,12 @@
 ## Download from git
 
 ```bash
-$ yum install ansible-core git -y
+$ yum install ansible-core git -y libvirt
 $ ansible-galaxy collection install ansible.posix
 $ ansible-galaxy collection install community.general
 $ ansible-galaxy collection install community.libvirt
 
-$ git clone https://github.com/kazuhisya/openshift-ansible-kvm.git
+$ git clone https://github.com/cchen666/openshift-ansible-kvm.git
 ```
 
 ## Configuration

@@ -1,0 +1,92 @@
+---
+kind: PersistentVolumeClaim
+apiVersion: v1
+metadata:
+  name: mariadb-pvc
+  namespace: rhoai-model-registries
+spec:
+  accessModes:
+    - ReadWriteOnce
+  resources:
+    requests:
+      storage: 50Gi
+  volumeMode: Filesystem
+---
+kind: StatefulSet
+apiVersion: apps/v1
+metadata:
+  name: mariadb
+  namespace: rhoai-model-registries
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: mariadb
+  template:
+    metadata:
+      creationTimestamp: null
+      labels:
+        app: mariadb
+    spec:
+      volumes:
+        - name: mariadb
+          persistentVolumeClaim:
+            claimName: mariadb-pvc
+      containers:
+        - resources: {}
+          terminationMessagePath: /dev/termination-log
+          name: mariadb
+          env:
+            - name: MYSQL_USER
+              value: admin
+            - name: MYSQL_PASSWORD
+              value: redhat
+            - name: MYSQL_DATABASE
+              value: registry
+            - name: MARIADB_ROOT_PASSWORD
+              value: redhat
+          ports:
+            - name: db
+              containerPort: 3306
+              protocol: TCP
+          imagePullPolicy: IfNotPresent
+          volumeMounts:
+            - name: mariadb
+              mountPath: /var/lib/mysql
+          terminationMessagePolicy: File
+          image: 'mariadb:lts-ubi9'
+      restartPolicy: Always
+      terminationGracePeriodSeconds: 10
+      dnsPolicy: ClusterFirst
+      securityContext: {}
+      schedulerName: default-scheduler
+  serviceName: mariadb
+  podManagementPolicy: OrderedReady
+  updateStrategy:
+    type: RollingUpdate
+    rollingUpdate:
+      partition: 0
+  revisionHistoryLimit: 10
+  persistentVolumeClaimRetentionPolicy:
+    whenDeleted: Retain
+    whenScaled: Retain
+---
+kind: Service
+apiVersion: v1
+metadata:
+  name: mariadb
+spec:
+  ipFamilies:
+    - IPv4
+  ports:
+    - name: db
+      protocol: TCP
+      port: 3306
+      targetPort: 3306
+  internalTrafficPolicy: Cluster
+  type: ClusterIP
+  ipFamilyPolicy: SingleStack
+  sessionAffinity: None
+  selector:
+    app: mariadb
+---

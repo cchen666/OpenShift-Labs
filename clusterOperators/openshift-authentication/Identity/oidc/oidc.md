@@ -29,7 +29,7 @@ spec:
     name: openid
     openID:
       ca:
-        name: openid-ca-mf2k9 # Automatically created
+        name: idpdemo-oidc-client-ca-cert
       claims:
         email:
         - email
