@@ -12,7 +12,7 @@ $ oc apply -f files/mariadb.yaml -n rhoai-model-registries
 
 ## Create minio
 
-```
+```bash
 $ oc new-project utilities
 $ oc apply -f files/minio.yaml -n utilities
 ```

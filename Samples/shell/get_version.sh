@@ -8,8 +8,11 @@ PACKAGE="${2}"
 RHCOS_VERSION="$(oc adm release info "${OCP_RELEASE}" -o jsonpath='{.displayVersions.machine-os.Version}')"
 OCP_MAJOR="$(echo "${OCP_RELEASE}" | awk -F. '{print $1"."$2}')"
 case $OCP_MAJOR in
+    4.20)
+        OCP_VERSION="rhel-9.6"
+        ;;
     4.19)
-        OCP_VERSION="4.19-9.6"
+        OCP_VERSION="rhel-9.6"
         ;;
     4.18)
         OCP_VERSION="4.18-9.4"
