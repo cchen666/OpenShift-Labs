@@ -1,0 +1,159 @@
+- **STEP 1: Create a Namespace**
+Specific namespaces must be created for running ETCD backup pods.
+
+```
+$ oc new-project ocp-etcd-backup`
+```
+
+- **STEP 2: Create Service Account**
+You must create a service account in the namespace dedicated to backup ETCD. This service account will be responsible for performing backup commands for the master nodes:
+~~~
+kind: ServiceAccount
+apiVersion: v1
+metadata:
+  name: openshift-backup
+  namespace: ocp-etcd-backup
+  labels:
+    app: openshift-backup
+~~~
+
+`$ oc apply -f sa-etcd-bkp.yml`
+
+
+- **STEP 3: Create Cluster Role**
+You must create a Cluster Role with specific permissions for running the backup. This Cluster Role has specific permissions to specific resources and verbs, such as:
+ - Resource: Nodes
+ - Verbs: Get, List
+ - Resource: pods and pods/log
+ - Verbs: Get, List, Create, Delete, and Watch
+~~~
+apiVersion: rbac.authorization.k8s.io/v1
+kind: ClusterRole
+metadata:
+  name: cluster-etcd-backup
+rules:
+- apiGroups: [""]
+  resources:
+     - "nodes"
+  verbs: ["get", "list"]
+- apiGroups: [""]
+  resources:
+     - "pods"
+     - "pods/log"
+  verbs: ["get", "list", "create", "delete", "watch"]
+~~~
+`$ oc apply -f cluster-role-etcd-bkp.yml`
+
+
+- **STEP 4: Create Cluster Role Binding**
+After creating the Service Account and Cluster Role, you need to create the link between the two resources:
+~~~
+kind: ClusterRoleBinding
+apiVersion: rbac.authorization.k8s.io/v1
+metadata:
+  name: openshift-backup
+  labels:
+    app: openshift-backup
+subjects:
+  - kind: ServiceAccount
+    name: openshift-backup
+    namespace: ocp-etcd-backup
+roleRef:
+  apiGroup: rbac.authorization.k8s.io
+  kind: ClusterRole
+  name: cluster-etcd-backup
+~~~
+`$ oc apply -f cluster-role-binding-etcd-bkp.yml`
+
+
+- **STEP 5: Add Special Privileges to Service Account**
+You will need to set special privileges to the service account running the directory creation commands and backup execution of ETCD (The aforementioned commands are executed with sudo, so you will need the service account to have special privileges):
+
+```
+apiVersion: rbac.authorization.k8s.io/v1
+kind: ClusterRoleBinding
+metadata:
+  name: system:openshift:scc:privileged
+roleRef:
+  apiGroup: rbac.authorization.k8s.io
+  kind: ClusterRole
+  name: system:openshift:scc:privileged
+subjects:
+- kind: ServiceAccount
+  name: openshift-backup
+  namespace: ocp-etcd-backup
+```
+
+
+- **STEP 6: Create a CronJob**
+Create CronJob similar to the below example:
+~~~
+kind: CronJob
+apiVersion: batch/v1
+metadata:
+  name: openshift-backup
+  namespace: ocp-etcd-backup
+  labels:
+    app: openshift-backup
+spec:
+  schedule: "56 23 * * *"
+  concurrencyPolicy: Forbid
+  successfulJobsHistoryLimit: 5
+  failedJobsHistoryLimit: 5
+  jobTemplate:
+    metadata:
+      labels:
+        app: openshift-backup
+    spec:
+      backoffLimit: 0
+      template:
+        metadata:
+          labels:
+            app: openshift-backup
+        spec:
+          containers:
+            - name: backup
+              image: "registry.redhat.io/openshift4/ose-cli"
+              command:
+                - "/bin/bash"
+                - "-c"
+                - oc get no -l node-role.kubernetes.io/master --no-headers -o name | xargs -I {} --  oc debug {} -- bash -c 'chroot /host sudo -E /usr/local/bin/cluster-backup.sh /home/core/backup/ && chroot /host sudo -E find /home/core/backup/ -type f -mmin +"1" -delete'
+          restartPolicy: "Never"
+          terminationGracePeriodSeconds: 30
+          activeDeadlineSeconds: 500
+          dnsPolicy: "ClusterFirst"
+          serviceAccountName: "openshift-backup"
+          serviceAccount: "openshift-backup"
+~~~
+`$ oc apply -f cronjob-etcd-bkp.yml`
+
+
+- **STEP 7: Test validation**
+
+`$ oc create job backup --from=cronjob/openshift-backup`
+
+`$ oc get pods -n ocp-etcd-backup`
+~~~
+NAME                                       READY   STATUS      RESTARTS   AGE
+backup-29bnd                               1/1     Running     0          41s
+ci-ln-xxxxxx-12345-abcdef-master-1-debug   0/1     Completed   0          15s
+~~~
+
+`$ oc get job -n ocp-etcd-backup`
+~~~
+NAME     COMPLETIONS   DURATION   AGE
+backup   1/1           57s        100s
+~~~
+
+`$ oc get cronjob -n ocp-etcd-backup`
+~~~
+NAME               SCHEDULE      SUSPEND   ACTIVE   LAST SCHEDULE   AGE
+openshift-backup   56 23 * * *   False     0        <none>          2m5s
+~~~
+
+
+
+**NOTE:** During the execution of CronJob, the automatically created pods will debug on nodes for backup execution.
+
+Review [OCP Disaster Recovery Part 1 - How to Create Automated ETCD Backup in OpenShift 4.x](https://cloud.redhat.com/blog/ocp-disaster-recovery-part-1-how-to-create-automated-etcd-backup-in-openshift-4.x) for further reading.
+
