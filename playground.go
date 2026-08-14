@@ -51,3 +51,45 @@ while True:
 	except: pass
 	time.sleep(0.01)
 " &
+
+{
+  "name": "mysql-user-connector",
+  "config": {
+    "connector.class":
+"io.debezium.connector.mysql.MySqlConnector",
+    "tasks.max": "1",
+    "value.converter":
+"org.apache.kafka.connect.json.JsonConverter",
+    "value.converter.schemas.enable": "false",
+    "database.hostname":
+"host.containers.internal",
+    "database.port": "3306",
+    "database.user": "debezium",
+    "database.password": "dbz",
+    "database.server.id": "54001",
+    "topic.prefix": "vm-mysql",
+    "database.include.list": "keycloak",
+    "table.include.list":
+"keycloak.user_entity",
+    "include.schema.changes": "false",
+    "schema.history.internal.kafka.bootstrap.se
+rvers":
+"${YOUR_OPENSHIFT_BOOTSTRAP_ROUTE_URL}:443",
+    "schema.history.internal.kafka.topic":
+"schemahistory.vm-mysql",
+    "schema.history.internal.producer.security.
+protocol": "SSL",
+    "schema.history.internal.producer.ssl.trust
+store.location":
+"/kafka/config/certs/strimzi-ca.crt",
+    "schema.history.internal.producer.ssl.trust
+store.type": "PEM",
+    "schema.history.internal.consumer.security.
+protocol": "SSL",
+    "schema.history.internal.consumer.ssl.trust
+store.location":
+"/kafka/config/certs/strimzi-ca.crt",
+    "schema.history.internal.consumer.ssl.trust
+store.type": "PEM"
+  }
+}

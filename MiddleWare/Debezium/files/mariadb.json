@@ -1,0 +1,27 @@
+{
+    "name": "mysql-user-connector",
+    "config": {
+      "connector.class": "io.debezium.connector.mariadb.MariaDbConnector",
+      "tasks.max": "1",
+      "value.converter": "org.apache.kafka.connect.json.JsonConverter",
+      "value.converter.schemas.enable": "false",
+      "database.hostname": "host.containers.internal",
+      "database.connectionTimeZone": "UTC",
+      "database.port": "3306",
+      "database.user": "debezium",
+      "database.password": "dbz",
+      "database.server.id": "54001",
+      "topic.prefix": "vm-mysql",
+      "database.include.list": "keycloak",
+      "table.include.list": "keycloak.USER_ENTITY",
+      "schema.history.internal.kafka.bootstrap.servers": "my-cluster-kafka-bootstrap-streams-kafka.apps.ocp420.terryhu.cc:443",
+      "include.schema.changes": "false",
+      "schema.history.internal.kafka.topic": "schemahistory.vm-mysql",
+      "schema.history.internal.producer.security.protocol": "SSL",
+      "schema.history.internal.producer.ssl.truststore.location": "/kafka/config/certs/strimzi-ca.crt",
+      "schema.history.internal.producer.ssl.truststore.type": "PEM",
+      "schema.history.internal.consumer.security.protocol": "SSL",
+      "schema.history.internal.consumer.ssl.truststore.location": "/kafka/config/certs/strimzi-ca.crt",
+      "schema.history.internal.consumer.ssl.truststore.type": "PEM"
+    }
+  }
