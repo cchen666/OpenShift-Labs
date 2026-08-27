@@ -95,7 +95,7 @@ With the database listening on the VM, perform these configurations on your Open
 
 1. **Create the Keycloak target namespace:**
    ```bash
-   oc create ns keycloak
+   $ oc create ns keycloak
    ```
 
 2. **Create a Secret containing the database credentials:**
