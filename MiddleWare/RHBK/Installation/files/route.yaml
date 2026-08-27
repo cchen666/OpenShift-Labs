@@ -1,0 +1,32 @@
+apiVersion: route.openshift.io/v1
+kind: Route
+metadata:
+  annotations:
+    nginx.ingress.kubernetes.io/backend-protocol: HTTP
+    route.openshift.io/termination: edge
+  labels:
+    app: keycloak
+    app.kubernetes.io/instance: keycloak-external-db
+    app.kubernetes.io/managed-by: keycloak-operator
+  name: keycloak-external-db-ingress-47hfr
+  namespace: keycloak
+  ownerReferences:
+  - apiVersion: networking.k8s.io/v1
+    controller: true
+    kind: Ingress
+    name: keycloak-external-db-ingress
+    uid: 91728bac-6f51-47dc-96e4-1954a6f1a301
+  resourceVersion: "1159402091"
+  uid: 55065da3-540d-496b-9db4-bc46e2292311
+spec:
+  host: keycloak.apps.ocp420.XXX.cc
+  port:
+    targetPort: http
+  tls:
+    insecureEdgeTerminationPolicy: Redirect
+    termination: edge
+  to:
+    kind: Service
+    name: keycloak-external-db-service
+    weight: 100
+  wildcardPolicy: None
