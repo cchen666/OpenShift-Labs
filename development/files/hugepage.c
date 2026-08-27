@@ -9,7 +9,6 @@
 static void write_bytes(char *addr)
 {
         unsigned long i;
-
         for (i = 0; i < LENGTH; i++)
                 *(addr + i) = (char)i;
 }
@@ -24,9 +23,7 @@ int main ()
            sprintf(buf, "%s_%d", FILE_NAME, i);
            fd = open(buf, O_CREAT | O_RDWR, 0755);
            addr = mmap((void *)(0x0UL), LENGTH, PROT_READ | PROT_WRITE, MAP_PRIVATE | MAP_HUGETLB , fd, 0);
-
            printf("address returned %p \n", addr);
-
            if (addr == MAP_FAILED) {
                    perror("mmap ");
            } else {
