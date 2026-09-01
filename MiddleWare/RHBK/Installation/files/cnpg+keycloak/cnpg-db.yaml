@@ -1,0 +1,18 @@
+apiVersion: postgresql.cnpg.io/v1
+kind: Database
+metadata:
+  creationTimestamp: "2026-09-01T06:44:25Z"
+  finalizers:
+  - cnpg.io/deleteDatabase
+  generation: 1
+  name: database-sample
+  namespace: openshift-operators
+  resourceVersion: "53375"
+  uid: 1a0f94cc-3bc1-4629-a70d-bb809e6f6d9f
+spec:
+  cluster:
+    name: cnpg
+  databaseReclaimPolicy: retain
+  ensure: present
+  name: keycloak
+  owner: app

@@ -1,30 +1,36 @@
 apiVersion: postgresql.cnpg.io/v1
 kind: Cluster
 metadata:
-  name: cnpg-keycloak
-  namespace: cnpg-keycloak
+  creationTimestamp: "2026-09-01T06:21:29Z"
+  generation: 1
+  name: cnpg
+  namespace: openshift-operators
+  resourceVersion: "48404"
+  uid: e12f52d5-dfcd-4b7c-966b-799043c82aff
 spec:
   affinity:
-    podAntiAffinityType: required
-    topologyKey: topology.kubernetes.io/zone
+    podAntiAffinityType: preferred
+  backup:
+    target: prefer-standby
+    volumeSnapshot:
+      online: true
+      onlineConfiguration:
+        immediateCheckpoint: false
+        waitForArchive: true
+      snapshotOwnerReference: none
   bootstrap:
     initdb:
-      database: keycloak
+      database: app
       encoding: UTF8
       localeCType: C
       localeCollate: C
-      owner: keycloak
+      owner: app
   enablePDB: true
   enableSuperuserAccess: false
   failoverDelay: 0
   imageName: ghcr.io/cloudnative-pg/postgresql:18.4-system-trixie
-  instances: 3
+  instances: 2
   logLevel: info
-  managed:
-    services:
-      disabledDefaultServices:
-      - ro
-      - r
   maxSyncReplicas: 0
   minSyncReplicas: 0
   monitoring:
@@ -33,6 +39,11 @@ spec:
       name: cnpg-default-monitoring
     disableDefaultQueries: false
     enablePodMonitor: false
+    tls:
+      enabled: false
+  nodeMaintenanceWindow:
+    inProgress: false
+    reusePVC: true
   postgresGID: 26
   postgresUID: 26
   postgresql:
@@ -48,7 +59,6 @@ spec:
       log_rotation_size: "0"
       log_truncate_on_rotation: "false"
       logging_collector: "on"
-      max_connections: "100"
       max_parallel_workers: "32"
       max_replication_slots: "32"
       max_worker_processes: "32"
@@ -63,11 +73,11 @@ spec:
       wal_sender_timeout: 5s
     syncReplicaElectionConstraint:
       enabled: false
-    synchronous:
-      dataDurability: required
-      failoverQuorum: false
-      method: any
-      number: 1
+  primaryLease:
+    leaseDurationSeconds: 15
+    releasedLeaseDurationSeconds: 1
+    renewDeadlineSeconds: 10
+    retryPeriodSeconds: 2
   primaryUpdateMethod: restart
   primaryUpdateStrategy: unsupervised
   probes:
@@ -89,5 +99,8 @@ spec:
   stopDelay: 1800
   storage:
     resizeInUseVolumes: true
-    size: 8Gi
+    size: 5Gi
   switchoverDelay: 3600
+  walStorage:
+    resizeInUseVolumes: true
+    size: 1Gi

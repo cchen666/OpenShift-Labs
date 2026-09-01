@@ -1,0 +1,37 @@
+apiVersion: k8s.keycloak.org/v2alpha1
+kind: Keycloak
+metadata:
+  creationTimestamp: "2026-09-01T06:31:13Z"
+  generation: 5
+  labels:
+    app: sso
+  name: keycloak
+  namespace: keycloak
+  resourceVersion: "58366"
+  uid: d814c759-ca37-40e4-b1d2-21527a169cc9
+spec:
+  db:
+    host: cnpg-rw.openshift-operators.svc
+    passwordSecret:
+      key: password
+      name: keycloak-db-secret
+    port: 5432
+    usernameSecret:
+      key: username
+      name: keycloak-db-secret
+    vendor: postgres
+  hostname:
+    hostname: keycloak.apps.cluster-hnfbz.hnfbz.sandbox342.opentlc.com
+  http:
+    httpEnabled: true
+  instances: 2
+  networkPolicy:
+    enabled: true
+  proxy:
+    headers: xforwarded
+  serviceMonitor:
+    enabled: true
+    interval: 30s
+    scrapeTimeout: 10s
+  update:
+    strategy: RecreateOnImageChange
