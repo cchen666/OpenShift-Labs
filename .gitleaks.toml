@@ -1,0 +1,6 @@
+[allowlist]
+  description = "Global Allowlist"
+
+  paths = [
+    '''MiddleWare/RHBK/Installation/files/cnpg\+keycloak/secret\.yaml$''',
+  ]
